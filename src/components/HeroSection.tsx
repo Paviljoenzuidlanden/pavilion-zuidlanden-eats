@@ -12,29 +12,26 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-secondary/70 to-secondary" />
       
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20">
-        <motion.div
-          className="mx-auto mb-8 sm:mb-12 inline-flex items-end gap-1.5"
+        <motion.img
+          src={logo}
+          alt="Paviljoen Zuidlanden logo"
+          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-contain shadow-2xl ring-2 ring-primary/20 bg-white p-1.5"
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <img
-            src={logo}
-            alt="Paviljoen Zuidlanden logo"
-            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl sm:rounded-2xl object-contain shadow-2xl ring-2 ring-primary/20 bg-white p-1.5"
-          />
-          <span className="text-[8px] sm:text-[10px] md:text-xs font-display font-bold tracking-[0.2em] uppercase text-secondary-foreground/50 pb-1.5 sm:pb-2">
-            Zuidlanden
-          </span>
-        </motion.div>
-        <motion.h1
-          className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-secondary-foreground mb-6 font-display leading-none tracking-tight uppercase text-center"
+        />
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
-          Paviljoen
-        </motion.h1>
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-secondary-foreground mb-1 font-display leading-none tracking-tight uppercase text-center">
+            Paviljoen<span className="text-primary">.</span>
+          </h1>
+          <p className="text-right text-xs sm:text-sm md:text-base font-display font-bold tracking-[0.3em] uppercase text-secondary-foreground/40 mb-6">
+            Zuidlanden
+          </p>
+        </motion.div>
         <motion.p
           className="text-lg md:text-2xl text-secondary-foreground/60 font-body font-light tracking-wide mb-4 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
