@@ -88,7 +88,7 @@ const Agenda = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            Agenda
+            Agenda<span className="text-primary">.</span>
           </motion.h1>
           <motion.p
             className="text-secondary-foreground/50 font-body text-lg max-w-xl mx-auto"
