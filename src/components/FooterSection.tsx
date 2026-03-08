@@ -15,7 +15,7 @@ const FooterSection = () => {
           <h3 className="text-xl font-bold font-display mb-4 text-primary">Locatie</h3>
           <div className="flex items-start justify-center md:justify-start gap-2 text-secondary-foreground/80 font-body">
             <MapPin className="w-5 h-5 mt-0.5 shrink-0" />
-            <span>Zuidlanden<br />Leeuwarden</span>
+            <span>It Boumantsje<br />8941 CR Leeuwarden</span>
           </div>
         </div>
         <div>
