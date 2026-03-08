@@ -181,7 +181,7 @@ const Events = () => {
               Proost op het leven<span className="text-primary">.</span>
             </h2>
             <p className="text-secondary-foreground/60 font-body text-lg leading-relaxed mb-6">
-              Geniet van een heerlijk Warsteiner pilsner of een König Ludwig Weissbier van de tap.
+              Geniet van een heerlijk pilsner of een verfrissend weissbier van de tap.
             </p>
             <div className="flex gap-3 items-center">
               <Beer className="w-5 h-5 text-primary" />
