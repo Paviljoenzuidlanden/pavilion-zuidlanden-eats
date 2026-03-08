@@ -1,7 +1,11 @@
-import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, Building2, Users } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, Clock, MapPin, ArrowRight, Building2, Users, X, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 
 const events = [
   {
@@ -67,6 +71,26 @@ const events = [
 ];
 
 const Agenda = () => {
+  const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
+  const [formData, setFormData] = useState({ naam: "", email: "", telefoon: "" });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.naam || !formData.email) {
+      toast({ title: "Vul je naam en e-mail in", variant: "destructive" });
+      return;
+    }
+    setSubmitted(true);
+    toast({ title: "Aanmelding ontvangen!", description: `Je bent aangemeld voor ${selectedEvent?.title}` });
+  };
+
+  const closeModal = () => {
+    setSelectedEvent(null);
+    setFormData({ naam: "", email: "", telefoon: "" });
+    setSubmitted(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -152,14 +176,111 @@ const Agenda = () => {
                   </div>
                 </div>
 
-                <div className="shrink-0 hidden md:block">
-                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <div className="shrink-0 flex flex-col items-end gap-2">
+                  {event.spots !== "Vrije inloop" ? (
+                    <Button
+                      size="sm"
+                      className="rounded-full font-body font-semibold tracking-widest text-xs uppercase"
+                      onClick={() => setSelectedEvent(event)}
+                    >
+                      Aanmelden
+                    </Button>
+                  ) : (
+                    <span className="text-xs font-body text-muted-foreground italic">Vrije inloop</span>
+                  )}
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all hidden md:block" />
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
+
+      {/* Aanmeld Modal */}
+      <AnimatePresence>
+        {selectedEvent && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="absolute inset-0 bg-foreground/60 backdrop-blur-sm" onClick={closeModal} />
+            <motion.div
+              className="relative bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md p-8 z-10"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <button onClick={closeModal} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+
+              {!submitted ? (
+                <>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-primary rounded-xl flex flex-col items-center justify-center text-primary-foreground shrink-0">
+                      <span className="text-lg font-extrabold font-display leading-none">{selectedEvent.date}</span>
+                      <span className="text-[8px] font-body uppercase tracking-widest">{selectedEvent.month}</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-extrabold font-display text-foreground tracking-tight">{selectedEvent.title}</h3>
+                      <p className="text-xs text-muted-foreground font-body">{selectedEvent.time}</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">Naam *</label>
+                      <Input
+                        value={formData.naam}
+                        onChange={(e) => setFormData(prev => ({ ...prev, naam: e.target.value }))}
+                        placeholder="Je volledige naam"
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">E-mail *</label>
+                      <Input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="je@email.nl"
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">Telefoon</label>
+                      <Input
+                        type="tel"
+                        value={formData.telefoon}
+                        onChange={(e) => setFormData(prev => ({ ...prev, telefoon: e.target.value }))}
+                        placeholder="06-12345678"
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full rounded-full font-body font-semibold tracking-widest text-sm uppercase mt-2">
+                      Aanmelden
+                    </Button>
+                  </form>
+                </>
+              ) : (
+                <div className="text-center py-6">
+                  <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-extrabold font-display text-foreground tracking-tight mb-2">Aangemeld!</h3>
+                  <p className="text-muted-foreground font-body text-sm mb-6">
+                    Je bent aangemeld voor <strong>{selectedEvent.title}</strong> op {selectedEvent.date} {selectedEvent.month}.
+                  </p>
+                  <Button onClick={closeModal} variant="outline" className="rounded-full font-body font-semibold tracking-widest text-xs uppercase">
+                    Sluiten
+                  </Button>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* CTA */}
       <section className="py-16 md:py-24 px-4 md:px-6 bg-muted">
