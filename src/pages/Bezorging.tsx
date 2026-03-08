@@ -27,7 +27,7 @@ const Bezorging = () => {
             Binnenkort beschikbaar
           </motion.div>
           <motion.h1
-            className="text-6xl md:text-[9rem] font-extrabold font-display tracking-tighter uppercase mt-2 mb-6 leading-[0.85]"
+            className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-display tracking-tighter uppercase mt-2 mb-6 leading-[0.85] text-center"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
