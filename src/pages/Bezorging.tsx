@@ -15,7 +15,7 @@ const Bezorging = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-secondary text-secondary-foreground">
+      <section className="pt-28 md:pt-32 pb-16 md:pb-20 px-4 md:px-6 bg-secondary text-secondary-foreground">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             className="inline-flex items-center gap-2 bg-primary/20 text-primary px-5 py-2 rounded-full font-body text-xs font-semibold tracking-widest uppercase mb-8"
@@ -46,7 +46,7 @@ const Bezorging = () => {
       </section>
 
       {/* Bezorggebied */}
-      <section className="py-24 px-6">
+      <section className="py-16 md:py-24 px-4 md:px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div
             className="text-center mb-16"
@@ -56,7 +56,7 @@ const Bezorging = () => {
             transition={{ duration: 0.5 }}
           >
             <span className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase">Bezorggebied</span>
-            <h2 className="text-4xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
+            <h2 className="text-3xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
               We komen naar jou<span className="text-primary">.</span>
             </h2>
           </motion.div>
@@ -85,7 +85,7 @@ const Bezorging = () => {
       </section>
 
       {/* Hoe werkt het */}
-      <section className="py-24 px-6 bg-muted">
+      <section className="py-16 md:py-24 px-4 md:px-6 bg-muted">
         <div className="max-w-4xl mx-auto">
           <motion.div
             className="text-center mb-16"
@@ -95,12 +95,12 @@ const Bezorging = () => {
             transition={{ duration: 0.5 }}
           >
             <span className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase">Hoe werkt het</span>
-            <h2 className="text-4xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
+            <h2 className="text-3xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
               Simpel & snel<span className="text-primary">.</span>
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {[
               { step: "01", title: "Bestel online", desc: "Kies je favoriete friet, snacks en dranken via onze website" },
               { step: "02", title: "Wij bereiden het vers", desc: "Alles wordt vers klaargemaakt zodra jouw bestelling binnenkomt" },
@@ -114,7 +114,7 @@ const Bezorging = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.15 }}
               >
-                <div className="text-6xl font-extrabold font-display text-primary/15 mb-4">{item.step}</div>
+                <div className="text-5xl md:text-6xl font-extrabold font-display text-primary/15 mb-4">{item.step}</div>
                 <h3 className="text-xl font-extrabold font-display text-foreground tracking-tight mb-2">{item.title}</h3>
                 <p className="text-muted-foreground font-body text-sm">{item.desc}</p>
               </motion.div>
@@ -124,7 +124,7 @@ const Bezorging = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-6 bg-primary">
+      <section className="py-16 md:py-24 px-4 md:px-6 bg-primary">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -133,7 +133,7 @@ const Bezorging = () => {
             transition={{ duration: 0.5 }}
           >
             <Truck className="w-12 h-12 text-primary-foreground/80 mx-auto mb-6" />
-            <h2 className="text-4xl md:text-6xl font-extrabold font-display text-primary-foreground tracking-tight mb-4">
+            <h2 className="text-3xl md:text-6xl font-extrabold font-display text-primary-foreground tracking-tight mb-4">
               Stay tuned<span className="opacity-60">!</span>
             </h2>
             <p className="text-primary-foreground/70 font-body text-lg mb-10 max-w-xl mx-auto">
