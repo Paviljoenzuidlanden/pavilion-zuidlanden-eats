@@ -254,29 +254,29 @@ const Events = () => {
       </section>
 
       {/* Parallax CTA */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          className="absolute inset-0 bg-cover bg-center md:bg-fixed"
           style={{ backgroundImage: `url(${feestSfeer})` }} />
         
         <div className="absolute inset-0 bg-secondary/60" />
         <motion.div
-          className="relative z-10 text-center px-6 max-w-3xl"
+          className="relative z-10 text-center px-4 sm:px-6 max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}>
           
-          <PartyPopper className="w-14 h-14 text-primary mx-auto mb-6" />
-          <h2 className="text-5xl md:text-7xl font-extrabold font-display text-secondary-foreground mb-6 tracking-tight">
+          <PartyPopper className="w-10 h-10 md:w-14 md:h-14 text-primary mx-auto mb-4 md:mb-6" />
+          <h2 className="text-3xl sm:text-5xl md:text-7xl font-extrabold font-display text-secondary-foreground mb-4 md:mb-6 tracking-tight">
             Onvergetelijke avonden<span className="text-primary">.</span>
           </h2>
-          <p className="text-xl text-secondary-foreground/60 font-body font-light mb-10">
+          <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/60 font-body font-light mb-8 md:mb-10">
             Bij Paviljoen Zuidlanden zorgen wij voor de perfecte sfeer met discolampen, muziek en alles wat je nodig hebt.
           </p>
           <a
             href="#reserveer"
-            className="inline-block bg-primary text-primary-foreground px-10 py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:scale-105 transition-transform">
+            className="inline-block bg-primary text-primary-foreground px-8 md:px-10 py-3 md:py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:scale-105 transition-transform">
             
             Reserveer nu
           </a>
