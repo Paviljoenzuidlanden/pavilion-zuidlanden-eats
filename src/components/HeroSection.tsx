@@ -15,7 +15,7 @@ const HeroSection = () => {
         <motion.img
           src={logo}
           alt="Paviljoen Zuidlanden logo"
-          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-contain shadow-2xl ring-2 ring-primary/20 bg-secondary"
+          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-contain shadow-2xl ring-2 ring-primary/20 bg-white p-1.5"
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
