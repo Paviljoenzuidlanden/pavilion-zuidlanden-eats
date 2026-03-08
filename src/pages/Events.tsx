@@ -15,8 +15,8 @@ import logo from "/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
 { src: feestSfeer, alt: "Feest sfeer" },
-{ src: bierBar, alt: "Warsteiner bier" },
-{ src: bitterballen, alt: "Bitterballen met König Ludwig" },
+{ src: bierBar, alt: "Bier aan de bar" },
+{ src: bitterballen, alt: "Bitterballen" },
 { src: barImage, alt: "De bar" },
 { src: frisdranken, alt: "Frisdranken" },
 { src: zaalImage, alt: "De zaal" },
