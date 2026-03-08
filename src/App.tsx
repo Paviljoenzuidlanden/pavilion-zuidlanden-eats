@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
 import Agenda from "./pages/Agenda";
+import Bezorging from "./pages/Bezorging";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

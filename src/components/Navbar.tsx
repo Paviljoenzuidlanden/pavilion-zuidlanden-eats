@@ -8,16 +8,43 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
 
-  const links = [
-    ...(isHome
-      ? [
-          { href: "#menu", label: "Menu" },
-          { href: "#over-ons", label: "Over ons" },
-          { href: "#contact", label: "Contact" },
-        ]
-      : []),
+  const mainLinks = isHome
+    ? [
+        { href: "#menu", label: "Menu" },
+        { href: "#over-ons", label: "Over ons" },
+        { href: "#contact", label: "Contact" },
+      ]
+    : [
+        { href: "/", label: "Home", isRoute: true },
+      ];
+
+  const pageLinks = [
     { href: "/agenda", label: "Agenda", isRoute: true },
+    { href: "/bezorging", label: "Bezorging", isRoute: true },
   ];
+
+  const allLinks = [...mainLinks, ...pageLinks];
+
+  const renderLink = (l: { href: string; label: string; isRoute?: boolean }, onClick?: () => void) =>
+    l.isRoute ? (
+      <Link
+        key={l.href}
+        to={l.href}
+        onClick={onClick}
+        className="text-muted-foreground hover:text-foreground transition-colors font-body text-sm tracking-wide uppercase"
+      >
+        {l.label}
+      </Link>
+    ) : (
+      <a
+        key={l.href}
+        href={l.href}
+        onClick={onClick}
+        className="text-muted-foreground hover:text-foreground transition-colors font-body text-sm tracking-wide uppercase"
+      >
+        {l.label}
+      </a>
+    );
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
@@ -26,25 +53,7 @@ const Navbar = () => {
           PZ
         </Link>
         <div className="hidden md:flex items-center gap-8">
-          {links.map((l) =>
-            (l as any).isRoute ? (
-              <Link
-                key={l.href}
-                to={l.href}
-                className="text-muted-foreground hover:text-foreground transition-colors font-body text-sm tracking-wide uppercase"
-              >
-                {l.label}
-              </Link>
-            ) : (
-              <a
-                key={l.href}
-                href={l.href}
-                className="text-muted-foreground hover:text-foreground transition-colors font-body text-sm tracking-wide uppercase"
-              >
-                {l.label}
-              </a>
-            )
-          )}
+          {allLinks.map((l) => renderLink(l))}
           <Link
             to="/feest"
             className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2 rounded-lg font-body font-semibold tracking-wide text-sm uppercase hover:brightness-110 transition-all"
@@ -66,27 +75,7 @@ const Navbar = () => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            {links.map((l) =>
-              (l as any).isRoute ? (
-                <Link
-                  key={l.href}
-                  to={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block text-muted-foreground hover:text-foreground font-body text-sm uppercase"
-                >
-                  {l.label}
-                </Link>
-              ) : (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block text-muted-foreground hover:text-foreground font-body text-sm uppercase"
-                >
-                  {l.label}
-                </a>
-              )
-            )}
+            {allLinks.map((l) => renderLink(l, () => setOpen(false)))}
             <Link
               to="/feest"
               onClick={() => setOpen(false)}
