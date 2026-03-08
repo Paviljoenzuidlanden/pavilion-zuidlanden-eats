@@ -167,7 +167,7 @@ const Events = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}>
             
-            <img src={bierBar} alt="Warsteiner bier aan de bar" className="w-full h-full object-cover min-h-[50vh]" loading="lazy" />
+            <img src={bierBar} alt="Bier aan de bar" className="w-full h-full object-cover min-h-[50vh]" loading="lazy" />
           </motion.div>
           <motion.div
             className="flex flex-col justify-center p-10 md:p-20"
