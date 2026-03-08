@@ -129,7 +129,7 @@ const Agenda = () => {
                     {event.title}
                   </h3>
                   <p className="text-muted-foreground font-body text-sm mb-3">{event.description}</p>
-                  <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-body tracking-wider uppercase">
+                  <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-body tracking-wider uppercase flex-wrap">
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3 h-3" />
                       {event.time}
@@ -137,6 +137,17 @@ const Agenda = () => {
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-3 h-3" />
                       Paviljoen Zuidlanden
+                    </span>
+                    <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
+                      event.organizer === "paviljoen"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-accent text-accent-foreground"
+                    }`}>
+                      {event.organizer === "paviljoen" ? (
+                        <><Building2 className="w-3 h-3" /> Paviljoen Zuidlanden</>
+                      ) : (
+                        <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
+                      )}
                     </span>
                   </div>
                 </div>
