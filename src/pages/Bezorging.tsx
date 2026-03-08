@@ -133,7 +133,7 @@ const Bezorging = () => {
             transition={{ duration: 0.5 }}
           >
             <Truck className="w-12 h-12 text-primary-foreground/80 mx-auto mb-6" />
-            <h2 className="text-4xl md:text-6xl font-extrabold font-display text-primary-foreground tracking-tight mb-4">
+            <h2 className="text-3xl md:text-6xl font-extrabold font-display text-primary-foreground tracking-tight mb-4">
               Stay tuned<span className="opacity-60">!</span>
             </h2>
             <p className="text-primary-foreground/70 font-body text-lg mb-10 max-w-xl mx-auto">
