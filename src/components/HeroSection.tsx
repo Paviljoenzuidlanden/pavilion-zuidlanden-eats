@@ -25,7 +25,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}>
           
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-secondary-foreground mb-1 font-display leading-none tracking-tight uppercase text-center">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-extrabold text-secondary-foreground mb-1 font-display leading-none tracking-tight uppercase text-center">
             Paviljoen<span className="text-primary">.</span>
           </h1>
           <p className="text-right text-xs sm:text-sm md:text-base font-display font-bold tracking-[0.3em] uppercase text-secondary-foreground/40 mb-6">
