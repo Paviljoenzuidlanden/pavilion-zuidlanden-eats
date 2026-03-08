@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Menu, X, PartyPopper } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
+import logo from "@/assets/logo.jpeg";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -49,8 +50,11 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
-        <Link to="/" className="text-2xl font-display font-extrabold text-foreground tracking-tight">
-          PAVILJOEN<span className="text-primary">.</span>
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src={logo} alt="Paviljoen Zuidlanden" className="w-9 h-9 rounded-lg object-cover" />
+          <span className="text-xl font-display font-extrabold text-foreground tracking-tight hidden sm:inline">
+            PAVILJOEN<span className="text-primary">.</span>
+          </span>
         </Link>
         <div className="hidden md:flex items-center gap-10">
           {allLinks.map((l) => renderLink(l))}

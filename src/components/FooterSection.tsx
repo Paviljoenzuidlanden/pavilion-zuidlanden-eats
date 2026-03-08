@@ -44,13 +44,13 @@ const FooterSection = () => {
               <span className="text-sm">058 - 123 4567</span>
             </div>
             <a
-              href="https://instagram.com/paviljoen.zuidlanden"
+              href="https://www.instagram.com/paviljoen_zuidlanden/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary hover:text-accent transition-colors font-body font-semibold text-sm group"
             >
               <Instagram className="w-4 h-4" />
-              @paviljoen.zuidlanden
+              @paviljoen_zuidlanden
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
           </div>
