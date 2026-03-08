@@ -95,7 +95,7 @@ const Bezorging = () => {
             transition={{ duration: 0.5 }}
           >
             <span className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase">Hoe werkt het</span>
-            <h2 className="text-4xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
+            <h2 className="text-3xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
               Simpel & snel<span className="text-primary">.</span>
             </h2>
           </motion.div>
