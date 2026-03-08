@@ -15,7 +15,7 @@ const HeroSection = () => {
         <motion.img
 
           alt="Paviljoen Zuidlanden logo"
-          className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-cover shadow-2xl ring-2 ring-primary/20"
+          className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-cover shadow-2xl ring-2 ring-primary/20 scale-150"
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }} src="/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png" />
