@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import interiorImage from "@/assets/interior.jpg";
+import buitenkantImage from "@/assets/buitenkant.jpg";
 
 const AboutSection = () => {
   return (
@@ -9,7 +9,7 @@ const AboutSection = () => {
           initial={{ opacity: 0, x: -60 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.7, ease: "easeOut" as const }}
         >
           <h2 className="text-4xl font-bold text-foreground mb-6 font-display">
             Eerlijk & Ambachtelijk
@@ -34,11 +34,11 @@ const AboutSection = () => {
           initial={{ opacity: 0, x: 60 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 0.7, ease: "easeOut" as const, delay: 0.2 }}
         >
           <img
-            src={interiorImage}
-            alt="Interieur van Paviljoen Zuidlanden"
+            src={buitenkantImage}
+            alt="Paviljoen Zuidlanden van buiten"
             className="w-full h-80 object-cover"
             loading="lazy"
           />
