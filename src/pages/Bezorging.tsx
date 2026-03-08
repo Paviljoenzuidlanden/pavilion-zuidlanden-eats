@@ -15,7 +15,7 @@ const Bezorging = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-secondary text-secondary-foreground">
+      <section className="pt-28 md:pt-32 pb-16 md:pb-20 px-4 md:px-6 bg-secondary text-secondary-foreground">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             className="inline-flex items-center gap-2 bg-primary/20 text-primary px-5 py-2 rounded-full font-body text-xs font-semibold tracking-widest uppercase mb-8"
