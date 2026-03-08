@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -18,7 +19,7 @@ const Navbar = () => {
         </a>
         <div className="hidden md:flex gap-8">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-secondary-foreground/80 hover:text-primary transition-colors font-body tracking-wide">
+            <a key={l.href} href={l.href} className="text-secondary-foreground/80 hover:text-primary transition-colors font-body tracking-wide story-link">
               {l.label}
             </a>
           ))}
@@ -27,15 +28,23 @@ const Navbar = () => {
           {open ? <X /> : <Menu />}
         </button>
       </div>
-      {open && (
-        <div className="md:hidden bg-secondary px-4 pb-4 space-y-3">
-          {links.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block text-secondary-foreground/80 hover:text-primary font-body">
-              {l.label}
-            </a>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="md:hidden bg-secondary px-4 pb-4 space-y-3 overflow-hidden"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            {links.map((l) => (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block text-secondary-foreground/80 hover:text-primary font-body">
+                {l.label}
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

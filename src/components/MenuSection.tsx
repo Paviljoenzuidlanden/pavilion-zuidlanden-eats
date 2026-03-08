@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const menuItems = [
   { category: "Friet", items: [
     { name: "Verse friet (klein)", price: "3,50" },
@@ -21,19 +23,49 @@ const menuItems = [
   ]},
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+};
+
 const MenuSection = () => {
   return (
     <section id="menu" className="py-20 px-4 bg-card">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-foreground mb-2 font-display">
+        <motion.h2
+          className="text-4xl font-bold text-center text-foreground mb-2 font-display"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           Ons Menu
-        </h2>
-        <p className="text-center text-muted-foreground mb-12 font-body text-lg">
+        </motion.h2>
+        <motion.p
+          className="text-center text-muted-foreground mb-12 font-body text-lg"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           Vers bereid, eerlijk geprijsd
-        </p>
-        <div className="grid md:grid-cols-3 gap-10">
+        </motion.p>
+        <motion.div
+          className="grid md:grid-cols-3 gap-10"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {menuItems.map((cat) => (
-            <div key={cat.category}>
+            <motion.div key={cat.category} variants={cardVariants}>
               <h3 className="text-2xl font-bold text-primary mb-4 font-display border-b-2 border-primary pb-2">
                 {cat.category}
               </h3>
@@ -45,9 +77,9 @@ const MenuSection = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
