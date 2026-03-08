@@ -14,7 +14,7 @@ const HeroSection = () => {
         <motion.img
           src={logo}
           alt="Paviljoen Zuidlanden logo"
-          className="w-40 h-40 mx-auto mb-8 rounded-full object-contain bg-background/90 p-2 shadow-lg"
+          className="w-44 h-44 mx-auto mb-8 rounded-2xl object-cover shadow-2xl ring-2 ring-primary-foreground/20"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -28,12 +28,20 @@ const HeroSection = () => {
           Paviljoen Zuidlanden
         </motion.h1>
         <motion.p
-          className="text-xl md:text-2xl text-primary-foreground/80 font-body font-light tracking-wide mb-8"
+          className="text-xl md:text-2xl text-primary-foreground/80 font-body font-light tracking-wide mb-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
         >
-          Verse friet met velletje · Ambachtelijk bereid
+          Dé ontmoetingsplek van Leeuwarden-Zuid
+        </motion.p>
+        <motion.p
+          className="text-base md:text-lg text-primary-foreground/60 font-body tracking-wide mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
+        >
+          Verse friet met velletje · Gezellige borrels · Feesten &amp; events
         </motion.p>
         <motion.a
           href="#menu"
