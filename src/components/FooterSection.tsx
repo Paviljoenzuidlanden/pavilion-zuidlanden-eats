@@ -1,54 +1,54 @@
-import { MapPin, Clock, Phone, ExternalLink } from "lucide-react";
+import { MapPin, Clock, Phone, Instagram } from "lucide-react";
 import { motion } from "framer-motion";
 
 const FooterSection = () => {
   return (
-    <footer id="contact" className="py-16 px-4 bg-secondary text-secondary-foreground">
+    <footer id="contact" className="py-20 px-4 bg-foreground text-background">
       <motion.div
-        className="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 text-center md:text-left"
+        className="max-w-5xl mx-auto grid md:grid-cols-3 gap-12 text-center md:text-left"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
         <div>
-          <h3 className="text-xl font-bold font-display mb-4 text-primary">Locatie</h3>
-          <div className="flex items-start justify-center md:justify-start gap-2 text-secondary-foreground/80 font-body">
-            <MapPin className="w-5 h-5 mt-0.5 shrink-0" />
+          <h3 className="text-lg font-bold font-display mb-4 text-primary uppercase tracking-wide">Locatie</h3>
+          <div className="flex items-start justify-center md:justify-start gap-3 text-background/70 font-body">
+            <MapPin className="w-5 h-5 mt-0.5 shrink-0 text-primary" />
             <span>It Boumantsje<br />8941 CR Leeuwarden</span>
           </div>
         </div>
         <div>
-          <h3 className="text-xl font-bold font-display mb-4 text-primary">Openingstijden</h3>
-          <div className="flex items-start justify-center md:justify-start gap-2 text-secondary-foreground/80 font-body">
-            <Clock className="w-5 h-5 mt-0.5 shrink-0" />
+          <h3 className="text-lg font-bold font-display mb-4 text-primary uppercase tracking-wide">Openingstijden</h3>
+          <div className="flex items-start justify-center md:justify-start gap-3 text-background/70 font-body">
+            <Clock className="w-5 h-5 mt-0.5 shrink-0 text-primary" />
             <div>
-              <p>Donderdag: 16:00 – 21:00</p>
-              <p>Vrijdag: 12:00 – 23:00</p>
-              <p>Zaterdag: 14:00 – 23:00</p>
-              <p>Zondag: 14:00 – 21:00</p>
+              <p>Do: 16:00 – 21:00</p>
+              <p>Vr: 12:00 – 23:00</p>
+              <p>Za: 14:00 – 23:00</p>
+              <p>Zo: 14:00 – 21:00</p>
             </div>
           </div>
         </div>
         <div>
-          <h3 className="text-xl font-bold font-display mb-4 text-primary">Contact</h3>
-          <div className="flex items-center justify-center md:justify-start gap-2 text-secondary-foreground/80 font-body mb-4">
-            <Phone className="w-5 h-5 shrink-0" />
+          <h3 className="text-lg font-bold font-display mb-4 text-primary uppercase tracking-wide">Contact</h3>
+          <div className="flex items-center justify-center md:justify-start gap-3 text-background/70 font-body mb-4">
+            <Phone className="w-5 h-5 shrink-0 text-primary" />
             <span>058 - 123 4567</span>
           </div>
           <a
-            href="https://wijkpanelzuidlanden.nl"
+            href="https://instagram.com/paviljoen.zuidlanden"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-body font-medium"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-body font-semibold"
           >
-            <ExternalLink className="w-4 h-4" />
-            Wijkpanel de Zuidlanden
+            <Instagram className="w-5 h-5" />
+            @paviljoen.zuidlanden
           </a>
         </div>
       </motion.div>
-      <div className="text-center mt-12 text-secondary-foreground/50 font-body text-sm">
-        © 2026 Paviljoen Zuidlanden · Est. 2026
+      <div className="text-center mt-16 text-background/30 font-body text-sm tracking-wide uppercase">
+        © 2026 Paviljoen Zuidlanden
       </div>
     </footer>
   );
