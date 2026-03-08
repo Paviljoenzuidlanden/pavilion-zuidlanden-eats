@@ -14,7 +14,7 @@ const AboutSection = () => {
             transition={{ duration: 0.7 }}
           >
             <span className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase">Over ons</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold text-foreground mt-4 mb-8 font-display tracking-tight leading-[0.95]">
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-foreground mt-4 mb-8 font-display tracking-tight leading-[0.95]">
               Meer dan<br />een snackbar<span className="text-primary">.</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6 font-body">
