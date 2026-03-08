@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { PartyPopper, Calendar, Users, Sparkles, ChevronDown, Beer, GlassWater } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
 import partyImage from "@/assets/party-venue.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 import bierBar from "@/assets/bier-bar.jpg";
@@ -69,21 +70,7 @@ const Events = () => {
 
   return (
     <div className="min-h-screen bg-secondary text-secondary-foreground overflow-x-hidden">
-      {/* Fixed navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-secondary/90 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
-          <Link to="/" className="text-xl font-display font-bold text-primary">
-            Paviljoen Zuidlanden
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#aanbod" className="text-secondary-foreground/80 hover:text-primary transition-colors font-body tracking-wide">Aanbod</a>
-            <a href="#sfeer" className="text-secondary-foreground/80 hover:text-primary transition-colors font-body tracking-wide">Sfeer</a>
-            <a href="#reserveer" className="bg-primary text-primary-foreground px-5 py-2 rounded-sm font-body font-medium tracking-wide hover:brightness-110 transition-all text-sm uppercase">
-              Reserveer nu
-            </a>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Fullscreen Hero — Boostcafé style */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
