@@ -114,7 +114,7 @@ const Bezorging = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.15 }}
               >
-                <div className="text-6xl font-extrabold font-display text-primary/15 mb-4">{item.step}</div>
+                <div className="text-5xl md:text-6xl font-extrabold font-display text-primary/15 mb-4">{item.step}</div>
                 <h3 className="text-xl font-extrabold font-display text-foreground tracking-tight mb-2">{item.title}</h3>
                 <p className="text-muted-foreground font-body text-sm">{item.desc}</p>
               </motion.div>
