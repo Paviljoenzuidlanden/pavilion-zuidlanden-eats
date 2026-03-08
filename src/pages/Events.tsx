@@ -11,7 +11,7 @@ import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 import zaalImage from "@/assets/zaal.jpg";
 import zaal2Image from "@/assets/zaal2.jpg";
-import logo from "@/assets/logo.jpeg";
+import logo from "/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
 { src: feestSfeer, alt: "Feest sfeer" },
