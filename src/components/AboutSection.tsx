@@ -17,10 +17,10 @@ const AboutSection = () => {
             <h2 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-foreground mt-4 mb-8 font-display tracking-tight leading-[0.95]">
               Meer dan<br />een snackbar<span className="text-primary">.</span>
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-6 font-body">
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6 font-body">
               Paviljoen Zuidlanden is dé ontmoetingsplek van Leeuwarden-Zuid. Gelegen midden in de nieuwe wijk De Zuidlanden, omringd door natuur en ruimte.
             </p>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-10 font-body">
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-10 font-body">
               Kom langs voor een verse portie friet met velletje, een gezellige borrel met vrienden, of vier je feest in onze sfeervolle ruimte. Bij ons draait alles om verbinding en genieten.
             </p>
             <div className="flex gap-12">
