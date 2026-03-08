@@ -100,7 +100,7 @@ const Bezorging = () => {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {[
               { step: "01", title: "Bestel online", desc: "Kies je favoriete friet, snacks en dranken via onze website" },
               { step: "02", title: "Wij bereiden het vers", desc: "Alles wordt vers klaargemaakt zodra jouw bestelling binnenkomt" },
