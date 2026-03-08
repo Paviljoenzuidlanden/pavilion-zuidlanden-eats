@@ -71,6 +71,26 @@ const events = [
 ];
 
 const Agenda = () => {
+  const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
+  const [formData, setFormData] = useState({ naam: "", email: "", telefoon: "" });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.naam || !formData.email) {
+      toast({ title: "Vul je naam en e-mail in", variant: "destructive" });
+      return;
+    }
+    setSubmitted(true);
+    toast({ title: "Aanmelding ontvangen!", description: `Je bent aangemeld voor ${selectedEvent?.title}` });
+  };
+
+  const closeModal = () => {
+    setSelectedEvent(null);
+    setFormData({ naam: "", email: "", telefoon: "" });
+    setSubmitted(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
