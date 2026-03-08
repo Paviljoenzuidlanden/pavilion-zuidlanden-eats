@@ -44,7 +44,7 @@ const FooterSection = () => {
               <span className="text-sm">058 - 123 4567</span>
             </div>
             <a
-              href="https://instagram.com/paviljoen.zuidlanden"
+              href="https://www.instagram.com/paviljoen_zuidlanden/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary hover:text-accent transition-colors font-body font-semibold text-sm group"
