@@ -72,7 +72,7 @@ const Agenda = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6 bg-secondary text-secondary-foreground">
+      <section className="pt-28 md:pt-32 pb-16 md:pb-20 px-4 md:px-6 bg-secondary text-secondary-foreground">
         <div className="max-w-5xl mx-auto text-center">
           <motion.span
             className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase"
