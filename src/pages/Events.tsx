@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { PartyPopper, Calendar, Users, Sparkles, ChevronDown, Beer, GlassWater } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
 import partyImage from "@/assets/party-venue.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 import bierBar from "@/assets/bier-bar.jpg";
