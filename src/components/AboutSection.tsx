@@ -4,7 +4,7 @@ import interiorImage from "@/assets/interior.jpg";
 
 const AboutSection = () => {
   return (
-    <section id="over-ons" className="py-32 px-6 bg-background">
+    <section id="over-ons" className="py-16 md:py-32 px-4 md:px-6 bg-background overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
