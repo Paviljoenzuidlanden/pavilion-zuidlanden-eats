@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowRight, Building2, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 
@@ -12,6 +12,7 @@ const events = [
     description: "Test je kennis met vrienden en win leuke prijzen! Teams van 2-6 personen.",
     category: "Quiz",
     spots: "Nog 8 plekken",
+    organizer: "paviljoen",
   },
   {
     date: "22",
@@ -21,6 +22,7 @@ const events = [
     description: "Geniet van live akoestische muziek met een drankje en hapje erbij.",
     category: "Muziek",
     spots: "Vrije inloop",
+    organizer: "paviljoen",
   },
   {
     date: "29",
@@ -30,6 +32,7 @@ const events = [
     description: "Gezellige bingo voor jong en oud. Mooie prijzen te winnen!",
     category: "Spel",
     spots: "Nog 20 plekken",
+    organizer: "wijkpanel",
   },
   {
     date: "05",
@@ -39,6 +42,7 @@ const events = [
     description: "Springkussen, schmink en natuurlijk verse friet voor de kleintjes.",
     category: "Familie",
     spots: "Vrije inloop",
+    organizer: "wijkpanel",
   },
   {
     date: "12",
@@ -48,6 +52,7 @@ const events = [
     description: "Ontdek bijzondere wijnen in combinatie met onze borrelhapjes.",
     category: "Proeverij",
     spots: "Nog 12 plekken",
+    organizer: "paviljoen",
   },
   {
     date: "19",
@@ -57,6 +62,7 @@ const events = [
     description: "Dansen tot in de late uurtjes met DJ sets en lekkere drankjes.",
     category: "Feest",
     spots: "Vrije inloop",
+    organizer: "paviljoen",
   },
 ];
 
@@ -123,7 +129,7 @@ const Agenda = () => {
                     {event.title}
                   </h3>
                   <p className="text-muted-foreground font-body text-sm mb-3">{event.description}</p>
-                  <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-body tracking-wider uppercase">
+                  <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-body tracking-wider uppercase flex-wrap">
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3 h-3" />
                       {event.time}
@@ -131,6 +137,17 @@ const Agenda = () => {
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-3 h-3" />
                       Paviljoen Zuidlanden
+                    </span>
+                    <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
+                      event.organizer === "paviljoen"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-accent text-accent-foreground"
+                    }`}>
+                      {event.organizer === "paviljoen" ? (
+                        <><Building2 className="w-3 h-3" /> Paviljoen Zuidlanden</>
+                      ) : (
+                        <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
+                      )}
                     </span>
                   </div>
                 </div>
