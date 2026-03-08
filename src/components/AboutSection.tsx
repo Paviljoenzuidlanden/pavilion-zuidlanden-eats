@@ -48,7 +48,7 @@ const AboutSection = () => {
               <img
                 src={buitenkantImage}
                 alt="Paviljoen Zuidlanden van buiten"
-                className="w-full h-[500px] object-cover"
+                className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
                 loading="lazy"
               />
             </div>
