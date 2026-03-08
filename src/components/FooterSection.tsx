@@ -58,9 +58,7 @@ const FooterSection = () => {
         </div>
 
         <div className="mt-20 pt-8 border-t border-secondary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-2xl font-display font-extrabold tracking-tight">
-            PAVILJOEN<span className="text-primary">.</span>
-          </span>
+          <img src={logoHorizontal} alt="Paviljoen Zuidlanden" className="h-8 invert" />
           <span className="text-secondary-foreground/30 font-body text-xs tracking-widest uppercase">
             © 2026 Paviljoen Zuidlanden
           </span>
