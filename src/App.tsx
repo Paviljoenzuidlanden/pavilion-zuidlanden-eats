@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Events from "./pages/Events";
 import Agenda from "./pages/Agenda";
 import Bezorging from "./pages/Bezorging";
+import Menukaart from "./pages/Menukaart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
