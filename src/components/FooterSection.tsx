@@ -1,4 +1,5 @@
 import { MapPin, Clock, Phone, Instagram, ArrowUpRight } from "lucide-react";
+import logoHorizontal from "@/assets/logo-horizontal.png";
 import { motion } from "framer-motion";
 
 const FooterSection = () => {
