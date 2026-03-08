@@ -12,6 +12,7 @@ const events = [
     description: "Test je kennis met vrienden en win leuke prijzen! Teams van 2-6 personen.",
     category: "Quiz",
     spots: "Nog 8 plekken",
+    organizer: "paviljoen",
   },
   {
     date: "22",
@@ -21,6 +22,7 @@ const events = [
     description: "Geniet van live akoestische muziek met een drankje en hapje erbij.",
     category: "Muziek",
     spots: "Vrije inloop",
+    organizer: "paviljoen",
   },
   {
     date: "29",
@@ -30,6 +32,7 @@ const events = [
     description: "Gezellige bingo voor jong en oud. Mooie prijzen te winnen!",
     category: "Spel",
     spots: "Nog 20 plekken",
+    organizer: "wijkpanel",
   },
   {
     date: "05",
@@ -39,6 +42,7 @@ const events = [
     description: "Springkussen, schmink en natuurlijk verse friet voor de kleintjes.",
     category: "Familie",
     spots: "Vrije inloop",
+    organizer: "wijkpanel",
   },
   {
     date: "12",
@@ -48,6 +52,7 @@ const events = [
     description: "Ontdek bijzondere wijnen in combinatie met onze borrelhapjes.",
     category: "Proeverij",
     spots: "Nog 12 plekken",
+    organizer: "paviljoen",
   },
   {
     date: "19",
@@ -57,6 +62,7 @@ const events = [
     description: "Dansen tot in de late uurtjes met DJ sets en lekkere drankjes.",
     category: "Feest",
     spots: "Vrije inloop",
+    organizer: "paviljoen",
   },
 ];
 
