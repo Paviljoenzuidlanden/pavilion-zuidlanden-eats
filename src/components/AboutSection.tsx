@@ -1,62 +1,68 @@
 import { motion } from "framer-motion";
 import buitenkantImage from "@/assets/buitenkant.jpg";
+import interiorImage from "@/assets/interior.jpg";
 
 const AboutSection = () => {
   return (
-    <section id="over-ons" className="py-24 px-4 bg-background">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className="text-primary font-body text-sm font-semibold tracking-[0.3em] uppercase">Over ons</span>
-          <h2 className="text-4xl md:text-6xl font-bold text-foreground mt-3 font-display tracking-tight">
-            Meer dan een snackbar.
-          </h2>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+    <section id="over-ons" className="py-32 px-6 bg-background">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7 }}
           >
+            <span className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase">Over ons</span>
+            <h2 className="text-5xl md:text-7xl font-extrabold text-foreground mt-4 mb-8 font-display tracking-tight leading-[0.95]">
+              Meer dan<br />een snackbar<span className="text-primary">.</span>
+            </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6 font-body">
               Paviljoen Zuidlanden is dé ontmoetingsplek van Leeuwarden-Zuid. Gelegen midden in de nieuwe wijk De Zuidlanden, omringd door natuur en ruimte.
             </p>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-8 font-body">
+            <p className="text-muted-foreground text-lg leading-relaxed mb-10 font-body">
               Kom langs voor een verse portie friet met velletje, een gezellige borrel met vrienden, of vier je feest in onze sfeervolle ruimte. Bij ons draait alles om verbinding en genieten.
             </p>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="flex gap-12">
               {[
-                { value: "Vers", label: "Dagelijks verse friet" },
+                { value: "Vers", label: "Dagelijks vers" },
                 { value: "80+", label: "Gasten bij feesten" },
-                { value: "7/7", label: "Dagen per week sfeer" },
+                { value: "7/7", label: "Dagen sfeer" },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <div className="text-3xl font-bold font-display text-primary">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground font-body mt-1">{stat.label}</div>
+                  <div className="text-4xl font-extrabold font-display text-primary">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground font-body mt-1 tracking-wide uppercase">{stat.label}</div>
                 </div>
               ))}
             </div>
           </motion.div>
+
           <motion.div
-            className="rounded-2xl overflow-hidden shadow-xl"
-            initial={{ opacity: 0, x: 40 }}
+            className="relative"
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
           >
-            <img
-              src={buitenkantImage}
-              alt="Paviljoen Zuidlanden van buiten"
-              className="w-full h-96 object-cover"
-              loading="lazy"
-            />
+            <div className="rounded-3xl overflow-hidden shadow-2xl">
+              <img
+                src={buitenkantImage}
+                alt="Paviljoen Zuidlanden van buiten"
+                className="w-full h-[500px] object-cover"
+                loading="lazy"
+              />
+            </div>
+            {/* Floating accent card */}
+            <motion.div
+              className="absolute -bottom-6 -left-6 bg-primary text-primary-foreground p-6 rounded-2xl shadow-xl"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <div className="text-3xl font-extrabold font-display">PZ</div>
+              <div className="text-xs tracking-widest uppercase opacity-80">Zuidlanden</div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
