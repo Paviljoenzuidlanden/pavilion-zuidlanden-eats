@@ -5,11 +5,15 @@ import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   const links = [
-    { href: "#menu", label: "Menu" },
-    { href: "#over-ons", label: "Over ons" },
-    { href: "#contact", label: "Contact" },
+    ...(isHome ? [
+      { href: "#menu", label: "Menu" },
+      { href: "#over-ons", label: "Over ons" },
+      { href: "#contact", label: "Contact" },
+    ] : []),
   ];
 
   return (
