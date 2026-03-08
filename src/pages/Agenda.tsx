@@ -102,7 +102,7 @@ const Agenda = () => {
       </section>
 
       {/* Events */}
-      <section className="py-24 px-6">
+      <section className="py-16 md:py-24 px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-4">
           {events.map((event, i) => (
             <motion.div
