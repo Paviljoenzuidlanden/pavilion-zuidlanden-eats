@@ -140,7 +140,7 @@ const Bezorging = () => {
               Volg ons op Instagram om als eerste te weten wanneer we starten met bezorgen.
             </p>
             <a
-              href="https://instagram.com/paviljoen.zuidlanden"
+              href="https://www.instagram.com/paviljoen_zuidlanden/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-primary-foreground text-primary px-10 py-4 rounded-full font-body font-semibold tracking-widest text-sm uppercase hover:scale-105 transition-transform"
