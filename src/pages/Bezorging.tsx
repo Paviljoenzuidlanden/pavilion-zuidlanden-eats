@@ -32,7 +32,7 @@ const Bezorging = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            Bezorging
+            Bezorging<span className="text-primary">.</span>
           </motion.h1>
           <motion.p
             className="text-secondary-foreground/50 font-body text-lg md:text-xl max-w-2xl mx-auto"
