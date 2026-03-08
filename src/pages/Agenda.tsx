@@ -170,7 +170,7 @@ const Agenda = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-4xl md:text-6xl font-extrabold font-display text-foreground tracking-tight mb-4">
+            <h2 className="text-3xl md:text-6xl font-extrabold font-display text-foreground tracking-tight mb-4">
               Zelf een feest<span className="text-primary">?</span>
             </h2>
             <p className="text-muted-foreground font-body text-lg mb-10">
