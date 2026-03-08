@@ -18,7 +18,7 @@ const HeroSection = () => {
           className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-contain shadow-2xl ring-2 ring-primary/20 bg-white p-1.5"
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }} src="/lovable-uploads/3db2daf5-ecad-44ff-bbfa-957a3ff3b6b0.png" />
+          transition={{ duration: 0.5, ease: "easeOut" }} src="/lovable-uploads/be5d82e0-071f-4586-95d2-8e51e89130a0.png" />
         
         <motion.div
           initial={{ opacity: 0, y: 50 }}
