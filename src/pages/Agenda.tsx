@@ -162,7 +162,7 @@ const Agenda = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-6 bg-muted">
+      <section className="py-16 md:py-24 px-4 md:px-6 bg-muted">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
