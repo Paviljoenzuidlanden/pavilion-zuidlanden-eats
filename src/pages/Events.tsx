@@ -15,14 +15,14 @@ import logo from "/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
 { src: feestSfeer, alt: "Feest sfeer" },
-{ src: bierBar, alt: "Warsteiner bier" },
-{ src: bitterballen, alt: "Bitterballen met König Ludwig" },
+{ src: bierBar, alt: "Bier aan de bar" },
+{ src: bitterballen, alt: "Bitterballen" },
 { src: barImage, alt: "De bar" },
 { src: frisdranken, alt: "Frisdranken" },
 { src: zaalImage, alt: "De zaal" },
 { src: zaal2Image, alt: "Feestlocatie" },
 { src: feestSfeer, alt: "Feest sfeer" },
-{ src: bierBar, alt: "Warsteiner bier" },
+{ src: bierBar, alt: "Bier aan de bar" },
 { src: bitterballen, alt: "Bitterballen" },
 { src: frisdranken, alt: "Frisdranken" },
 { src: barImage, alt: "De bar" },
@@ -167,7 +167,7 @@ const Events = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}>
             
-            <img src={bierBar} alt="Warsteiner bier aan de bar" className="w-full h-full object-cover min-h-[50vh]" loading="lazy" />
+            <img src={bierBar} alt="Bier aan de bar" className="w-full h-full object-cover min-h-[50vh]" loading="lazy" />
           </motion.div>
           <motion.div
             className="flex flex-col justify-center p-10 md:p-20"
@@ -181,11 +181,11 @@ const Events = () => {
               Proost op het leven<span className="text-primary">.</span>
             </h2>
             <p className="text-secondary-foreground/60 font-body text-lg leading-relaxed mb-6">
-              Geniet van een heerlijk Warsteiner pilsner of een König Ludwig Weissbier van de tap.
+              Geniet van een heerlijk pilsner of een verfrissend weissbier van de tap.
             </p>
             <div className="flex gap-3 items-center">
               <Beer className="w-5 h-5 text-primary" />
-              <span className="text-secondary-foreground/50 font-body text-sm">Warsteiner · König Ludwig · Speciaalbieren</span>
+              <span className="text-secondary-foreground/50 font-body text-sm">Pilsner · Weissbier · Speciaalbieren</span>
             </div>
           </motion.div>
         </div>
