@@ -21,7 +21,7 @@ const HeroSection = () => {
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
         <motion.h1
-          className="text-7xl md:text-[10rem] font-extrabold text-secondary-foreground mb-6 font-display leading-[0.85] tracking-tighter uppercase"
+          className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-secondary-foreground mb-6 font-display leading-none tracking-tight uppercase text-center"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
