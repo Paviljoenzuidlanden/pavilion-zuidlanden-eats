@@ -85,7 +85,7 @@ const Bezorging = () => {
       </section>
 
       {/* Hoe werkt het */}
-      <section className="py-24 px-6 bg-muted">
+      <section className="py-16 md:py-24 px-4 md:px-6 bg-muted">
         <div className="max-w-4xl mx-auto">
           <motion.div
             className="text-center mb-16"
