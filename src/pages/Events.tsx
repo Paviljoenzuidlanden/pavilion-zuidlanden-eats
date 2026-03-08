@@ -185,7 +185,7 @@ const Events = () => {
             </p>
             <div className="flex gap-3 items-center">
               <Beer className="w-5 h-5 text-primary" />
-              <span className="text-secondary-foreground/50 font-body text-sm">Warsteiner · König Ludwig · Speciaalbieren</span>
+              <span className="text-secondary-foreground/50 font-body text-sm">Pilsner · Weissbier · Speciaalbieren</span>
             </div>
           </motion.div>
         </div>
