@@ -12,13 +12,16 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-secondary/70 to-secondary" />
       
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20">
-        <motion.img
-
-          alt="Paviljoen Zuidlanden logo"
-          className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl object-cover shadow-2xl ring-2 ring-primary/20 scale-150"
+        <motion.div
+          className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto mb-8 sm:mb-12 rounded-xl sm:rounded-2xl shadow-2xl ring-2 ring-primary/20 overflow-hidden"
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }} src="/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png" />
+          transition={{ duration: 0.5, ease: "easeOut" }}>
+          <img
+            src="/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png"
+            alt="Paviljoen Zuidlanden logo"
+            className="w-[140%] h-[140%] object-cover -ml-[20%] -mt-[20%]" />
+        </motion.div>
         
         <motion.div
           initial={{ opacity: 0, y: 50 }}
