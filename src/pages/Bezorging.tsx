@@ -56,7 +56,7 @@ const Bezorging = () => {
             transition={{ duration: 0.5 }}
           >
             <span className="text-primary font-body text-xs font-semibold tracking-[0.4em] uppercase">Bezorggebied</span>
-            <h2 className="text-4xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
+            <h2 className="text-3xl md:text-6xl font-extrabold text-foreground mt-4 font-display tracking-tight">
               We komen naar jou<span className="text-primary">.</span>
             </h2>
           </motion.div>
