@@ -18,9 +18,9 @@ const HeroSection = () => {
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}>
           <img
-            src="/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png"
+            src={logo}
             alt="Paviljoen Zuidlanden logo"
-            className="w-[140%] h-[140%] object-cover -ml-[20%] -mt-[20%]" />
+            className="w-full h-full object-cover" />
         </motion.div>
         
         <motion.div
