@@ -6,6 +6,7 @@ const wijken = [
   { name: "Techum", description: "Inclusief Techum-Noord en Techum-Zuid" },
   { name: "De Klamp", description: "Heel De Klamp en omgeving" },
   { name: "Goutum", description: "Dorp Goutum en directe omgeving" },
+  { name: "Goutum-Súd", description: "Goutum-Súd en omgeving" },
   { name: "Wiarda", description: "Wiarda en aangrenzende gebieden" },
 ];
 
