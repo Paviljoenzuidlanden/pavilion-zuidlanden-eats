@@ -83,7 +83,7 @@ const Agenda = () => {
             Wat is er te doen?
           </motion.span>
           <motion.h1
-            className="text-6xl md:text-[9rem] font-extrabold font-display tracking-tighter uppercase mt-6 mb-6 leading-[0.85]"
+            className="text-4xl sm:text-6xl md:text-[9rem] font-extrabold font-display tracking-tighter uppercase mt-6 mb-6 leading-[0.85]"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
