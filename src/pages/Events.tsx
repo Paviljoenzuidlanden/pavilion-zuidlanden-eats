@@ -22,7 +22,7 @@ const galleryImages = [
 { src: zaalImage, alt: "De zaal" },
 { src: zaal2Image, alt: "Feestlocatie" },
 { src: feestSfeer, alt: "Feest sfeer" },
-{ src: bierBar, alt: "Warsteiner bier" },
+{ src: bierBar, alt: "Bier aan de bar" },
 { src: bitterballen, alt: "Bitterballen" },
 { src: frisdranken, alt: "Frisdranken" },
 { src: barImage, alt: "De bar" },
