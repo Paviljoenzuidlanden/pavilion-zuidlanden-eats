@@ -23,14 +23,14 @@ const AboutSection = () => {
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-10 font-body">
               Kom langs voor een verse portie friet met velletje, een gezellige borrel met vrienden, of vier je feest in onze sfeervolle ruimte. Bij ons draait alles om verbinding en genieten.
             </p>
-            <div className="flex gap-12">
+            <div className="flex gap-6 sm:gap-12 flex-wrap">
               {[
                 { value: "Vers", label: "Dagelijks vers" },
                 { value: "80+", label: "Gasten bij feesten" },
                 { value: "7/7", label: "Dagen sfeer" },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <div className="text-4xl font-extrabold font-display text-primary">{stat.value}</div>
+                  <div className="text-2xl sm:text-4xl font-extrabold font-display text-primary">{stat.value}</div>
                   <div className="text-xs text-muted-foreground font-body mt-1 tracking-wide uppercase">{stat.label}</div>
                 </div>
               ))}
