@@ -43,7 +43,7 @@ const Navbar = () => {
         onClick={onClick}
         className="text-foreground/60 hover:text-primary transition-colors font-body text-[13px] font-medium tracking-widest uppercase"
       >
-        {l.label}
+        {l.label}<span className="text-primary">.</span>
       </a>
     );
 
