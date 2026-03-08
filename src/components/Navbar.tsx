@@ -54,6 +54,9 @@ const Navbar = () => {
                 {l.label}
               </a>
             ))}
+            <Link to="/feest" onClick={() => setOpen(false)} className="block text-primary font-body font-medium">
+              🎉 Feest organiseren
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>
