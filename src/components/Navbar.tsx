@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu, X, PartyPopper } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import logo from "@/assets/logo-icon.png";
+import logo from "@/assets/logo-new.png";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
