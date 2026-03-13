@@ -9,7 +9,8 @@ import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 
 const categories = [
-  { img: heroFries, label: "FRIET.", id: "friet" },
+  { img: heroFries, label: "VERSE FRIET.", id: "friet" },
+  { img: heroFries, label: "RUSTIEKE FRIET.", id: "rustiek" },
   { img: bitterballen, label: "SNACKS.", id: "snacks" },
   { img: frisdranken, label: "BROODJES.", id: "broodjes" },
   { img: barImage, label: "EXTRA.", id: "extra" },
