@@ -132,12 +132,12 @@ const Menukaart = () => {
           </motion.div>
 
           {/* Category image cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24">
+          <div className="flex flex-wrap justify-center gap-4 mb-16">
             {categories.map((cat, i) => (
               <motion.a
                 key={cat.label}
                 href={`#${cat.id}`}
-                className="group relative rounded-2xl overflow-hidden aspect-square bg-muted"
+                className="group relative rounded-xl overflow-hidden aspect-[4/3] w-[180px] bg-muted"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -149,7 +149,7 @@ const Menukaart = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 via-transparent to-transparent" />
-                <span className="absolute bottom-4 left-4 text-primary font-display font-extrabold text-lg md:text-xl tracking-tight">
+                <span className="absolute bottom-3 left-3 right-3 text-primary font-display font-extrabold text-sm tracking-tight leading-tight">
                   {cat.label}
                 </span>
               </motion.a>
