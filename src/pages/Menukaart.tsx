@@ -9,10 +9,10 @@ import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 
 const categories = [
-  { img: heroFries, label: "VERS FRIET.", id: "friet" },
+  { img: heroFries, label: "FRIET.", id: "friet" },
   { img: bitterballen, label: "SNACKS.", id: "snacks" },
-  { img: frisdranken, label: "DRANKEN.", id: "dranken" },
-  { img: barImage, label: "BORREL.", id: "borrel" },
+  { img: frisdranken, label: "BROODJES.", id: "broodjes" },
+  { img: barImage, label: "EXTRA.", id: "extra" },
 ];
 
 const menuItems = [
@@ -20,56 +20,77 @@ const menuItems = [
     category: "Friet",
     id: "friet",
     items: [
-      { name: "Verse friet (klein)", price: "3,50" },
-      { name: "Verse friet (groot)", price: "5,00" },
-      { name: "Friet speciaal", price: "6,00" },
-      { name: "Patatje oorlog", price: "5,50" },
-      { name: "Patatje joppie", price: "5,50" },
-      { name: "Patatje satay", price: "6,00" },
-      { name: "Kapsalon", price: "9,50" },
-      { name: "Loaded fries", price: "8,50" },
+      { name: "Verse friet", price: "2,75" },
+      { name: "Grote verse friet", price: "3,75" },
+      { name: "Verse rustiek friet", price: "3,25" },
+      { name: "Grote verse rustieke friet", price: "" },
+      { name: "Familiezak verse friet voor 2 personen", price: "5,35" },
+      { name: "Familiezak verse friet voor 3 personen", price: "8,25" },
+      { name: "Familiezak verse friet voor 4 personen", price: "11,25" },
+      { name: "Familiezak verse friet voor 5 personen", price: "13,75" },
+      { name: "Familiezak verse friet voor 6 personen", price: "16,25" },
+      { name: "Familiezak rustieke friet voor 2 personen", price: "6,25" },
+      { name: "Familiezak rustieke friet voor 3 personen", price: "9,50" },
+      { name: "Familiezak rustieke friet voor 4 personen", price: "13,00" },
+      { name: "Familiezak rustieke friet voor 5 personen", price: "" },
+      { name: "Familiezak rustieke friet voor 6 personen", price: "" },
     ],
   },
   {
     category: "Snacks",
     id: "snacks",
     items: [
-      { name: "Frikandel", price: "2,50" },
-      { name: "Kroket", price: "2,50" },
+      { name: "Frikandel", price: "2,75" },
+      { name: "Pikanto", price: "" },
+      { name: "Kroket", price: "2,75" },
+      { name: "Kalfsvleeskroket", price: "3,25" },
+      { name: "Bamischijf", price: "3,00" },
+      { name: "Nasischijf", price: "3,00" },
       { name: "Kaassoufflé", price: "2,75" },
-      { name: "Bitterballen (6 st)", price: "5,50" },
-      { name: "Kipcorn", price: "2,75" },
-      { name: "Mexicano", price: "2,75" },
-      { name: "Loempia", price: "3,00" },
-      { name: "Berenhap", price: "3,00" },
-      { name: "Bamischijf", price: "2,75" },
-      { name: "Viandel", price: "2,50" },
+      { name: "Bitterballen 8 stuks", price: "4,55" },
+      { name: "Kipcorn", price: "3,15" },
+      { name: "Hamburger", price: "3,95" },
+      { name: "Kipburger", price: "2,95" },
+      { name: "Kipnuggets", price: "5,00" },
+      { name: "Kipnuggets 6 stuks", price: "4,15" },
+      { name: "Kipnuggets 9 stuks", price: "6,15" },
     ],
   },
   {
-    category: "Dranken",
-    id: "dranken",
+    category: "Broodjes",
+    id: "broodjes",
     items: [
-      { name: "Frisdrank", price: "2,50" },
-      { name: "Koffie", price: "2,25" },
-      { name: "Thee", price: "2,25" },
-      { name: "Cappuccino", price: "3,00" },
-      { name: "Latte macchiato", price: "3,25" },
-      { name: "Warme chocolademelk", price: "3,00" },
-      { name: "Vers sinaasappelsap", price: "3,50" },
+      { name: "Broodje hamburger", price: "4,35" },
+      { name: "Broodje hamburger speciaal", price: "5,25" },
+      { name: "Broodje cheeseburger", price: "6,25" },
+      { name: "Broodje frikandel", price: "3,25" },
+      { name: "Broodje kroket", price: "3,35" },
+      { name: "Broodje kipburger", price: "5,55" },
+      { name: "Broodje bamischijf", price: "3,45" },
+      { name: "Broodje kaassoufflé", price: "3,85" },
+      { name: "Wit bolletje", price: "0,80" },
     ],
   },
   {
-    category: "Borrel",
-    id: "borrel",
+    category: "Bittergarnituur",
+    id: "extra",
     items: [
-      { name: "Bier (tap)", price: "3,00" },
-      { name: "Speciaalbier", price: "4,50" },
-      { name: "Wijn (wit/rood/rosé)", price: "3,50" },
-      { name: "Prosecco", price: "4,00" },
-      { name: "Aperol Spritz", price: "6,50" },
-      { name: "Hugo Spritz", price: "6,50" },
-      { name: "Borrelplank", price: "12,50" },
+      { name: "Bittergarnituur voor 2 personen", price: "11,95" },
+      { name: "Bittergarnituur voor 4 personen", price: "20,45" },
+      { name: "Bittergarnituur voor 6 personen", price: "28,95" },
+      { name: "Bittergarnituur voor 8 personen", price: "37,95" },
+      { name: "Bittergarnituur voor 10 personen", price: "45,95" },
+    ],
+  },
+  {
+    category: "Sauzen",
+    id: "sauzen",
+    items: [
+      { name: "Mayonaise", price: "0,65" },
+      { name: "Ketchup", price: "0,65" },
+      { name: "Curry", price: "0,65" },
+      { name: "Pindasaus", price: "0,90" },
+      { name: "Speciaal", price: "0,80" },
     ],
   },
 ];
@@ -147,7 +168,7 @@ const Menukaart = () => {
                     <li key={item.name} className="flex justify-between items-baseline font-body text-foreground">
                       <span className="text-sm">{item.name}</span>
                       <span className="flex-1 border-b border-dotted border-border mx-3 mb-1" />
-                      <span className="text-sm font-semibold text-primary ml-4">€{item.price}</span>
+                      <span className="text-sm font-semibold text-primary ml-4">{item.price ? `€ ${item.price}` : ""}</span>
                     </li>
                   ))}
                 </ul>
