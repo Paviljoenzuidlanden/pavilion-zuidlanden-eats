@@ -9,7 +9,8 @@ import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 
 const categories = [
-  { img: heroFries, label: "FRIET.", id: "friet" },
+  { img: heroFries, label: "VERSE FRIET.", id: "friet" },
+  { img: heroFries, label: "RUSTIEKE FRIET.", id: "rustiek" },
   { img: bitterballen, label: "SNACKS.", id: "snacks" },
   { img: frisdranken, label: "BROODJES.", id: "broodjes" },
   { img: barImage, label: "EXTRA.", id: "extra" },
@@ -17,22 +18,28 @@ const categories = [
 
 const menuItems = [
   {
-    category: "Friet",
+    category: "Verse Friet",
     id: "friet",
     items: [
       { name: "Verse friet", price: "2,75" },
       { name: "Grote verse friet", price: "3,75" },
-      { name: "Verse rustiek friet", price: "3,25" },
-      { name: "Grote verse rustieke friet", price: "4,25" },
       { name: "Familiezak verse friet voor 2 personen", price: "5,35" },
       { name: "Familiezak verse friet voor 3 personen", price: "8,25" },
       { name: "Familiezak verse friet voor 4 personen", price: "11,25" },
       { name: "Familiezak verse friet voor 5 personen", price: "13,75" },
       { name: "Familiezak verse friet voor 6 personen", price: "16,25" },
+    ],
+  },
+  {
+    category: "Rustieke Friet",
+    id: "rustiek",
+    items: [
+      { name: "Verse rustiek friet", price: "3,25" },
+      { name: "Grote verse rustieke friet", price: "4,25" },
       { name: "Familiezak rustieke friet voor 2 personen", price: "6,25" },
       { name: "Familiezak rustieke friet voor 3 personen", price: "9,50" },
       { name: "Familiezak rustieke friet voor 4 personen", price: "13,00" },
-{ name: "Familiezak rustieke friet voor 5 personen", price: "16,50" },
+      { name: "Familiezak rustieke friet voor 5 personen", price: "16,50" },
       { name: "Familiezak rustieke friet voor 6 personen", price: "19,00" },
     ],
   },
@@ -160,7 +167,7 @@ const Menukaart = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <h2 className="text-2xl font-extrabold text-foreground mb-8 font-display tracking-tight">
+                <h2 className="text-2xl font-extrabold text-foreground mb-6 font-display tracking-tight">
                   {cat.category}<span className="text-primary">.</span>
                 </h2>
                 <ul className="space-y-5">
