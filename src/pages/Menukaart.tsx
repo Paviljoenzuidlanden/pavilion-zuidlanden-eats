@@ -168,7 +168,7 @@ const Menukaart = () => {
                     <li key={item.name} className="flex justify-between items-baseline font-body text-foreground">
                       <span className="text-sm">{item.name}</span>
                       <span className="flex-1 border-b border-dotted border-border mx-3 mb-1" />
-                      <span className="text-sm font-semibold text-primary ml-4">€{item.price}</span>
+                      <span className="text-sm font-semibold text-primary ml-4">{item.price ? `€ ${item.price}` : ""}</span>
                     </li>
                   ))}
                 </ul>
