@@ -17,22 +17,28 @@ const categories = [
 
 const menuItems = [
   {
-    category: "Friet",
+    category: "Verse Friet",
     id: "friet",
     items: [
       { name: "Verse friet", price: "2,75" },
       { name: "Grote verse friet", price: "3,75" },
-      { name: "Verse rustiek friet", price: "3,25" },
-      { name: "Grote verse rustieke friet", price: "4,25" },
       { name: "Familiezak verse friet voor 2 personen", price: "5,35" },
       { name: "Familiezak verse friet voor 3 personen", price: "8,25" },
       { name: "Familiezak verse friet voor 4 personen", price: "11,25" },
       { name: "Familiezak verse friet voor 5 personen", price: "13,75" },
       { name: "Familiezak verse friet voor 6 personen", price: "16,25" },
+    ],
+  },
+  {
+    category: "Rustieke Friet",
+    id: "rustiek",
+    items: [
+      { name: "Verse rustiek friet", price: "3,25" },
+      { name: "Grote verse rustieke friet", price: "4,25" },
       { name: "Familiezak rustieke friet voor 2 personen", price: "6,25" },
       { name: "Familiezak rustieke friet voor 3 personen", price: "9,50" },
       { name: "Familiezak rustieke friet voor 4 personen", price: "13,00" },
-{ name: "Familiezak rustieke friet voor 5 personen", price: "16,50" },
+      { name: "Familiezak rustieke friet voor 5 personen", price: "16,50" },
       { name: "Familiezak rustieke friet voor 6 personen", price: "19,00" },
     ],
   },
