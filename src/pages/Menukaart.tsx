@@ -23,7 +23,7 @@ const menuItems = [
       { name: "Verse friet", price: "2,75" },
       { name: "Grote verse friet", price: "3,75" },
       { name: "Verse rustiek friet", price: "3,25" },
-      { name: "Grote verse rustieke friet", price: "" },
+      { name: "Grote verse rustieke friet", price: "4,25" },
       { name: "Familiezak verse friet voor 2 personen", price: "5,35" },
       { name: "Familiezak verse friet voor 3 personen", price: "8,25" },
       { name: "Familiezak verse friet voor 4 personen", price: "11,25" },
