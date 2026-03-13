@@ -32,8 +32,8 @@ const menuItems = [
       { name: "Familiezak rustieke friet voor 2 personen", price: "6,25" },
       { name: "Familiezak rustieke friet voor 3 personen", price: "9,50" },
       { name: "Familiezak rustieke friet voor 4 personen", price: "13,00" },
-      { name: "Familiezak rustieke friet voor 5 personen", price: "" },
-      { name: "Familiezak rustieke friet voor 6 personen", price: "" },
+{ name: "Familiezak rustieke friet voor 5 personen", price: "16,50" },
+      { name: "Familiezak rustieke friet voor 6 personen", price: "19,00" },
     ],
   },
   {
