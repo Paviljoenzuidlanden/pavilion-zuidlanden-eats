@@ -167,9 +167,12 @@ const Menukaart = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <h2 className="text-2xl font-extrabold text-foreground mb-8 font-display tracking-tight">
+                <h2 className="text-2xl font-extrabold text-foreground mb-6 font-display tracking-tight">
                   {cat.category}<span className="text-primary">.</span>
                 </h2>
+                {cat.subtitle && (
+                  <p className="text-muted-foreground text-sm font-body mb-6 italic">{cat.subtitle}</p>
+                )}
                 <ul className="space-y-5">
                   {cat.items.map((item) => (
                     <li key={item.name} className="flex justify-between items-baseline font-body text-foreground">
