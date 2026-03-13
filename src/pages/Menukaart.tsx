@@ -11,7 +11,7 @@ import interiorImage from "@/assets/interior.jpg";
 
 const categories = [
   { img: heroFries, label: "VERSE FRIET.", id: "friet" },
-  { img: heroFries, label: "RUSTIEKE FRIET.", id: "rustiek" },
+  { img: interiorImage, label: "RUSTIEKE FRIET.", id: "rustiek" },
   { img: bitterballen, label: "SNACKS.", id: "snacks" },
   { img: frisdranken, label: "BROODJES.", id: "broodjes" },
   { img: barImage, label: "EXTRA.", id: "extra" },
