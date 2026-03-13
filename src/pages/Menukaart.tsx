@@ -41,7 +41,7 @@ const menuItems = [
     id: "snacks",
     items: [
       { name: "Frikandel", price: "2,75" },
-      { name: "Pikanto", price: "" },
+      { name: "Pikanto", price: "3,25" },
       { name: "Kroket", price: "2,75" },
       { name: "Kalfsvleeskroket", price: "3,25" },
       { name: "Bamischijf", price: "3,00" },
