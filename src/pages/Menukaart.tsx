@@ -7,6 +7,7 @@ import heroFries from "@/assets/hero-fries.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
 import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
+import interiorImage from "@/assets/interior.jpg";
 
 const categories = [
   { img: heroFries, label: "VERSE FRIET.", id: "friet" },
