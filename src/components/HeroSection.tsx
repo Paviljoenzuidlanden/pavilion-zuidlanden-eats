@@ -49,7 +49,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.45 }}>
           
-          Verse friet · Borrels · Events
+          Verse friet · Rustieke friet met schil · Borrels · Events
         </motion.p>
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center"
