@@ -107,7 +107,7 @@ const Menukaart = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-32 pb-20 px-6">
+      <div className="pt-32 pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <Link
             to="/"
@@ -132,12 +132,12 @@ const Menukaart = () => {
           </motion.div>
 
           {/* Category image cards */}
-          <div className="flex flex-wrap justify-center gap-4 mb-16">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-16">
             {categories.map((cat, i) => (
               <motion.a
                 key={cat.label}
                 href={`#${cat.id}`}
-                className="group relative rounded-xl overflow-hidden aspect-[4/3] w-[180px] bg-muted"
+                className="group relative rounded-xl overflow-hidden aspect-[4/3] w-[140px] sm:w-[180px] bg-muted"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -149,7 +149,7 @@ const Menukaart = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 via-transparent to-transparent" />
-                <span className="absolute bottom-3 left-3 right-3 text-primary font-display font-extrabold text-sm tracking-tight leading-tight">
+                <span className="absolute bottom-3 left-3 right-3 text-primary font-display font-extrabold text-xs sm:text-sm tracking-tight leading-tight">
                   {cat.label}
                 </span>
               </motion.a>
@@ -162,7 +162,7 @@ const Menukaart = () => {
               <motion.div
                 key={cat.category}
                 id={cat.id}
-                className="bg-card rounded-3xl p-8 border border-border hover:shadow-xl transition-shadow duration-300"
+                className="bg-card rounded-3xl p-5 sm:p-8 border border-border hover:shadow-xl transition-shadow duration-300"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -173,10 +173,10 @@ const Menukaart = () => {
                 </h2>
                 <ul className="space-y-5">
                   {cat.items.map((item) => (
-                    <li key={item.name} className="flex font-body text-foreground">
-                      <span className="text-sm flex-shrink">{item.name}</span>
-                      <span className="flex-1 border-b border-dotted border-border mx-3 mb-1 min-w-[20px]" />
-                      <span className="text-sm font-semibold text-primary w-[70px] text-right">{item.price ? `€ ${item.price}` : ""}</span>
+                    <li key={item.name} className="flex items-baseline font-body text-foreground">
+                      <span className="text-sm flex-shrink-0 max-w-[calc(100%-90px)]">{item.name}</span>
+                      <span className="flex-1 border-b border-dotted border-border mx-2 sm:mx-3 mb-1 min-w-[12px]" />
+                      <span className="text-sm font-semibold text-primary flex-shrink-0 w-[60px] sm:w-[70px] text-right whitespace-nowrap">{item.price ? `€ ${item.price}` : ""}</span>
                     </li>
                   ))}
                 </ul>
