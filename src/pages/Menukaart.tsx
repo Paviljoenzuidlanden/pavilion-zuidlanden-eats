@@ -162,7 +162,7 @@ const Menukaart = () => {
               <motion.div
                 key={cat.category}
                 id={cat.id}
-                className="bg-card rounded-3xl p-8 border border-border hover:shadow-xl transition-shadow duration-300"
+                className="bg-card rounded-3xl p-5 sm:p-8 border border-border hover:shadow-xl transition-shadow duration-300"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -173,10 +173,10 @@ const Menukaart = () => {
                 </h2>
                 <ul className="space-y-5">
                   {cat.items.map((item) => (
-                    <li key={item.name} className="flex font-body text-foreground">
-                      <span className="text-sm flex-shrink">{item.name}</span>
-                      <span className="flex-1 border-b border-dotted border-border mx-3 mb-1 min-w-[20px]" />
-                      <span className="text-sm font-semibold text-primary w-[70px] text-right">{item.price ? `€ ${item.price}` : ""}</span>
+                    <li key={item.name} className="flex items-baseline font-body text-foreground">
+                      <span className="text-sm flex-shrink-0 max-w-[calc(100%-90px)]">{item.name}</span>
+                      <span className="flex-1 border-b border-dotted border-border mx-2 sm:mx-3 mb-1 min-w-[12px]" />
+                      <span className="text-sm font-semibold text-primary flex-shrink-0 w-[60px] sm:w-[70px] text-right whitespace-nowrap">{item.price ? `€ ${item.price}` : ""}</span>
                     </li>
                   ))}
                 </ul>
