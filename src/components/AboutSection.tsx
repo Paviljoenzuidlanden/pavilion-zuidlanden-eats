@@ -21,7 +21,7 @@ const AboutSection = () => {
               Paviljoen Zuidlanden is dé ontmoetingsplek van Leeuwarden-Zuid. Gelegen midden in de nieuwe wijk De Zuidlanden, omringd door natuur en ruimte.
             </p>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-10 font-body">
-              Kom langs voor een verse portie friet met velletje, een gezellige borrel met vrienden, of vier je feest in onze sfeervolle ruimte. Bij ons draait alles om verbinding en genieten.
+              Kom langs voor een verse portie friet, rustieke friet met schil, een gezellige borrel met vrienden, of vier je feest in onze sfeervolle ruimte. Bij ons draait alles om verbinding en genieten.
             </p>
             <div className="flex gap-6 sm:gap-12 flex-wrap">
               {[
