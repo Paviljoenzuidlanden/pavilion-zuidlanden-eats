@@ -173,10 +173,10 @@ const Menukaart = () => {
                 </h2>
                 <ul className="space-y-5">
                   {cat.items.map((item) => (
-                    <li key={item.name} className="flex justify-between items-baseline font-body text-foreground">
-                      <span className="text-sm">{item.name}</span>
-                      <span className="flex-1 border-b border-dotted border-border mx-3 mb-1" />
-                      <span className="text-sm font-semibold text-primary ml-4">{item.price ? `€ ${item.price}` : ""}</span>
+                    <li key={item.name} className="flex font-body text-foreground">
+                      <span className="text-sm flex-shrink">{item.name}</span>
+                      <span className="flex-1 border-b border-dotted border-border mx-3 mb-1 min-w-[20px]" />
+                      <span className="text-sm font-semibold text-primary w-[70px] text-right">{item.price ? `€ ${item.price}` : ""}</span>
                     </li>
                   ))}
                 </ul>
