@@ -22,6 +22,7 @@ const Navbar = () => {
   const pageLinks = [
     { href: "/agenda", label: "Agenda", isRoute: true },
     { href: "/bezorging", label: "Bezorging", isRoute: true },
+    { href: "/bestellen", label: "Bestellen", isRoute: true },
   ];
 
   const allLinks = [...mainLinks, ...pageLinks];
