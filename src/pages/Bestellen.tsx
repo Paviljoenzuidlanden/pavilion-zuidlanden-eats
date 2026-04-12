@@ -1,18 +1,32 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
+type Sauce = { name: string; price: number };
+
 type CartItem = {
+  id: string;
   name: string;
   price: number;
   quantity: number;
   category: string;
+  sauces: Sauce[];
 };
+
+const sauzen: Sauce[] = [
+  { name: "Mayonaise", price: 0.65 },
+  { name: "Ketchup", price: 0.65 },
+  { name: "Curry", price: 0.65 },
+  { name: "Pindasaus", price: 0.90 },
+  { name: "Speciaal", price: 0.80 },
+];
+
+const categoriesWithSauces = ["Verse Friet", "Rustieke Friet", "Snacks", "Broodjes"];
 
 const menuData = [
   {
@@ -63,16 +77,6 @@ const menuData = [
       { name: "Broodje kipburger", price: 5.55 },
     ],
   },
-  {
-    category: "Sauzen",
-    items: [
-      { name: "Mayonaise", price: 0.65 },
-      { name: "Ketchup", price: 0.65 },
-      { name: "Curry", price: 0.65 },
-      { name: "Pindasaus", price: 0.90 },
-      { name: "Speciaal", price: 0.80 },
-    ],
-  },
 ];
 
 const timeSlots = [
@@ -87,45 +91,77 @@ const timeSlots = [
   "20:00 – 20:30",
 ];
 
-const formatPrice = (price: number) =>
-  price.toFixed(2).replace(".", ",");
+const formatPrice = (price: number) => price.toFixed(2).replace(".", ",");
+
+const makeCartId = (name: string, sauces: Sauce[]) =>
+  `${name}__${sauces.map((s) => s.name).sort().join(",")}`;
+
+const itemTotal = (item: CartItem) => {
+  const sauceTotal = item.sauces.reduce((s, sc) => s + sc.price, 0);
+  return (item.price + sauceTotal) * item.quantity;
+};
 
 const Bestellen = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [step, setStep] = useState<"menu" | "timeslot" | "overview">("menu");
+  // Track pending sauce selections per item name
+  const [pendingSauces, setPendingSauces] = useState<Record<string, Sauce[]>>({});
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
+
+  const toggleSauce = (itemName: string, sauce: Sauce) => {
+    setPendingSauces((prev) => {
+      const current = prev[itemName] || [];
+      const exists = current.find((s) => s.name === sauce.name);
+      return {
+        ...prev,
+        [itemName]: exists
+          ? current.filter((s) => s.name !== sauce.name)
+          : [...current, sauce],
+      };
+    });
+  };
 
   const addToCart = (item: { name: string; price: number }, category: string) => {
+    const itemSauces = pendingSauces[item.name] || [];
+    const id = makeCartId(item.name, itemSauces);
+
     setCart((prev) => {
-      const existing = prev.find((c) => c.name === item.name);
+      const existing = prev.find((c) => c.id === id);
       if (existing) {
         return prev.map((c) =>
-          c.name === item.name ? { ...c, quantity: c.quantity + 1 } : c
+          c.id === id ? { ...c, quantity: c.quantity + 1 } : c
         );
       }
-      return [...prev, { ...item, quantity: 1, category }];
+      return [...prev, { id, ...item, quantity: 1, category, sauces: [...itemSauces] }];
     });
+
+    // Reset sauces for this item after adding
+    setPendingSauces((prev) => ({ ...prev, [item.name]: [] }));
+    setExpandedItem(null);
   };
 
-  const removeFromCart = (name: string) => {
+  const removeFromCart = (id: string) => {
     setCart((prev) => {
-      const existing = prev.find((c) => c.name === name);
+      const existing = prev.find((c) => c.id === id);
       if (existing && existing.quantity > 1) {
         return prev.map((c) =>
-          c.name === name ? { ...c, quantity: c.quantity - 1 } : c
+          c.id === id ? { ...c, quantity: c.quantity - 1 } : c
         );
       }
-      return prev.filter((c) => c.name !== name);
+      return prev.filter((c) => c.id !== id);
     });
   };
 
-  const deleteFromCart = (name: string) => {
-    setCart((prev) => prev.filter((c) => c.name !== name));
+  const deleteFromCart = (id: string) => {
+    setCart((prev) => prev.filter((c) => c.id !== id));
   };
 
   const totalItems = cart.reduce((sum, c) => sum + c.quantity, 0);
-  const totalPrice = cart.reduce((sum, c) => sum + c.price * c.quantity, 0);
-  const getQuantity = (name: string) => cart.find((c) => c.name === name)?.quantity || 0;
+  const totalPrice = cart.reduce((sum, c) => sum + itemTotal(c), 0);
+
+  const getQuantityForItem = (itemName: string) =>
+    cart.filter((c) => c.name === itemName).reduce((sum, c) => sum + c.quantity, 0);
 
   const handleOrder = () => {
     toast.success("Bestelling geplaatst!", {
@@ -135,6 +171,8 @@ const Bestellen = () => {
     setSelectedSlot(null);
     setStep("menu");
   };
+
+  const hasSauceSupport = (category: string) => categoriesWithSauces.includes(category);
 
   return (
     <div className="min-h-screen bg-background">
@@ -212,43 +250,111 @@ const Bestellen = () => {
                       <h2 className="text-2xl font-extrabold text-foreground mb-6 font-display tracking-tight">
                         {cat.category}<span className="text-primary">.</span>
                       </h2>
-                      <div className="space-y-3">
+                      <div className="space-y-1">
                         {cat.items.map((item) => {
-                          const qty = getQuantity(item.name);
+                          const qty = getQuantityForItem(item.name);
+                          const isExpanded = expandedItem === item.name;
+                          const selectedSauces = pendingSauces[item.name] || [];
+                          const showSauces = hasSauceSupport(cat.category);
+
                           return (
-                            <div
-                              key={item.name}
-                              className="flex items-center justify-between gap-3 py-2"
-                            >
-                              <div className="flex-1 min-w-0">
-                                <span className="font-body text-sm text-foreground block truncate">
-                                  {item.name}
+                            <div key={item.name}>
+                              <div className="flex items-center justify-between gap-3 py-2">
+                                <div className="flex-1 min-w-0">
+                                  <span className="font-body text-sm text-foreground block truncate">
+                                    {item.name}
+                                  </span>
+                                </div>
+                                <span className="font-body text-sm font-semibold text-primary whitespace-nowrap">
+                                  € {formatPrice(item.price)}
                                 </span>
-                              </div>
-                              <span className="font-body text-sm font-semibold text-primary whitespace-nowrap">
-                                € {formatPrice(item.price)}
-                              </span>
-                              <div className="flex items-center gap-1">
-                                {qty > 0 && (
-                                  <>
-                                    <button
-                                      onClick={() => removeFromCart(item.name)}
-                                      className="w-8 h-8 rounded-full bg-muted hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors"
-                                    >
-                                      <Minus className="w-3.5 h-3.5" />
-                                    </button>
-                                    <span className="w-7 text-center font-body text-sm font-bold text-foreground">
+                                <div className="flex items-center gap-1">
+                                  {qty > 0 && (
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-body text-xs font-bold">
                                       {qty}
                                     </span>
-                                  </>
-                                )}
-                                <button
-                                  onClick={() => addToCart(item, cat.category)}
-                                  className="w-8 h-8 rounded-full bg-primary text-primary-foreground hover:scale-110 flex items-center justify-center transition-transform"
-                                >
-                                  <Plus className="w-3.5 h-3.5" />
-                                </button>
+                                  )}
+                                  {showSauces ? (
+                                    <button
+                                      onClick={() =>
+                                        setExpandedItem(isExpanded ? null : item.name)
+                                      }
+                                      className="w-8 h-8 rounded-full bg-primary text-primary-foreground hover:scale-110 flex items-center justify-center transition-transform"
+                                    >
+                                      {isExpanded ? (
+                                        <ChevronUp className="w-3.5 h-3.5" />
+                                      ) : (
+                                        <Plus className="w-3.5 h-3.5" />
+                                      )}
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={() => addToCart(item, cat.category)}
+                                      className="w-8 h-8 rounded-full bg-primary text-primary-foreground hover:scale-110 flex items-center justify-center transition-transform"
+                                    >
+                                      <Plus className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+                                </div>
                               </div>
+
+                              {/* Sauce picker */}
+                              <AnimatePresence>
+                                {isExpanded && showSauces && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="overflow-hidden"
+                                  >
+                                    <div className="pl-2 pb-3 pt-1">
+                                      <p className="font-body text-xs text-muted-foreground mb-2">
+                                        Kies je saus (optioneel):
+                                      </p>
+                                      <div className="flex flex-wrap gap-2 mb-3">
+                                        {sauzen.map((sauce) => {
+                                          const isSelected = selectedSauces.some(
+                                            (s) => s.name === sauce.name
+                                          );
+                                          return (
+                                            <button
+                                              key={sauce.name}
+                                              onClick={() => toggleSauce(item.name, sauce)}
+                                              className={`px-3 py-1.5 rounded-full text-xs font-body font-medium transition-all border ${
+                                                isSelected
+                                                  ? "border-primary bg-primary/10 text-primary"
+                                                  : "border-border bg-background text-foreground hover:border-primary/40"
+                                              }`}
+                                            >
+                                              {sauce.name}
+                                              <span className="ml-1 text-muted-foreground">
+                                                +€{formatPrice(sauce.price)}
+                                              </span>
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                      <Button
+                                        size="sm"
+                                        onClick={() => addToCart(item, cat.category)}
+                                        className="rounded-full bg-primary text-primary-foreground font-body text-xs px-5"
+                                      >
+                                        <Plus className="w-3 h-3 mr-1" />
+                                        Toevoegen
+                                        {selectedSauces.length > 0 && (
+                                          <span className="ml-1">
+                                            (€{formatPrice(
+                                              item.price +
+                                                selectedSauces.reduce((s, sc) => s + sc.price, 0)
+                                            )})
+                                          </span>
+                                        )}
+                                      </Button>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                           );
                         })}
@@ -353,24 +459,37 @@ const Bestellen = () => {
 
                   <div className="space-y-4 mb-8">
                     {cart.map((item) => (
-                      <div key={item.name} className="flex items-center justify-between gap-3">
+                      <div key={item.id} className="flex items-center justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <span className="font-body text-sm text-foreground block truncate">
                             {item.quantity}× {item.name}
                           </span>
+                          {item.sauces.length > 0 && (
+                            <span className="font-body text-xs text-accent block">
+                              + {item.sauces.map((s) => s.name).join(", ")}
+                            </span>
+                          )}
                           <span className="font-body text-xs text-muted-foreground">
                             {item.category}
                           </span>
                         </div>
-                        <span className="font-body text-sm font-semibold text-primary whitespace-nowrap">
-                          € {formatPrice(item.price * item.quantity)}
-                        </span>
-                        <button
-                          onClick={() => deleteFromCart(item.name)}
-                          className="w-7 h-7 rounded-full hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors text-muted-foreground"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="w-7 h-7 rounded-full bg-muted hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="font-body text-sm font-semibold text-primary whitespace-nowrap w-16 text-right">
+                            € {formatPrice(itemTotal(item))}
+                          </span>
+                          <button
+                            onClick={() => deleteFromCart(item.id)}
+                            className="w-7 h-7 rounded-full hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors text-muted-foreground"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
