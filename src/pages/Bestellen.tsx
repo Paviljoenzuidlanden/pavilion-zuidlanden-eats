@@ -210,8 +210,9 @@ const Bestellen = () => {
           {/* Step indicators */}
           <div className="flex items-center justify-center gap-2 mb-12">
             {[
-              { key: "menu", label: "Kies producten" },
+              { key: "menu", label: "Producten" },
               { key: "timeslot", label: "Tijdvak" },
+              { key: "details", label: "Gegevens" },
               { key: "overview", label: "Overzicht" },
             ].map((s, i) => (
               <div key={s.key} className="flex items-center gap-2">
@@ -219,9 +220,10 @@ const Bestellen = () => {
                   onClick={() => {
                     if (s.key === "menu") setStep("menu");
                     if (s.key === "timeslot" && cart.length > 0) setStep("timeslot");
-                    if (s.key === "overview" && cart.length > 0 && selectedSlot) setStep("overview");
+                    if (s.key === "details" && cart.length > 0 && selectedSlot) setStep("details");
+                    if (s.key === "overview" && cart.length > 0 && selectedSlot && isDetailsValid) setStep("overview");
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-body font-semibold uppercase tracking-wider transition-all ${
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-body font-semibold uppercase tracking-wider transition-all ${
                     step === s.key
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -232,7 +234,7 @@ const Bestellen = () => {
                   </span>
                   <span className="hidden sm:inline">{s.label}</span>
                 </button>
-                {i < 2 && <div className="w-6 h-px bg-border" />}
+                {i < 3 && <div className="w-4 sm:w-6 h-px bg-border" />}
               </div>
             ))}
           </div>
