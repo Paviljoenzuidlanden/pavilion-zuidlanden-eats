@@ -166,12 +166,15 @@ const Bestellen = () => {
   const getQuantityForItem = (itemName: string) =>
     cart.filter((c) => c.name === itemName).reduce((sum, c) => sum + c.quantity, 0);
 
+  const isDetailsValid = customerInfo.name.trim() !== "" && customerInfo.address.trim() !== "" && customerInfo.phone.trim() !== "";
+
   const handleOrder = () => {
     toast.success("Bestelling geplaatst!", {
       description: `Ophalen om ${selectedSlot}. Totaal: € ${formatPrice(totalPrice)}`,
     });
     setCart([]);
     setSelectedSlot(null);
+    setCustomerInfo({ name: "", address: "", phone: "" });
     setStep("menu");
   };
 
