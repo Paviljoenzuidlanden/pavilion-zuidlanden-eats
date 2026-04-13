@@ -106,7 +106,8 @@ const itemTotal = (item: CartItem) => {
 const Bestellen = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [step, setStep] = useState<"menu" | "timeslot" | "overview">("menu");
+  const [step, setStep] = useState<"menu" | "timeslot" | "details" | "overview">("menu");
+  const [customerInfo, setCustomerInfo] = useState({ name: "", address: "", phone: "" });
   // Track pending sauce selections per item name
   const [pendingSauces, setPendingSauces] = useState<Record<string, Sauce[]>>({});
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
