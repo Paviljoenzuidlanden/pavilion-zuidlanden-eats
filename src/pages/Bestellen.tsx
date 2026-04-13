@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2, ChevronDown, ChevronUp, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
