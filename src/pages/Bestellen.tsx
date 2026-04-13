@@ -589,6 +589,20 @@ const Bestellen = () => {
                       </span>
                       <span className="font-semibold text-foreground">{selectedSlot}</span>
                     </div>
+                    <div className="flex items-center justify-between font-body text-sm">
+                      <span className="text-muted-foreground flex items-center gap-2">
+                        <User className="w-4 h-4" /> Naam
+                      </span>
+                      <span className="font-semibold text-foreground">{customerInfo.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between font-body text-sm">
+                      <span className="text-muted-foreground">Adres</span>
+                      <span className="font-semibold text-foreground">{customerInfo.address}</span>
+                    </div>
+                    <div className="flex items-center justify-between font-body text-sm">
+                      <span className="text-muted-foreground">Telefoon</span>
+                      <span className="font-semibold text-foreground">{customerInfo.phone}</span>
+                    </div>
                     <div className="flex items-center justify-between font-body text-lg font-bold">
                       <span className="text-foreground">Totaal</span>
                       <span className="text-primary">€ {formatPrice(totalPrice)}</span>
@@ -599,7 +613,7 @@ const Bestellen = () => {
                 <div className="flex justify-between gap-4">
                   <Button
                     variant="outline"
-                    onClick={() => setStep("timeslot")}
+                    onClick={() => setStep("details")}
                     className="rounded-full px-6 font-body"
                   >
                     ← Terug
