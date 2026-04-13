@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2, ChevronDown, ChevronUp, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 type Sauce = { name: string; price: number };
@@ -104,7 +106,8 @@ const itemTotal = (item: CartItem) => {
 const Bestellen = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [step, setStep] = useState<"menu" | "timeslot" | "overview">("menu");
+  const [step, setStep] = useState<"menu" | "timeslot" | "details" | "overview">("menu");
+  const [customerInfo, setCustomerInfo] = useState({ name: "", address: "", phone: "" });
   // Track pending sauce selections per item name
   const [pendingSauces, setPendingSauces] = useState<Record<string, Sauce[]>>({});
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
@@ -163,12 +166,15 @@ const Bestellen = () => {
   const getQuantityForItem = (itemName: string) =>
     cart.filter((c) => c.name === itemName).reduce((sum, c) => sum + c.quantity, 0);
 
+  const isDetailsValid = customerInfo.name.trim() !== "" && customerInfo.address.trim() !== "" && customerInfo.phone.trim() !== "";
+
   const handleOrder = () => {
     toast.success("Bestelling geplaatst!", {
       description: `Ophalen om ${selectedSlot}. Totaal: € ${formatPrice(totalPrice)}`,
     });
     setCart([]);
     setSelectedSlot(null);
+    setCustomerInfo({ name: "", address: "", phone: "" });
     setStep("menu");
   };
 
@@ -204,8 +210,9 @@ const Bestellen = () => {
           {/* Step indicators */}
           <div className="flex items-center justify-center gap-2 mb-12">
             {[
-              { key: "menu", label: "Kies producten" },
+              { key: "menu", label: "Producten" },
               { key: "timeslot", label: "Tijdvak" },
+              { key: "details", label: "Gegevens" },
               { key: "overview", label: "Overzicht" },
             ].map((s, i) => (
               <div key={s.key} className="flex items-center gap-2">
@@ -213,9 +220,10 @@ const Bestellen = () => {
                   onClick={() => {
                     if (s.key === "menu") setStep("menu");
                     if (s.key === "timeslot" && cart.length > 0) setStep("timeslot");
-                    if (s.key === "overview" && cart.length > 0 && selectedSlot) setStep("overview");
+                    if (s.key === "details" && cart.length > 0 && selectedSlot) setStep("details");
+                    if (s.key === "overview" && cart.length > 0 && selectedSlot && isDetailsValid) setStep("overview");
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-body font-semibold uppercase tracking-wider transition-all ${
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs font-body font-semibold uppercase tracking-wider transition-all ${
                     step === s.key
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -226,7 +234,7 @@ const Bestellen = () => {
                   </span>
                   <span className="hidden sm:inline">{s.label}</span>
                 </button>
-                {i < 2 && <div className="w-6 h-px bg-border" />}
+                {i < 3 && <div className="w-4 sm:w-6 h-px bg-border" />}
               </div>
             ))}
           </div>
@@ -433,7 +441,7 @@ const Bestellen = () => {
                     ← Terug
                   </Button>
                   <Button
-                    onClick={() => setStep("overview")}
+                    onClick={() => setStep("details")}
                     disabled={!selectedSlot}
                     className="rounded-full px-8 font-body bg-primary text-primary-foreground"
                   >
@@ -443,7 +451,87 @@ const Bestellen = () => {
               </motion.div>
             )}
 
-            {/* STEP 3: Overview */}
+            {/* STEP 3: Customer details */}
+            {step === "details" && (
+              <motion.div
+                key="details"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="bg-card rounded-3xl p-5 sm:p-8 border border-border">
+                  <div className="flex items-center gap-3 mb-6">
+                    <User className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-extrabold text-foreground font-display tracking-tight">
+                      Jouw gegevens<span className="text-primary">.</span>
+                    </h2>
+                  </div>
+                  <p className="text-muted-foreground font-body text-sm mb-8">
+                    Vul je gegevens in zodat we je bestelling kunnen klaarmaken.
+                  </p>
+
+                  <div className="space-y-5 max-w-md">
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="font-body text-sm font-semibold text-foreground">
+                        Naam
+                      </Label>
+                      <Input
+                        id="name"
+                        placeholder="Je volledige naam"
+                        value={customerInfo.name}
+                        onChange={(e) => setCustomerInfo((prev) => ({ ...prev, name: e.target.value }))}
+                        className="rounded-xl font-body"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="address" className="font-body text-sm font-semibold text-foreground">
+                        Adres
+                      </Label>
+                      <Input
+                        id="address"
+                        placeholder="Straat, huisnummer, postcode en plaats"
+                        value={customerInfo.address}
+                        onChange={(e) => setCustomerInfo((prev) => ({ ...prev, address: e.target.value }))}
+                        className="rounded-xl font-body"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="font-body text-sm font-semibold text-foreground">
+                        Telefoonnummer
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="06 - 12345678"
+                        value={customerInfo.phone}
+                        onChange={(e) => setCustomerInfo((prev) => ({ ...prev, phone: e.target.value }))}
+                        className="rounded-xl font-body"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-8 gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setStep("timeslot")}
+                    className="rounded-full px-6 font-body"
+                  >
+                    ← Terug
+                  </Button>
+                  <Button
+                    onClick={() => setStep("overview")}
+                    disabled={!isDetailsValid}
+                    className="rounded-full px-8 font-body bg-primary text-primary-foreground"
+                  >
+                    Verder →
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 4: Overview */}
             {step === "overview" && (
               <motion.div
                 key="overview"
@@ -501,6 +589,20 @@ const Bestellen = () => {
                       </span>
                       <span className="font-semibold text-foreground">{selectedSlot}</span>
                     </div>
+                    <div className="flex items-center justify-between font-body text-sm">
+                      <span className="text-muted-foreground flex items-center gap-2">
+                        <User className="w-4 h-4" /> Naam
+                      </span>
+                      <span className="font-semibold text-foreground">{customerInfo.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between font-body text-sm">
+                      <span className="text-muted-foreground">Adres</span>
+                      <span className="font-semibold text-foreground">{customerInfo.address}</span>
+                    </div>
+                    <div className="flex items-center justify-between font-body text-sm">
+                      <span className="text-muted-foreground">Telefoon</span>
+                      <span className="font-semibold text-foreground">{customerInfo.phone}</span>
+                    </div>
                     <div className="flex items-center justify-between font-body text-lg font-bold">
                       <span className="text-foreground">Totaal</span>
                       <span className="text-primary">€ {formatPrice(totalPrice)}</span>
@@ -511,7 +613,7 @@ const Bestellen = () => {
                 <div className="flex justify-between gap-4">
                   <Button
                     variant="outline"
-                    onClick={() => setStep("timeslot")}
+                    onClick={() => setStep("details")}
                     className="rounded-full px-6 font-body"
                   >
                     ← Terug
