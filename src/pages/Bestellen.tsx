@@ -441,7 +441,7 @@ const Bestellen = () => {
                     ← Terug
                   </Button>
                   <Button
-                    onClick={() => setStep("overview")}
+                    onClick={() => setStep("details")}
                     disabled={!selectedSlot}
                     className="rounded-full px-8 font-body bg-primary text-primary-foreground"
                   >
@@ -451,7 +451,87 @@ const Bestellen = () => {
               </motion.div>
             )}
 
-            {/* STEP 3: Overview */}
+            {/* STEP 3: Customer details */}
+            {step === "details" && (
+              <motion.div
+                key="details"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="bg-card rounded-3xl p-5 sm:p-8 border border-border">
+                  <div className="flex items-center gap-3 mb-6">
+                    <User className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-extrabold text-foreground font-display tracking-tight">
+                      Jouw gegevens<span className="text-primary">.</span>
+                    </h2>
+                  </div>
+                  <p className="text-muted-foreground font-body text-sm mb-8">
+                    Vul je gegevens in zodat we je bestelling kunnen klaarmaken.
+                  </p>
+
+                  <div className="space-y-5 max-w-md">
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="font-body text-sm font-semibold text-foreground">
+                        Naam
+                      </Label>
+                      <Input
+                        id="name"
+                        placeholder="Je volledige naam"
+                        value={customerInfo.name}
+                        onChange={(e) => setCustomerInfo((prev) => ({ ...prev, name: e.target.value }))}
+                        className="rounded-xl font-body"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="address" className="font-body text-sm font-semibold text-foreground">
+                        Adres
+                      </Label>
+                      <Input
+                        id="address"
+                        placeholder="Straat, huisnummer, postcode en plaats"
+                        value={customerInfo.address}
+                        onChange={(e) => setCustomerInfo((prev) => ({ ...prev, address: e.target.value }))}
+                        className="rounded-xl font-body"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="font-body text-sm font-semibold text-foreground">
+                        Telefoonnummer
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="06 - 12345678"
+                        value={customerInfo.phone}
+                        onChange={(e) => setCustomerInfo((prev) => ({ ...prev, phone: e.target.value }))}
+                        className="rounded-xl font-body"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-8 gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setStep("timeslot")}
+                    className="rounded-full px-6 font-body"
+                  >
+                    ← Terug
+                  </Button>
+                  <Button
+                    onClick={() => setStep("overview")}
+                    disabled={!isDetailsValid}
+                    className="rounded-full px-8 font-body bg-primary text-primary-foreground"
+                  >
+                    Verder →
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* STEP 4: Overview */}
             {step === "overview" && (
               <motion.div
                 key="overview"
