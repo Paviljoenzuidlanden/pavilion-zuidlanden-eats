@@ -382,14 +382,13 @@ const Bestellen = () => {
                       className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:w-auto z-40"
                     >
                       <Button
-                        onClick={() => setStep("timeslot")}
+                        onClick={() => setCartOpen(true)}
                         className="w-full sm:w-auto bg-primary text-primary-foreground rounded-full px-8 py-6 font-body font-bold text-sm shadow-2xl hover:scale-105 transition-transform flex items-center gap-3"
                       >
                         <ShoppingCart className="w-5 h-5" />
                         <span>{totalItems} items</span>
                         <span className="w-px h-4 bg-primary-foreground/30" />
                         <span>€ {formatPrice(totalPrice)}</span>
-                        <span className="ml-1">→</span>
                       </Button>
                     </motion.div>
                   )}
