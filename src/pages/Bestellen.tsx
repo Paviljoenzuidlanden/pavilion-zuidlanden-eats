@@ -634,6 +634,121 @@ const Bestellen = () => {
           </AnimatePresence>
         </div>
       </div>
+      {/* Floating cart button on non-menu steps */}
+      {step !== "menu" && cart.length > 0 && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="fixed bottom-6 right-4 sm:right-6 z-40"
+        >
+          <Button
+            onClick={() => setCartOpen(true)}
+            className="bg-primary text-primary-foreground rounded-full w-14 h-14 shadow-2xl hover:scale-110 transition-transform flex items-center justify-center relative"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-foreground text-background text-[10px] font-bold flex items-center justify-center">
+              {totalItems}
+            </span>
+          </Button>
+        </motion.div>
+      )}
+
+      {/* Cart drawer */}
+      <AnimatePresence>
+        {cartOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-50"
+              onClick={() => setCartOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-full sm:w-96 bg-card border-l border-border z-50 flex flex-col"
+            >
+              <div className="flex items-center justify-between p-5 border-b border-border">
+                <h2 className="font-display text-xl font-extrabold text-foreground">
+                  Winkelmand<span className="text-primary">.</span>
+                </h2>
+                <button onClick={() => setCartOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-5 space-y-3">
+                {cart.length === 0 ? (
+                  <p className="text-muted-foreground font-body text-sm text-center py-8">Je winkelmand is leeg</p>
+                ) : (
+                  cart.map((item) => (
+                    <div key={item.id} className="bg-background rounded-2xl p-4 border border-border">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-body text-sm font-semibold text-foreground truncate">{item.name}</p>
+                          {item.sauces.length > 0 && (
+                            <p className="font-body text-xs text-muted-foreground mt-0.5">
+                              + {item.sauces.map((s) => s.name).join(", ")}
+                            </p>
+                          )}
+                        </div>
+                        <span className="font-body text-sm font-bold text-primary whitespace-nowrap">
+                          € {formatPrice(itemTotal(item))}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mt-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="w-7 h-7 rounded-full bg-muted text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex items-center justify-center transition-colors"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="font-body text-sm font-bold text-foreground w-6 text-center">{item.quantity}</span>
+                          <button
+                            onClick={() => addToCart({ name: item.name, price: item.price }, item.category)}
+                            className="w-7 h-7 rounded-full bg-primary/10 text-primary hover:bg-primary/20 flex items-center justify-center transition-colors"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <button
+                          onClick={() => deleteFromCart(item.id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {cart.length > 0 && (
+                <div className="p-5 border-t border-border space-y-3">
+                  <div className="flex items-center justify-between font-body">
+                    <span className="text-sm text-muted-foreground">Totaal</span>
+                    <span className="text-lg font-extrabold text-foreground">€ {formatPrice(totalPrice)}</span>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setCartOpen(false);
+                      if (step === "menu") setStep("timeslot");
+                    }}
+                    className="w-full bg-primary text-primary-foreground rounded-full py-6 font-body font-bold text-sm"
+                  >
+                    {step === "menu" ? "Verder naar tijdvak →" : "Sluiten"}
+                  </Button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       <FooterSection />
     </div>
   );
