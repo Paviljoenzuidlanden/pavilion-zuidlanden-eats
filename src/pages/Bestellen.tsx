@@ -111,6 +111,7 @@ const Bestellen = () => {
   // Track pending sauce selections per item name
   const [pendingSauces, setPendingSauces] = useState<Record<string, Sauce[]>>({});
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggleSauce = (itemName: string, sauce: Sauce) => {
     setPendingSauces((prev) => {
