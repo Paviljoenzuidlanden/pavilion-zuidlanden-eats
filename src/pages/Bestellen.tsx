@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Plus, Minus, ShoppingCart, Clock, Trash2, ChevronDown, ChevronUp, User, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+const MAX_PER_SLOT = 2;
 
 type Sauce = { name: string; price: number };
 
@@ -110,6 +113,27 @@ const Bestellen = () => {
   const [pendingSauces, setPendingSauces] = useState<Record<string, Sauce[]>>({});
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
+  const [slotCounts, setSlotCounts] = useState<Record<string, number>>({});
+  const [submitting, setSubmitting] = useState(false);
+
+  const loadSlotCounts = useCallback(async () => {
+    const { data, error } = await supabase.rpc("get_slot_counts");
+    if (error) {
+      console.error("Failed to load slot counts:", error);
+      return;
+    }
+    const map: Record<string, number> = {};
+    (data || []).forEach((row: { time_slot: string; order_count: number }) => {
+      map[row.time_slot] = Number(row.order_count);
+    });
+    setSlotCounts(map);
+  }, []);
+
+  useEffect(() => {
+    loadSlotCounts();
+  }, [loadSlotCounts]);
+
+  const isSlotFull = (slot: string) => (slotCounts[slot] || 0) >= MAX_PER_SLOT;
 
   const toggleSauce = (itemName: string, sauce: Sauce) => {
     setPendingSauces((prev) => {
@@ -167,7 +191,33 @@ const Bestellen = () => {
 
   const isDetailsValid = customerInfo.name.trim() !== "" && customerInfo.address.trim() !== "" && customerInfo.phone.trim() !== "";
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
+    if (!selectedSlot) return;
+    setSubmitting(true);
+    const { data, error } = await supabase.rpc("place_order", {
+      _name: customerInfo.name,
+      _address: customerInfo.address,
+      _phone: customerInfo.phone,
+      _time_slot: selectedSlot,
+      _items: JSON.parse(JSON.stringify(cart)),
+      _total_price: totalPrice,
+    });
+    setSubmitting(false);
+
+    if (error) {
+      if (error.message?.includes("TIME_SLOT_FULL")) {
+        toast.error("Dit tijdvak zit vol", {
+          description: "Kies een ander tijdvak en probeer opnieuw.",
+        });
+        await loadSlotCounts();
+        setSelectedSlot(null);
+        setStep("timeslot");
+      } else {
+        toast.error("Er ging iets mis", { description: error.message });
+      }
+      return;
+    }
+
     toast.success("Bestelling geplaatst!", {
       description: `Ophalen om ${selectedSlot}. Totaal: € ${formatPrice(totalPrice)}`,
     });
@@ -175,6 +225,7 @@ const Bestellen = () => {
     setSelectedSlot(null);
     setCustomerInfo({ name: "", address: "", phone: "" });
     setStep("menu");
+    await loadSlotCounts();
   };
 
   const hasSauceSupport = (category: string) => categoriesWithSauces.includes(category);
@@ -414,19 +465,29 @@ const Bestellen = () => {
                     Kies een tijdvak waarin je je bestelling wilt ophalen.
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot}
-                        onClick={() => setSelectedSlot(slot)}
-                        className={`px-4 py-4 rounded-2xl border-2 font-body font-semibold text-sm transition-all ${
-                          selectedSlot === slot
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-background text-foreground hover:border-primary/40"
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
+                    {timeSlots.map((slot) => {
+                      const full = isSlotFull(slot);
+                      const remaining = MAX_PER_SLOT - (slotCounts[slot] || 0);
+                      return (
+                        <button
+                          key={slot}
+                          onClick={() => !full && setSelectedSlot(slot)}
+                          disabled={full}
+                          className={`px-4 py-4 rounded-2xl border-2 font-body font-semibold text-sm transition-all flex flex-col items-center gap-1 ${
+                            full
+                              ? "border-border bg-muted/40 text-muted-foreground cursor-not-allowed opacity-60"
+                              : selectedSlot === slot
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border bg-background text-foreground hover:border-primary/40"
+                          }`}
+                        >
+                          <span>{slot}</span>
+                          <span className={`text-[10px] font-normal ${full ? "text-destructive" : "text-muted-foreground"}`}>
+                            {full ? "Vol" : `Nog ${remaining} plek${remaining === 1 ? "" : "ken"}`}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -618,9 +679,10 @@ const Bestellen = () => {
                   </Button>
                   <Button
                     onClick={handleOrder}
-                    className="rounded-full px-8 py-6 font-body font-bold bg-primary text-primary-foreground text-base hover:scale-105 transition-transform"
+                    disabled={submitting}
+                    className="rounded-full px-8 py-6 font-body font-bold bg-primary text-primary-foreground text-base hover:scale-105 transition-transform disabled:opacity-60"
                   >
-                    Bestelling plaatsen
+                    {submitting ? "Bezig..." : "Bestelling plaatsen"}
                   </Button>
                 </div>
 
