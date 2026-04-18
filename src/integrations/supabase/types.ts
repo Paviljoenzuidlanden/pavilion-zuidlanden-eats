@@ -14,13 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          created_at: string
+          customer_address: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          time_slot: string
+          total_price: number
+        }
+        Insert: {
+          created_at?: string
+          customer_address: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          items: Json
+          time_slot: string
+          total_price: number
+        }
+        Update: {
+          created_at?: string
+          customer_address?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          items?: Json
+          time_slot?: string
+          total_price?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_slot_counts: {
+        Args: never
+        Returns: {
+          order_count: number
+          time_slot: string
+        }[]
+      }
+      place_order: {
+        Args: {
+          _address: string
+          _items: Json
+          _name: string
+          _phone: string
+          _time_slot: string
+          _total_price: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
