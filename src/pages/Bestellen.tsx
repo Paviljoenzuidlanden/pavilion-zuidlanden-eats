@@ -679,9 +679,10 @@ const Bestellen = () => {
                   </Button>
                   <Button
                     onClick={handleOrder}
-                    className="rounded-full px-8 py-6 font-body font-bold bg-primary text-primary-foreground text-base hover:scale-105 transition-transform"
+                    disabled={submitting}
+                    className="rounded-full px-8 py-6 font-body font-bold bg-primary text-primary-foreground text-base hover:scale-105 transition-transform disabled:opacity-60"
                   >
-                    Bestelling plaatsen
+                    {submitting ? "Bezig..." : "Bestelling plaatsen"}
                   </Button>
                 </div>
 
