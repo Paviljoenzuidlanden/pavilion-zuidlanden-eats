@@ -199,7 +199,7 @@ const Bestellen = () => {
       _address: customerInfo.address,
       _phone: customerInfo.phone,
       _time_slot: selectedSlot,
-      _items: cart as unknown as object,
+      _items: JSON.parse(JSON.stringify(cart)),
       _total_price: totalPrice,
     });
     setSubmitting(false);
