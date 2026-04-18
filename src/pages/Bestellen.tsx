@@ -113,6 +113,27 @@ const Bestellen = () => {
   const [pendingSauces, setPendingSauces] = useState<Record<string, Sauce[]>>({});
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
+  const [slotCounts, setSlotCounts] = useState<Record<string, number>>({});
+  const [submitting, setSubmitting] = useState(false);
+
+  const loadSlotCounts = useCallback(async () => {
+    const { data, error } = await supabase.rpc("get_slot_counts");
+    if (error) {
+      console.error("Failed to load slot counts:", error);
+      return;
+    }
+    const map: Record<string, number> = {};
+    (data || []).forEach((row: { time_slot: string; order_count: number }) => {
+      map[row.time_slot] = Number(row.order_count);
+    });
+    setSlotCounts(map);
+  }, []);
+
+  useEffect(() => {
+    loadSlotCounts();
+  }, [loadSlotCounts]);
+
+  const isSlotFull = (slot: string) => (slotCounts[slot] || 0) >= MAX_PER_SLOT;
 
   const toggleSauce = (itemName: string, sauce: Sauce) => {
     setPendingSauces((prev) => {
