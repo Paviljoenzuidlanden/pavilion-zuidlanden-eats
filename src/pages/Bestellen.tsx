@@ -191,7 +191,33 @@ const Bestellen = () => {
 
   const isDetailsValid = customerInfo.name.trim() !== "" && customerInfo.address.trim() !== "" && customerInfo.phone.trim() !== "";
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
+    if (!selectedSlot) return;
+    setSubmitting(true);
+    const { data, error } = await supabase.rpc("place_order", {
+      _name: customerInfo.name,
+      _address: customerInfo.address,
+      _phone: customerInfo.phone,
+      _time_slot: selectedSlot,
+      _items: cart as unknown as object,
+      _total_price: totalPrice,
+    });
+    setSubmitting(false);
+
+    if (error) {
+      if (error.message?.includes("TIME_SLOT_FULL")) {
+        toast.error("Dit tijdvak zit vol", {
+          description: "Kies een ander tijdvak en probeer opnieuw.",
+        });
+        await loadSlotCounts();
+        setSelectedSlot(null);
+        setStep("timeslot");
+      } else {
+        toast.error("Er ging iets mis", { description: error.message });
+      }
+      return;
+    }
+
     toast.success("Bestelling geplaatst!", {
       description: `Ophalen om ${selectedSlot}. Totaal: € ${formatPrice(totalPrice)}`,
     });
@@ -199,6 +225,7 @@ const Bestellen = () => {
     setSelectedSlot(null);
     setCustomerInfo({ name: "", address: "", phone: "" });
     setStep("menu");
+    await loadSlotCounts();
   };
 
   const hasSauceSupport = (category: string) => categoriesWithSauces.includes(category);
