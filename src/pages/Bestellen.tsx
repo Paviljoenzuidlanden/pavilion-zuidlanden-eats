@@ -465,19 +465,29 @@ const Bestellen = () => {
                     Kies een tijdvak waarin je je bestelling wilt ophalen.
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot}
-                        onClick={() => setSelectedSlot(slot)}
-                        className={`px-4 py-4 rounded-2xl border-2 font-body font-semibold text-sm transition-all ${
-                          selectedSlot === slot
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-background text-foreground hover:border-primary/40"
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
+                    {timeSlots.map((slot) => {
+                      const full = isSlotFull(slot);
+                      const remaining = MAX_PER_SLOT - (slotCounts[slot] || 0);
+                      return (
+                        <button
+                          key={slot}
+                          onClick={() => !full && setSelectedSlot(slot)}
+                          disabled={full}
+                          className={`px-4 py-4 rounded-2xl border-2 font-body font-semibold text-sm transition-all flex flex-col items-center gap-1 ${
+                            full
+                              ? "border-border bg-muted/40 text-muted-foreground cursor-not-allowed opacity-60"
+                              : selectedSlot === slot
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border bg-background text-foreground hover:border-primary/40"
+                          }`}
+                        >
+                          <span>{slot}</span>
+                          <span className={`text-[10px] font-normal ${full ? "text-destructive" : "text-muted-foreground"}`}>
+                            {full ? "Vol" : `Nog ${remaining} plek${remaining === 1 ? "" : "ken"}`}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
