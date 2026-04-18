@@ -467,7 +467,6 @@ const Bestellen = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {timeSlots.map((slot) => {
                       const full = isSlotFull(slot);
-                      const remaining = MAX_PER_SLOT - (slotCounts[slot] || 0);
                       return (
                         <button
                           key={slot}
@@ -482,9 +481,9 @@ const Bestellen = () => {
                           }`}
                         >
                           <span>{slot}</span>
-                          <span className={`text-[10px] font-normal ${full ? "text-destructive" : "text-muted-foreground"}`}>
-                            {full ? "Vol" : `Nog ${remaining} plek${remaining === 1 ? "" : "ken"}`}
-                          </span>
+                          {full && (
+                            <span className="text-[10px] font-normal text-destructive">Vol</span>
+                          )}
                         </button>
                       );
                     })}
