@@ -81,17 +81,15 @@ const menuData = [
   },
 ];
 
-const timeSlots = [
-  "16:00 – 16:30",
-  "16:30 – 17:00",
-  "17:00 – 17:30",
-  "17:30 – 18:00",
-  "18:00 – 18:30",
-  "18:30 – 19:00",
-  "19:00 – 19:30",
-  "19:30 – 20:00",
-  "20:00 – 20:30",
-];
+const timeSlots = (() => {
+  const slots: string[] = [];
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  for (let mins = 16 * 60; mins < 20 * 60 + 30; mins += 15) {
+    const end = mins + 15;
+    slots.push(`${pad(Math.floor(mins / 60))}:${pad(mins % 60)} – ${pad(Math.floor(end / 60))}:${pad(end % 60)}`);
+  }
+  return slots;
+})();
 
 const formatPrice = (price: number) => price.toFixed(2).replace(".", ",");
 
