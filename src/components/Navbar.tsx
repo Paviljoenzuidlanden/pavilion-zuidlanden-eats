@@ -53,8 +53,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
         <Link to="/" className="flex items-center gap-2.5">
           <img src={logo} alt="Paviljoen Zuidlanden" className="h-11 w-auto object-contain" />
-          <span className="text-2xl font-display font-semibold text-foreground tracking-wide hidden sm:inline">
-            Paviljoen<span className="text-primary">.</span>
+          <span className="hidden sm:flex flex-col leading-none">
+            <span className="text-2xl font-display font-semibold text-foreground tracking-wide">
+              Paviljoen<span className="text-primary">.</span>
+            </span>
+            <span className="text-[10px] font-body font-medium tracking-[0.3em] uppercase text-muted-foreground mt-1">
+              Zuidlanden
+            </span>
           </span>
         </Link>
         <div className="hidden md:flex items-center gap-10">
