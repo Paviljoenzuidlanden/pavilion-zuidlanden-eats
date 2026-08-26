@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-fries.jpg";
 import logo from "@/assets/logo-terracotta.png";
+import Wordmark from "@/components/Wordmark";
+import WaveDivider from "@/components/WaveDivider";
 
 const HeroSection = () => {
   return (
