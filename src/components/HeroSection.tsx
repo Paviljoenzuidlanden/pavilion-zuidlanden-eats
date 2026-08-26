@@ -25,20 +25,21 @@ const HeroSection = () => {
             className="w-full h-full object-cover" />
         </motion.div>
         
+        <motion.h1
+          className="sr-only"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}>
+          Paviljoen Zuidlanden — de plek om samen te komen
+        </motion.h1>
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}>
-          
-          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-secondary-foreground mb-1 font-display leading-none tracking-tight uppercase text-left sm:text-center">
-            Paviljoen<span className="text-primary">.</span>
-          </h1>
-          <p className="text-right text-xs sm:text-sm md:text-base font-display font-bold tracking-[0.3em] uppercase text-secondary-foreground/40 mb-6">
-            Zuidlanden
-          </p>
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="mb-6">
+          <Wordmark size="lg" tone="light" tagline />
         </motion.div>
         <motion.p
-          className="text-lg md:text-2xl text-secondary-foreground/60 font-body font-light tracking-wide mb-4 max-w-2xl mx-auto"
+          className="text-base md:text-xl text-secondary-foreground/60 font-body font-light tracking-wide mb-4 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}>
