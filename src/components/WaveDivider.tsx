@@ -2,10 +2,12 @@ interface WaveDividerProps {
   /** Tailwind text-* color class that fills the wave (defaults to primary). */
   className?: string;
   flip?: boolean;
+  /** Colour of the thin echo line above the wave. */
+  stroke?: string;
 }
 
 /** Signature brand wave with a thin echo line, as used on the banners. */
-const WaveDivider = ({ className = "text-primary", flip = false }: WaveDividerProps) => (
+const WaveDivider = ({ className = "text-primary", flip = false, stroke = "hsl(var(--background))" }: WaveDividerProps) => (
   <div className={`w-full leading-none ${flip ? "rotate-180" : ""} ${className}`} aria-hidden="true">
     <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-12 sm:h-20 block">
       <path
