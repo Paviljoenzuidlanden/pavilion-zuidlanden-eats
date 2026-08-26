@@ -6,7 +6,9 @@ import WaveDivider from "@/components/WaveDivider";
 const FooterSection = () => {
   return (
     <footer id="contact" className="bg-secondary text-secondary-foreground">
-      <WaveDivider className="text-secondary" stroke="hsl(var(--primary))" />
+      <div className="bg-background">
+        <WaveDivider className="text-secondary" stroke="hsl(var(--primary))" />
+      </div>
       <div className="pb-24 pt-4 px-6">
       <motion.div
         className="max-w-7xl mx-auto"
@@ -77,6 +79,7 @@ const FooterSection = () => {
           </span>
         </div>
       </motion.div>
+      </div>
     </footer>
   );
 };
