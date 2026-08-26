@@ -75,6 +75,11 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
+      {/* Brand wave into the next section */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
+        <WaveDivider className="text-background" stroke="hsl(var(--primary))" />
+      </div>
+
       {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"

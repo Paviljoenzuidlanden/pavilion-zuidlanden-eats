@@ -17,7 +17,7 @@ const WaveDivider = ({ className = "text-primary", flip = false, stroke = "hsl(v
       <path
         d="M0,44 C240,-10 420,90 720,54 C1020,18 1200,-16 1440,24"
         fill="none"
-        stroke="hsl(var(--background))"
+        stroke={stroke}
         strokeWidth="3"
         opacity="0.8"
       />
