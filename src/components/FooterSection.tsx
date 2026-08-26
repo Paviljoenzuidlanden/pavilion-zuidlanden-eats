@@ -28,7 +28,7 @@ const FooterSection = () => {
             <h3 className="text-xs font-body font-semibold tracking-[0.3em] uppercase text-primary mb-6">Locatie</h3>
             <div className="flex items-start gap-3 text-secondary-foreground/70 font-body">
               <MapPin className="w-4 h-4 mt-1 shrink-0 text-primary" />
-              <span className="text-sm leading-relaxed">It Boumantsje<br />8941 CR Leeuwarden</span>
+              <span className="text-sm leading-relaxed">It Boumantsje 4<br />8941 CR Leeuwarden</span>
             </div>
           </div>
           <div>
@@ -38,8 +38,8 @@ const FooterSection = () => {
               <div className="text-sm leading-relaxed">
                 <p>Do: 16:00 – 21:00</p>
                 <p>Vr: 12:00 – 23:00</p>
-                <p>Za: 14:00 – 23:00</p>
-                <p>Zo: 14:00 – 21:00</p>
+                <p>Za: 12:00 – 23:00</p>
+                <p>Zo: 12:00 – 21:00</p>
               </div>
             </div>
           </div>
