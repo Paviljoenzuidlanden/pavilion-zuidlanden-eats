@@ -1,10 +1,15 @@
 import { MapPin, Clock, Phone, Instagram, ArrowUpRight } from "lucide-react";
-import logoHorizontal from "@/assets/logo-horizontal.png";
 import { motion } from "framer-motion";
+import Wordmark from "@/components/Wordmark";
+import WaveDivider from "@/components/WaveDivider";
 
 const FooterSection = () => {
   return (
-    <footer id="contact" className="py-24 px-6 bg-secondary text-secondary-foreground">
+    <footer id="contact" className="bg-secondary text-secondary-foreground">
+      <div className="bg-background">
+        <WaveDivider className="text-secondary" stroke="hsl(var(--primary))" />
+      </div>
+      <div className="pb-24 pt-4 px-6">
       <motion.div
         className="max-w-7xl mx-auto"
         initial={{ opacity: 0, y: 30 }}
@@ -67,13 +72,14 @@ const FooterSection = () => {
           </div>
         </div>
 
-        <div className="mt-20 pt-8 border-t border-secondary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <img src={logoHorizontal} alt="Paviljoen Zuidlanden" className="h-8 invert" />
+        <div className="mt-20 pt-10 border-t border-secondary-foreground/10 flex flex-col items-center gap-6">
+          <Wordmark size="sm" tone="light" tagline />
           <span className="text-secondary-foreground/30 font-body text-xs tracking-widest uppercase">
-            © 2026 Paviljoen Zuidlanden
+            © 2026 Paviljoen Zuidlanden · paviljoenzuidlanden.nl
           </span>
         </div>
       </motion.div>
+      </div>
     </footer>
   );
 };

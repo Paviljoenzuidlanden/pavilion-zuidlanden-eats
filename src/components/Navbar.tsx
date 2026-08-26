@@ -54,11 +54,15 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-2.5">
           <img src={logo} alt="Paviljoen Zuidlanden" className="h-11 w-auto object-contain" />
           <span className="hidden sm:flex flex-col leading-none">
-            <span className="text-2xl font-display font-semibold text-foreground tracking-wide">
-              Paviljoen<span className="text-primary">.</span>
+            <span className="text-xl font-display font-medium uppercase text-primary tracking-[0.22em]">
+              Paviljoen
             </span>
-            <span className="text-[10px] font-body font-medium tracking-[0.3em] uppercase text-muted-foreground mt-1">
-              Zuidlanden
+            <span className="mt-1.5 flex items-center gap-2">
+              <span className="h-px w-3 bg-primary/50" />
+              <span className="text-[9px] font-display uppercase tracking-[0.4em] text-primary/80">
+                Zuidlanden
+              </span>
+              <span className="h-px w-3 bg-primary/50" />
             </span>
           </span>
         </Link>

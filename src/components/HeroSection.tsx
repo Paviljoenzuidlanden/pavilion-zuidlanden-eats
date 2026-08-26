@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-fries.jpg";
 import logo from "@/assets/logo-terracotta.png";
+import Wordmark from "@/components/Wordmark";
+import WaveDivider from "@/components/WaveDivider";
 
 const HeroSection = () => {
   return (
@@ -23,20 +25,21 @@ const HeroSection = () => {
             className="w-full h-full object-cover" />
         </motion.div>
         
+        <motion.h1
+          className="sr-only"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}>
+          Paviljoen Zuidlanden — de plek om samen te komen
+        </motion.h1>
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}>
-          
-          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-secondary-foreground mb-1 font-display leading-none tracking-tight uppercase text-left sm:text-center">
-            Paviljoen<span className="text-primary">.</span>
-          </h1>
-          <p className="text-right text-xs sm:text-sm md:text-base font-display font-bold tracking-[0.3em] uppercase text-secondary-foreground/40 mb-6">
-            Zuidlanden
-          </p>
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="mb-6">
+          <Wordmark size="lg" tone="light" tagline />
         </motion.div>
         <motion.p
-          className="text-lg md:text-2xl text-secondary-foreground/60 font-body font-light tracking-wide mb-4 max-w-2xl mx-auto"
+          className="text-base md:text-xl text-secondary-foreground/60 font-body font-light tracking-wide mb-4 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}>
@@ -72,9 +75,14 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
+      {/* Brand wave into the next section */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
+        <WaveDivider className="text-background" stroke="hsl(var(--primary))" />
+      </div>
+
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
+        className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10"
         animate={{ y: [0, 12, 0] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}>
         
