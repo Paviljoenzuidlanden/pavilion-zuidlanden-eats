@@ -18,9 +18,9 @@ const menuItems = [
     category: "Friet",
     id: "friet",
     items: [
-      { name: "Verse friet (klein)", price: "3,50" },
-      { name: "Verse friet (groot)", price: "5,00" },
-      { name: "Friet speciaal", price: "6,00" },
+      { name: "Verse friet (klein)", price: "2,75" },
+      { name: "Verse friet (groot)", price: "3,00" },
+      { name: "Friet speciaal", price: "3,55" },
       { name: "Patatje oorlog", price: "5,50" },
       { name: "Kapsalon", price: "9,50" },
     ],
