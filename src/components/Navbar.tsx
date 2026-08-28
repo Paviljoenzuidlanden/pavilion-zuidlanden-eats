@@ -52,7 +52,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo} alt="Paviljoen Zuidlanden" className="h-11 w-auto object-contain" />
+          <img src={logo} alt="Paviljoen Zuidlanden" className="h-14 w-auto object-contain bg-background rounded-md" />
           <span className="hidden sm:flex flex-col leading-none">
             <span className="text-xl font-display font-medium uppercase text-primary tracking-[0.22em]">
               Paviljoen
