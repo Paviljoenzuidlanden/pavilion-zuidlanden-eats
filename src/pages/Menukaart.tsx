@@ -91,11 +91,13 @@ const menuItems = [
     category: "Bittergarnituur",
     id: "extra",
     items: [
-      { name: "Bittergarnituur voor 2 personen", price: "11,95" },
-      { name: "Bittergarnituur voor 4 personen", price: "20,45" },
-      { name: "Bittergarnituur voor 6 personen", price: "28,95" },
-      { name: "Bittergarnituur voor 8 personen", price: "37,95" },
-      { name: "Bittergarnituur voor 10 personen", price: "45,95" },
+      { name: "Bitterballen 8 stuks", price: "9,50" },
+      { name: "Bruine Fruitschaal (bittergarnituur)", price: "9,50" },
+      { name: "Borrelplank 2 personen", price: "14,95" },
+      { name: "Borrelplank 3 personen", price: "21,95" },
+      { name: "Borrelplank 4 personen", price: "27,95" },
+      { name: "Borrelplank 5 personen", price: "34,95" },
+      { name: "Frisse plank (komkommer, tomaat, wortel)", price: "4,50" },
     ],
   },
   {
