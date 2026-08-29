@@ -8,6 +8,7 @@ import verseFries from "@/assets/verse-friet.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
 import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
+import sauzenImage from "@/assets/sauzen.jpg";
 import interiorImage from "@/assets/interior.jpg";
 
 const categories = [
@@ -15,7 +16,7 @@ const categories = [
   { img: heroFries, label: "RUSTIEKE FRIET.", id: "rustiek" },
   { img: bitterballen, label: "SNACKS.", id: "snacks" },
   { img: frisdranken, label: "BROODJES.", id: "broodjes" },
-  { img: barImage, label: "EXTRA.", id: "extra" },
+  { img: sauzenImage, label: "EXTRA.", id: "extra" },
 ];
 
 const menuItems = [
