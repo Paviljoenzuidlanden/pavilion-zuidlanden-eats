@@ -4,14 +4,15 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
 import heroFries from "@/assets/hero-fries.jpg";
+import verseFries from "@/assets/verse-friet.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
 import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 import interiorImage from "@/assets/interior.jpg";
 
 const categories = [
-  { img: heroFries, label: "VERSE FRIET.", id: "friet" },
-  { img: interiorImage, label: "RUSTIEKE FRIET.", id: "rustiek" },
+  { img: verseFries, label: "VERSE FRIET.", id: "friet" },
+  { img: heroFries, label: "RUSTIEKE FRIET.", id: "rustiek" },
   { img: bitterballen, label: "SNACKS.", id: "snacks" },
   { img: frisdranken, label: "BROODJES.", id: "broodjes" },
   { img: barImage, label: "EXTRA.", id: "extra" },
