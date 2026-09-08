@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import barImage from "@/assets/bar.jpg";
 import zaalImage from "@/assets/zaal.jpg";
 import zaal2Image from "@/assets/zaal2.jpg";
-import buitenkantImage from "@/assets/buitenkant.jpg";
+import buitenkantImage from "@/assets/terras-paviljoen-zuidlanden.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 
 const photos = [
-  { src: buitenkantImage, alt: "Paviljoen Zuidlanden van buiten", label: "Het paviljoen" },
+  { src: buitenkantImage, alt: "Het terras van Paviljoen Zuidlanden", label: "Het terras" },
   { src: zaalImage, alt: "De gezellige zaal", label: "De zaal" },
   { src: barImage, alt: "De bar", label: "De bar" },
   { src: zaal2Image, alt: "Sfeervolle ruimte", label: "Feestlocatie" },
