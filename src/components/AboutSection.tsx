@@ -46,7 +46,7 @@ const AboutSection = () => {
           >
             <div className="rounded-3xl overflow-hidden shadow-2xl">
               <img
-                src={buitenkantImage.url}
+                src={buitenkantImage}
                 alt="Paviljoen Zuidlanden van buiten"
                 className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
                 loading="lazy"
