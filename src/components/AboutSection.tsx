@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import buitenkantImage from "@/assets/buitenkant.jpg";
+import buitenkantImage from "@/assets/terras-paviljoen-zuidlanden.jpg.asset.json";
 import interiorImage from "@/assets/interior.jpg";
 
 const AboutSection = () => {
