@@ -40,9 +40,9 @@ const menuItems = [
     category: "Dranken",
     id: "dranken",
     items: [
-      { name: "Frisdrank vanaf", price: "3,00" },
-      { name: "Bier vanaf", price: "3,50" },
-      { name: "Koffie/Thee vanaf", price: "3,00" },
+       { name: "Frisdrank vanaf", price: "2,50" },
+       { name: "Bier vanaf", price: "3,25" },
+       { name: "Koffie/Thee vanaf", price: "2,50" },
     ],
   },
 ];
