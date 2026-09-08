@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import barImage from "@/assets/bar.jpg";
 import zaalImage from "@/assets/zaal.jpg";
 import zaal2Image from "@/assets/zaal2.jpg";
-import buitenkantImage from "@/assets/buitenkant.jpg";
+import buitenkantImage from "@/assets/terras-paviljoen-zuidlanden.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 
 const photos = [
