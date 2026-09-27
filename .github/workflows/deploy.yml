@@ -32,13 +32,41 @@ jobs:
           INPUT_SERVER: ${{ secrets.FTP_SERVER }}
           INPUT_DIR: ${{ secrets.FTP_SERVER_DIR }}
         run: |
-          SRV="$(echo "${INPUT_SERVER}" | sed -e 's|^[^/]*://||' -e 's|/$||' | xargs)"
-          echo "FTP_SERVER_CLEAN=${SRV}" >> "$GITHUB_ENV"
+          python3 -c '
+          import os, re, socket
 
-          DIR="$(echo "${INPUT_DIR}" | xargs)"
-          DIR="${DIR:-public_html/}"
-          [[ "$DIR" != */ ]] && DIR="${DIR}/"
-          echo "FTP_DIR_CLEAN=${DIR}" >> "$GITHUB_ENV"
+          raw_server = os.environ.get("INPUT_SERVER", "").strip().strip("\"'\''")
+          # Strip protocol if present
+          s = re.sub(r"^[a-zA-Z]+://", "", raw_server)
+          # Strip any path
+          s = s.split("/")[0]
+
+          port = "21"
+          if ":" in s:
+              parts = s.split(":")
+              s = parts[0]
+              port = parts[1]
+
+          if not s:
+              s = "paviljoenzuidlanden.nl"
+
+          raw_dir = os.environ.get("INPUT_DIR", "").strip().strip("\"'\''")
+          if not raw_dir:
+              raw_dir = "public_html/"
+          if not raw_dir.endswith("/"):
+              raw_dir += "/"
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"FTP_SERVER_CLEAN={s}\n")
+              f.write(f"FTP_PORT_CLEAN={port}\n")
+              f.write(f"FTP_DIR_CLEAN={raw_dir}\n")
+
+          try:
+              ip = socket.gethostbyname(s)
+              print(f"Host successfully resolved in DNS: {ip}")
+          except Exception as e:
+              print(f"Warning: DNS lookup failed for host: {e}")
+          '
 
       - name: 📂 Sync files to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -46,5 +74,6 @@ jobs:
           server: ${{ env.FTP_SERVER_CLEAN }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ env.FTP_PORT_CLEAN }}
           server-dir: ${{ env.FTP_DIR_CLEAN }}
           local-dir: ./dist/
