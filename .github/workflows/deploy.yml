@@ -27,11 +27,24 @@ jobs:
       - name: 🔨 Build project
         run: bun run build
 
+      - name: ⚙️ Prepare FTP parameters
+        env:
+          INPUT_SERVER: ${{ secrets.FTP_SERVER }}
+          INPUT_DIR: ${{ secrets.FTP_SERVER_DIR }}
+        run: |
+          SRV="$(echo "${INPUT_SERVER}" | sed -e 's|^[^/]*://||' -e 's|/$||' | xargs)"
+          echo "FTP_SERVER_CLEAN=${SRV}" >> "$GITHUB_ENV"
+
+          DIR="$(echo "${INPUT_DIR}" | xargs)"
+          DIR="${DIR:-public_html/}"
+          [[ "$DIR" != */ ]] && DIR="${DIR}/"
+          echo "FTP_DIR_CLEAN=${DIR}" >> "$GITHUB_ENV"
+
       - name: 📂 Sync files to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ${{ env.FTP_SERVER_CLEAN }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_SERVER_DIR || 'public_html/' }}
+          server-dir: ${{ env.FTP_DIR_CLEAN }}
           local-dir: ./dist/
