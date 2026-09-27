@@ -82,5 +82,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ env.FTP_PORT_CLEAN }}
+          protocol: ftps
+          security: loose
           server-dir: ${{ env.FTP_DIR_CLEAN }}
           local-dir: ./dist/
