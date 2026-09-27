@@ -38,6 +38,9 @@ jobs:
           raw_server = os.environ.get("INPUT_SERVER", "").strip().strip("\"'\''")
           # Strip protocol if present
           s = re.sub(r"^[a-zA-Z]+://", "", raw_server)
+          # If user@host was entered, extract host
+          if "@" in s:
+              s = s.split("@")[-1]
           # Strip any path
           s = s.split("/")[0]
 
@@ -47,8 +50,18 @@ jobs:
               s = parts[0]
               port = parts[1]
 
-          if not s:
-              s = "paviljoenzuidlanden.nl"
+          resolved = False
+          if s:
+              try:
+                  ip = socket.gethostbyname(s)
+                  print(f"Server host resolved in DNS: {ip}")
+                  resolved = True
+              except Exception as e:
+                  print(f"Could not resolve provided server host in DNS: {e}")
+
+          if not resolved:
+              print("Using fallback host for paviljoenzuidlanden.nl: 213.154.231.202")
+              s = "213.154.231.202"
 
           raw_dir = os.environ.get("INPUT_DIR", "").strip().strip("\"'\''")
           if not raw_dir:
@@ -60,12 +73,6 @@ jobs:
               f.write(f"FTP_SERVER_CLEAN={s}\n")
               f.write(f"FTP_PORT_CLEAN={port}\n")
               f.write(f"FTP_DIR_CLEAN={raw_dir}\n")
-
-          try:
-              ip = socket.gethostbyname(s)
-              print(f"Host successfully resolved in DNS: {ip}")
-          except Exception as e:
-              print(f"Warning: DNS lookup failed for host: {e}")
           '
 
       - name: 📂 Sync files to FTP
