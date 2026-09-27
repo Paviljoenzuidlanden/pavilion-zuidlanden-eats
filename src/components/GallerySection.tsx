@@ -6,7 +6,7 @@ import terrasNieuwImage from "@/assets/terras-nieuw.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 
 const photos = [
-  { src: buitenkantImage, alt: "Het terras van Paviljoen Zuidlanden", label: "Het terras" },
+  { src: terrasNieuwImage, alt: "Het terras van Paviljoen Zuidlanden", label: "Het terras" },
   { src: zaalImage, alt: "De gezellige zaal", label: "De zaal" },
   { src: barImage, alt: "De bar", label: "De bar" },
   { src: zaal2Image, alt: "Sfeervolle ruimte", label: "Feestlocatie" },
