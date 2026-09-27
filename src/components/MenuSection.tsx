@@ -10,7 +10,7 @@ const categories = [
   { img: heroFries, label: "VERSE FRIET.", href: "#friet" },
   { img: bitterballen, label: "SNACKS.", href: "#snacks" },
   { img: frisdranken, label: "DRANKEN.", href: "#dranken" },
-  { img: barImage, label: "BORREL.", href: "#borrel" },
+  { img: borrelImage, label: "BORREL.", href: "#borrel" },
 ];
 
 const menuItems = [
