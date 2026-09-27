@@ -11,7 +11,7 @@ import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 import zaalImage from "@/assets/zaal.jpg";
 import zaal2Image from "@/assets/zaal2.jpg";
-import logo from "/lovable-uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
+import logo from "/uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
 { src: feestSfeer, alt: "Feest sfeer" },
@@ -109,14 +109,20 @@ const Events = () => {
             
             <a
               href="#reserveer"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("reserveer")?.scrollIntoView({ behavior: "smooth" });
+              }}
               className="bg-primary text-primary-foreground px-10 py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:scale-105 transition-transform">
-              
               Reserveer nu
             </a>
             <a
               href="#aanbod"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("aanbod")?.scrollIntoView({ behavior: "smooth" });
+              }}
               className="border-2 border-secondary-foreground/20 text-secondary-foreground px-10 py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:border-primary hover:text-primary transition-all">
-              
               Bekijk aanbod
             </a>
           </motion.div>
@@ -276,8 +282,11 @@ const Events = () => {
           </p>
           <a
             href="#reserveer"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("reserveer")?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="inline-block bg-primary text-primary-foreground px-8 md:px-10 py-3 md:py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:scale-105 transition-transform">
-            
             Reserveer nu
           </a>
         </motion.div>

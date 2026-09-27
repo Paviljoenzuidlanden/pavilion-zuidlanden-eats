@@ -1,23 +1,21 @@
 import { useState } from "react";
 import { Menu, X, PartyPopper } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-terracotta.png";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === "/";
 
-  const mainLinks = isHome
-    ? [
-        { href: "#menu", label: "Menu" },
-        { href: "#over-ons", label: "Over ons" },
-        { href: "#contact", label: "Contact" },
-      ]
-    : [
-        { href: "/", label: "Home", isRoute: true },
-      ];
+  const mainLinks = [
+    { href: "#top", label: "Home" },
+    { href: "#menu", label: "Menu" },
+    { href: "#over-ons", label: "Over ons" },
+    { href: "#contact", label: "Contact" },
+  ];
 
   const pageLinks = [
     { href: "/agenda", label: "Agenda", isRoute: true },
@@ -41,7 +39,25 @@ const Navbar = () => {
       <a
         key={l.href}
         href={l.href}
-        onClick={onClick}
+        onClick={(e) => {
+          if (l.href.startsWith("#")) {
+            e.preventDefault();
+            const id = l.href.substring(1);
+            if (isHome) {
+              if (id === "top") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                const el = document.getElementById(id);
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth" });
+                }
+              }
+            } else {
+              navigate("/", { state: { scrollToId: id } });
+            }
+          }
+          if (onClick) onClick();
+        }}
         className="text-foreground/60 hover:text-primary transition-colors font-body text-[13px] font-medium tracking-widest uppercase"
       >
         {l.label}<span className="text-primary">.</span>

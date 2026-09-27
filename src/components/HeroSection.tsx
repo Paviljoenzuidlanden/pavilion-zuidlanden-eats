@@ -62,14 +62,20 @@ const HeroSection = () => {
           
           <a
             href="#menu"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="bg-primary text-primary-foreground px-10 py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:scale-105 transition-transform">
-            
             Bekijk Menu
           </a>
           <a
             href="#over-ons"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("over-ons")?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="border-2 border-secondary-foreground/20 text-secondary-foreground px-10 py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:border-primary hover:text-primary transition-all">
-            
             Over ons
           </a>
         </motion.div>

@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
 import heroFries from "@/assets/hero-fries.jpg";
@@ -37,7 +38,7 @@ const menuItems = [
     category: "Rustieke Friet",
     id: "rustiek",
     items: [
-      { name: "Verse rustiek friet met schil", price: "3,25" },
+      { name: "Verse rustieke friet met schil", price: "3,25" },
       { name: "Grote verse rustieke friet met schil", price: "4,25" },
       { name: "Familiezak rustieke friet met schil (2 pers.)", price: "5,95" },
       { name: "Familiezak rustieke friet met schil (3 pers.)", price: "9,25" },
@@ -54,12 +55,12 @@ const menuItems = [
       { name: "Pikanto", price: "3,35" },
       { name: "Kroket", price: "2,60" },
       { name: "Kalfsvleeskroket", price: "2,80" },
-      { name: "Groente kroket / vega kroket", price: "2,95" },
+      { name: "Groentekroket / vega kroket", price: "2,95" },
       { name: "Bamischijf", price: "2,90" },
       { name: "Nasischijf", price: "2,90" },
       { name: "Kaassoufflé", price: "3,00" },
       { name: "Kipcorn", price: "2,95" },
-      { name: "Gehaltbal", price: "4,00" },
+      { name: "Gehaktbal", price: "4,00" },
       { name: "Eierbal", price: "3,60" },
       { name: "Hamburger", price: "3,95" },
       { name: "Kipburger", price: "4,00" },
@@ -68,7 +69,7 @@ const menuItems = [
       { name: "Vega bitterballen 6 stuks", price: "3,50" },
       { name: "Kipnuggets 6 stuks", price: "4,15" },
       { name: "Kipnuggets 9 stuks", price: "6,15" },
-      { name: "Mini loempia's 6 stuks", price: "4,75" },
+      { name: "Mini-loempia's 6 stuks", price: "4,75" },
       { name: "Vlammetjes 6 stuks", price: "4,75" },
       { name: "Kaasstengels 6 stuks", price: "4,75" },
     ],
@@ -125,7 +126,23 @@ const menuItems = [
   },
 ];
 
+interface LocationState {
+  scrollToId?: string;
+}
+
 const Menukaart = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const state = location.state as LocationState;
+    if (state?.scrollToId) {
+      const el = document.getElementById(state.scrollToId);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 150);
+      }
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -159,7 +176,14 @@ const Menukaart = () => {
               <motion.a
                 key={cat.label}
                 href={`#${cat.id}`}
-                className="group relative rounded-xl overflow-hidden aspect-[4/3] w-[140px] sm:w-[180px] bg-muted"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById(cat.id);
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                className="group relative rounded-xl overflow-hidden aspect-[4/3] w-[140px] sm:w-[180px] bg-muted cursor-pointer"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -184,7 +208,7 @@ const Menukaart = () => {
               <motion.div
                 key={cat.category}
                 id={cat.id}
-                className="bg-card rounded-3xl p-5 sm:p-8 border border-border hover:shadow-xl transition-shadow duration-300"
+                className="bg-card rounded-3xl p-5 sm:p-8 border border-border hover:shadow-xl transition-shadow duration-300 scroll-mt-28"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

@@ -21,7 +21,7 @@ const events = [
   {
     date: "22",
     month: "Mrt",
-    title: "Live Muziek: Akoustisch",
+    title: "Live Muziek: Akoestisch",
     time: "19:30 – 22:00",
     description: "Geniet van live akoestische muziek met een drankje en hapje erbij.",
     category: "Muziek",

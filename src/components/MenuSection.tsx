@@ -7,7 +7,7 @@ import frisdranken from "@/assets/frisdranken.jpg";
 import barImage from "@/assets/bar.jpg";
 
 const categories = [
-  { img: heroFries, label: "VERS FRIET.", href: "#friet" },
+  { img: heroFries, label: "VERSE FRIET.", href: "#friet" },
   { img: bitterballen, label: "SNACKS.", href: "#snacks" },
   { img: frisdranken, label: "DRANKEN.", href: "#dranken" },
   { img: barImage, label: "BORREL.", href: "#borrel" },
@@ -72,7 +72,15 @@ const MenuSection = () => {
               <motion.a
                 key={cat.label}
                 href={cat.href}
-                className="group relative rounded-2xl overflow-hidden aspect-square bg-muted"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const id = cat.href.replace("#", "");
+                  const el = document.getElementById(id);
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                className="group relative rounded-2xl overflow-hidden aspect-square bg-muted cursor-pointer"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -97,7 +105,8 @@ const MenuSection = () => {
             {menuItems.map((cat, i) => (
               <motion.div
                 key={cat.category}
-                className="bg-card rounded-3xl p-8 border border-border hover:shadow-xl transition-shadow duration-300"
+                id={cat.id}
+                className="bg-card rounded-3xl p-8 border border-border hover:shadow-xl transition-shadow duration-300 scroll-mt-28"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -141,7 +150,7 @@ const MenuSection = () => {
       {/* Scrolling marquee strip */}
       <div className="py-5 bg-primary overflow-hidden">
         <div className="flex gap-8 whitespace-nowrap animate-marquee">
-          {Array(4).fill(["VERS FRIET", "·", "BITTERBALLEN", "·", "BORREL", "·", "GEZELLIGHEID", "·", "FEEST", "·"]).flat().map((item, i) => (
+          {Array(4).fill(["VERSE FRIET", "·", "BITTERBALLEN", "·", "BORREL", "·", "GEZELLIGHEID", "·", "FEEST", "·"]).flat().map((item, i) => (
             <span key={i} className="text-primary-foreground font-display text-sm font-bold tracking-[0.3em] uppercase">
               {item}
             </span>
