@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import barImage from "@/assets/bar-nieuw.jpg";
 import zaalImage from "@/assets/zaal-nieuw.jpg";
-import zaal2Image from "@/assets/zaal2.jpg";
+import feestlocatieNieuwImage from "@/assets/feestlocatie-nieuw.jpg";
 import terrasNieuwImage from "@/assets/terras-nieuw.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 
@@ -9,7 +9,7 @@ const photos = [
   { src: terrasNieuwImage, alt: "Het terras van Paviljoen Zuidlanden", label: "Het terras" },
   { src: zaalImage, alt: "De gezellige zaal", label: "De zaal" },
   { src: barImage, alt: "De bar", label: "De bar" },
-  { src: zaal2Image, alt: "Sfeervolle ruimte", label: "Feestlocatie" },
+  { src: feestlocatieNieuwImage, alt: "Sfeervolle ruimte", label: "Feestlocatie" },
   { src: feestSfeer, alt: "Feest sfeer", label: "Sfeer" },
 ];
 
