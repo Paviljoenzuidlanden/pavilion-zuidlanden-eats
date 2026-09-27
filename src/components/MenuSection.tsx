@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroFries from "@/assets/hero-fries.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
-import frisdranken from "@/assets/frisdranken.jpg";
+import frisdranken from "@/assets/dranken-nieuw.jpg";
 import barImage from "@/assets/bar.jpg";
 
 const categories = [
