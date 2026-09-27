@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import heroFries from "@/assets/hero-fries.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
 import frisdranken from "@/assets/dranken-nieuw.jpg";
-import barImage from "@/assets/bar.jpg";
+import borrelImage from "@/assets/borrel-nieuw.jpg";
 
 const categories = [
   { img: heroFries, label: "VERSE FRIET.", href: "#friet" },
   { img: bitterballen, label: "SNACKS.", href: "#snacks" },
   { img: frisdranken, label: "DRANKEN.", href: "#dranken" },
-  { img: barImage, label: "BORREL.", href: "#borrel" },
+  { img: borrelImage, label: "BORREL.", href: "#borrel" },
 ];
 
 const menuItems = [
