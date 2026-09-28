@@ -4,14 +4,12 @@ import { PartyPopper, Calendar, Users, Sparkles, ChevronDown, Beer, GlassWater }
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import partyImage from "@/assets/party-venue.jpg";
-import feestSfeer from "@/assets/feest-sfeer.jpg";
-import bierBar from "@/assets/bier-taps-nieuw.jpg";
-import bitterballen from "@/assets/bitterballen.jpg";
-import frisdranken from "@/assets/frisdranken.jpg";
-import frisdrankenNieuw from "@/assets/frisdranken-nieuw.jpg";
-import barImage from "@/assets/bar.jpg";
-import zaalImage from "@/assets/zaal.jpg";
-import zaal2Image from "@/assets/zaal2.jpg";
+import feest1 from "@/assets/feest-1.jpg";
+import feest2 from "@/assets/feest-2.jpg";
+import feest3 from "@/assets/feest-3.jpg";
+import feest4 from "@/assets/feest-4.jpg";
+import feest5 from "@/assets/feest-5.jpg";
+import feest6 from "@/assets/feest-6.jpg";
 import logo from "/uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
