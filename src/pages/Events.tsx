@@ -8,6 +8,7 @@ import feestSfeer from "@/assets/feest-sfeer.jpg";
 import bierBar from "@/assets/bier-bar.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
 import frisdranken from "@/assets/frisdranken.jpg";
+import frisdrankenNieuw from "@/assets/frisdranken-nieuw.jpg";
 import barImage from "@/assets/bar.jpg";
 import zaalImage from "@/assets/zaal.jpg";
 import zaal2Image from "@/assets/zaal2.jpg";
@@ -235,7 +236,7 @@ const Events = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}>
             
-            <img src={frisdranken} alt="Frisdranken" className="w-full h-full object-cover min-h-[50vh]" loading="lazy" />
+            <img src={frisdrankenNieuw} alt="Drankjes aan de bar" className="w-full h-full object-cover min-h-[50vh]" loading="lazy" />
           </motion.div>
           <motion.div
             className="flex flex-col justify-center p-10 md:p-20"
