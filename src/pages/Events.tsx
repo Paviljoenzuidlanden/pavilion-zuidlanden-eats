@@ -14,21 +14,24 @@ import feest3 from "@/assets/feest-3.jpg";
 import feest4 from "@/assets/feest-4.jpg";
 import feest5 from "@/assets/feest-5.jpg";
 import feest6 from "@/assets/feest-6.jpg";
+import feest7 from "@/assets/feest-7.jpg";
 import logo from "/uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
-{ src: feest1, alt: "Sfeer aan de bar" },
-{ src: feest2, alt: "Gezellige zaal" },
-{ src: feest3, alt: "Speelhoek" },
-{ src: feest4, alt: "Koffie" },
-{ src: feest5, alt: "Het terras" },
-{ src: feest6, alt: "Eetzaal" },
-{ src: feest1, alt: "Sfeer aan de bar" },
-{ src: feest2, alt: "Gezellige zaal" },
-{ src: feest3, alt: "Speelhoek" },
-{ src: feest4, alt: "Koffie" },
-{ src: feest5, alt: "Het terras" },
-{ src: feest6, alt: "Eetzaal" }];
+{ src: feest1, alt: "Bar met krukken" },
+{ src: feest2, alt: "Gezellige eettafel" },
+{ src: feest3, alt: "Verse koffie" },
+{ src: feest4, alt: "Zicht in de zaal" },
+{ src: feest5, alt: "Sfeervolle zaal" },
+{ src: feest6, alt: "Leffe op het terras" },
+{ src: feest7, alt: "De bar van het paviljoen" },
+{ src: feest1, alt: "Bar met krukken" },
+{ src: feest2, alt: "Gezellige eettafel" },
+{ src: feest3, alt: "Verse koffie" },
+{ src: feest4, alt: "Zicht in de zaal" },
+{ src: feest5, alt: "Sfeervolle zaal" },
+{ src: feest6, alt: "Leffe op het terras" },
+{ src: feest7, alt: "De bar van het paviljoen" }];
 
 
 const occasions = [
