@@ -36,7 +36,7 @@ const FooterSection = () => {
             <div className="flex items-start gap-3 text-secondary-foreground/70 font-body">
               <Clock className="w-4 h-4 mt-1 shrink-0 text-primary" />
               <div className="text-sm leading-relaxed">
-                <p>Do: 16:00 – 21:00</p>
+                <p>Do: 16:00 – 22:00</p>
                 <p>Vr: 12:00 – 23:00</p>
                 <p>Za: 12:00 – 23:00</p>
                 <p>Zo: 12:00 – 21:00</p>
