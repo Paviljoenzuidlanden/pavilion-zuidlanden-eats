@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import partyImage from "@/assets/party-venue.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
-import bierBar from "@/assets/bier-bar.jpg";
+import bierBar from "@/assets/bier-taps-nieuw.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
 import frisdranken from "@/assets/frisdranken.jpg";
 import frisdrankenNieuw from "@/assets/frisdranken-nieuw.jpg";
