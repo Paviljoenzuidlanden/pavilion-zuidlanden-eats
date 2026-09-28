@@ -4,6 +4,10 @@ import { PartyPopper, Calendar, Users, Sparkles, ChevronDown, Beer, GlassWater }
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import partyImage from "@/assets/party-venue.jpg";
+import feestSfeer from "@/assets/feest-sfeer.jpg";
+import bierBar from "@/assets/bier-taps-nieuw.jpg";
+import bitterballen from "@/assets/bitterballen.jpg";
+import frisdrankenNieuw from "@/assets/frisdranken-nieuw.jpg";
 import feest1 from "@/assets/feest-1.jpg";
 import feest2 from "@/assets/feest-2.jpg";
 import feest3 from "@/assets/feest-3.jpg";
