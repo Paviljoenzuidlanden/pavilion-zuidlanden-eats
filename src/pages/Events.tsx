@@ -7,28 +7,28 @@ import partyImage from "@/assets/party-venue.jpg";
 import feestSfeer from "@/assets/feest-sfeer.jpg";
 import bierBar from "@/assets/bier-taps-nieuw.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
-import frisdranken from "@/assets/frisdranken.jpg";
 import frisdrankenNieuw from "@/assets/frisdranken-nieuw.jpg";
-import barImage from "@/assets/bar.jpg";
-import zaalImage from "@/assets/zaal.jpg";
-import zaal2Image from "@/assets/zaal2.jpg";
+import feest1 from "@/assets/feest-1.jpg";
+import feest2 from "@/assets/feest-2.jpg";
+import feest3 from "@/assets/feest-3.jpg";
+import feest4 from "@/assets/feest-4.jpg";
+import feest5 from "@/assets/feest-5.jpg";
+import feest6 from "@/assets/feest-6.jpg";
 import logo from "/uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
-{ src: feestSfeer, alt: "Feest sfeer" },
-{ src: bierBar, alt: "Bier aan de bar" },
-{ src: bitterballen, alt: "Bitterballen" },
-{ src: barImage, alt: "De bar" },
-{ src: frisdranken, alt: "Frisdranken" },
-{ src: zaalImage, alt: "De zaal" },
-{ src: zaal2Image, alt: "Feestlocatie" },
-{ src: feestSfeer, alt: "Feest sfeer" },
-{ src: bierBar, alt: "Bier aan de bar" },
-{ src: bitterballen, alt: "Bitterballen" },
-{ src: frisdranken, alt: "Frisdranken" },
-{ src: barImage, alt: "De bar" },
-{ src: zaalImage, alt: "De zaal" },
-{ src: zaal2Image, alt: "Feestlocatie" }];
+{ src: feest1, alt: "Sfeer aan de bar" },
+{ src: feest2, alt: "Gezellige zaal" },
+{ src: feest3, alt: "Speelhoek" },
+{ src: feest4, alt: "Koffie" },
+{ src: feest5, alt: "Het terras" },
+{ src: feest6, alt: "Eetzaal" },
+{ src: feest1, alt: "Sfeer aan de bar" },
+{ src: feest2, alt: "Gezellige zaal" },
+{ src: feest3, alt: "Speelhoek" },
+{ src: feest4, alt: "Koffie" },
+{ src: feest5, alt: "Het terras" },
+{ src: feest6, alt: "Eetzaal" }];
 
 
 const occasions = [
