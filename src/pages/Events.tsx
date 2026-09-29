@@ -15,7 +15,7 @@ import feest4 from "@/assets/feest-4.jpg";
 import feest5 from "@/assets/feest-5.jpg";
 import feest6 from "@/assets/feest-6.jpg";
 import feest7 from "@/assets/feest-7.jpg";
-import logo from "/uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
+import logo from "@/assets/logo-terracotta.png";
 
 const galleryImages = [
 { src: feest1, alt: "Bar met krukken" },
