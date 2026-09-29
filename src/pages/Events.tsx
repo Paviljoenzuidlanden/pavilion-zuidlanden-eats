@@ -15,7 +15,7 @@ import feest4 from "@/assets/feest-4.jpg";
 import feest5 from "@/assets/feest-5.jpg";
 import feest6 from "@/assets/feest-6.jpg";
 import feest7 from "@/assets/feest-7.jpg";
-import logo from "@/assets/logo-terracotta.png";
+import logo from "/uploads/20a30610-a3ae-46ec-95f7-78f6347e519e.png";
 
 const galleryImages = [
 { src: feest1, alt: "Bar met krukken" },
@@ -83,8 +83,8 @@ const Events = () => {
           
           <motion.img
             src={logo}
-            alt="Paviljoen Zuidlanden"
-            className="h-28 w-auto mx-auto mb-10 object-contain bg-background/90 rounded-2xl px-4 py-3 shadow-lg"
+            alt="Logo"
+            className="w-20 h-20 mx-auto mb-10 rounded-2xl object-contain bg-background/90 p-1 shadow-lg"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }} />
