@@ -83,8 +83,8 @@ const Events = () => {
           
           <motion.img
             src={logo}
-            alt="Logo"
-            className="w-20 h-20 mx-auto mb-10 rounded-2xl object-contain bg-background/90 p-1 shadow-lg"
+            alt="Paviljoen Zuidlanden"
+            className="h-28 w-auto mx-auto mb-10 object-contain bg-background/90 rounded-2xl px-4 py-3 shadow-lg"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }} />
