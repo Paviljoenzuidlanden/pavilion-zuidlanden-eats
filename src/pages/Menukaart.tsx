@@ -65,7 +65,7 @@ const menuItems = [
       { name: "Hamburger", price: "3,95" },
       { name: "Kipburger", price: "4,00" },
       { name: "Vega burger", price: "4,00" },
-      { name: "Bitterballen 6 stuks", price: "3,50" },
+      { name: "Bitterballen 4 stuks", price: "3,50" },
       { name: "Vega bitterballen 6 stuks", price: "3,50" },
       { name: "Kipnuggets 6 stuks", price: "4,15" },
       { name: "Kipnuggets 9 stuks", price: "6,15" },
