@@ -15,6 +15,11 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Stuur /personeel (zonder hekje) door naar de hash-route
+if (window.location.pathname === "/personeel" && !window.location.hash) {
+  window.location.replace("/#/personeel");
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
