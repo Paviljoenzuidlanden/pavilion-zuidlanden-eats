@@ -82,7 +82,7 @@ const menuItems = [
       { name: "Broodje kroket", price: "3,25" },
       { name: "Broodje bamischijf", price: "3,55" },
       { name: "Broodje kaassoufflé", price: "3,65" },
-      { name: "Wit bolletje", price: "0,80" },
+      { name: "Wit bolletje", price: "0,65\n" },
     ],
   },
   {
