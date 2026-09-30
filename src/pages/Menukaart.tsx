@@ -66,7 +66,6 @@ const menuItems = [
       { name: "Bitterballen 4 stuks", price: "3,50" },
       { name: "Kipnuggets 6 stuks", price: "4,15" },
       { name: "Kipnuggets 9 stuks", price: "6,15" },
-      { name: "Mini-loempia's 6 stuks", price: "4,75" },
       { name: "Kaasstengels 6 stuks", price: "4,75" },
     ],
   },
