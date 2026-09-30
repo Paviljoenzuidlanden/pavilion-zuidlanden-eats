@@ -64,7 +64,6 @@ const menuItems = [
       { name: "Hamburger", price: "3,95" },
 
       { name: "Bitterballen 4 stuks", price: "3,50" },
-      { name: "Vega bitterballen 6 stuks", price: "3,50" },
       { name: "Kipnuggets 6 stuks", price: "4,15" },
       { name: "Kipnuggets 9 stuks", price: "6,15" },
       { name: "Mini-loempia's 6 stuks", price: "4,75" },
@@ -95,7 +94,6 @@ const menuItems = [
       { name: "Borrelplank 3 personen", price: "21,95" },
       { name: "Borrelplank 4 personen", price: "27,95" },
       { name: "Borrelplank 5 personen", price: "34,95" },
-      { name: "Frisse plank (komkommer, tomaat, wortel)", price: "4,50" },
     ],
   },
   {
