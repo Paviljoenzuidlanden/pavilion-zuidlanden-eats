@@ -68,7 +68,6 @@ const menuItems = [
       { name: "Kipnuggets 6 stuks", price: "4,15" },
       { name: "Kipnuggets 9 stuks", price: "6,15" },
       { name: "Mini-loempia's 6 stuks", price: "4,75" },
-      { name: "Vlammetjes 6 stuks", price: "4,75" },
       { name: "Kaasstengels 6 stuks", price: "4,75" },
     ],
   },
@@ -79,7 +78,6 @@ const menuItems = [
     items: [
       { name: "Broodje hamburger", price: "4,60" },
       { name: "Broodje hamburger speciaal", price: "5,40" },
-      { name: "Broodje cheeseburger", price: "6,25" },
       { name: "Broodje frikandel", price: "3,15" },
       { name: "Broodje kroket", price: "3,25" },
       { name: "Broodje kipburger", price: "4,65" },
