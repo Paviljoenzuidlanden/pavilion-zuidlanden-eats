@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { addDays, addWeeks, format, startOfWeek } from "date-fns";
 import { nl } from "date-fns/locale";
 import type { User } from "@supabase/supabase-js";
@@ -342,6 +342,68 @@ function StaffAdmin({ profiles, reload, me }: { profiles: Profile[]; reload: () 
               <Button size="icon" variant="ghost" onClick={() => reset(p)} aria-label="Wachtwoord wijzigen"><KeyRound className="w-4 h-4" /></Button>
               {p.id !== me && <Button size="icon" variant="ghost" onClick={() => remove(p)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>}
             </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Mijn gegevens (IBAN + ID) ---------------- */
+function MyDetails({ user, me, reload }: { user: User; me: Profile | undefined; reload: () => void }) {
+  const [iban, setIban] = useState(me?.iban ?? "");
+  const [files, setFiles] = useState<string[]>([]);
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { setIban(me?.iban ?? ""); }, [me?.iban]);
+
+  const loadFiles = useCallback(async () => {
+    const { data } = await supabase.storage.from("id-documents").list(user.id);
+    setFiles((data ?? []).map((f) => f.name));
+  }, [user.id]);
+  useEffect(() => { loadFiles(); }, [loadFiles]);
+
+  const saveIban = async () => {
+    const clean = iban.replace(/\s+/g, "").toUpperCase();
+    if (clean && !/^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,30}$/.test(clean)) return toast.error("Ongeldig IBAN");
+    const { error } = await supabase.from("profiles").update({ iban: clean || null }).eq("id", user.id);
+    if (error) return toast.error(error.message);
+    toast.success("Rekeningnummer opgeslagen"); reload();
+  };
+
+  const upload = async (f: File) => {
+    if (f.size > 10 * 1024 * 1024) return toast.error("Bestand is groter dan 10 MB");
+    setBusy(true);
+    const { error } = await supabase.storage.from("id-documents").upload(`${user.id}/${Date.now()}-${f.name}`, f);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("ID geüpload"); loadFiles();
+  };
+
+  const download = async (name: string) => {
+    const { data, error } = await supabase.storage.from("id-documents").createSignedUrl(`${user.id}/${name}`, 60);
+    if (error || !data) return toast.error("Downloaden mislukt");
+    window.open(data.signedUrl, "_blank");
+  };
+
+  return (
+    <div className="grid md:grid-cols-2 gap-6">
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <h3 className="font-display uppercase tracking-wider text-primary">Rekeningnummer (IBAN)</h3>
+        <p className="text-sm text-muted-foreground">Voor de salarisbetaling. Alleen zichtbaar voor jezelf en de beheerder.</p>
+        <Input placeholder="NL00 BANK 0123 4567 89" maxLength={34} value={iban} onChange={(e) => setIban(e.target.value)} />
+        <Button size="sm" onClick={saveIban}>Opslaan</Button>
+      </div>
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <h3 className="font-display uppercase tracking-wider text-primary">ID-kaart</h3>
+        <p className="text-sm text-muted-foreground">Upload een foto of scan van je identiteitsbewijs (max. 10 MB).</p>
+        <input ref={fileRef} type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ""; }} />
+        <Button size="sm" variant="outline" disabled={busy} onClick={() => fileRef.current?.click()}><Upload className="w-4 h-4" /> Uploaden</Button>
+        {files.map((f) => (
+          <div key={f} className="flex items-center justify-between text-sm border-t border-border pt-2">
+            <span className="truncate">{f.replace(/^\d+-/, "")}</span>
+            <Button size="icon" variant="ghost" onClick={() => download(f)} aria-label="Bekijken"><FileDown className="w-4 h-4" /></Button>
           </div>
         ))}
       </div>
