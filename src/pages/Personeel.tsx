@@ -10,9 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Upload, FileDown } from "lucide-react";
 
-type Profile = { id: string; display_name: string; email: string };
+type Profile = { id: string; display_name: string; email: string; iban: string | null };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
 type Shift = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null; published: boolean };
 
