@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { addDays, format } from "date-fns";
+import { addDays, addWeeks, format, startOfWeek } from "date-fns";
 import { nl } from "date-fns/locale";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { LogOut, Trash2, Send, Plus, KeyRound } from "lucide-react";
+import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight } from "lucide-react";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
