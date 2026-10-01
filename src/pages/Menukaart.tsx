@@ -62,6 +62,8 @@ const menuItems = [
       { name: "Kipcorn", price: "2,95" },
       { name: "Gehaktbal", price: "4,00" },
       { name: "Hamburger", price: "3,95" },
+      { name: "Kipburger", price: "4,00" },
+
 
       { name: "Bitterballen 4 stuks", price: "3,50" },
       { name: "Kipnuggets 6 stuks", price: "4,15" },
@@ -80,6 +82,7 @@ const menuItems = [
       { name: "Broodje kroket", price: "3,25" },
       { name: "Broodje bamischijf", price: "3,55" },
       { name: "Broodje kaassoufflé", price: "3,65" },
+      { name: "Broodje kipburger", price: "4,65" },
       { name: "Wit bolletje", price: "0,65\n" },
     ],
   },
