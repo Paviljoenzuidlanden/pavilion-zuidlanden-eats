@@ -302,6 +302,40 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   );
 }
 
+/* ---------------- IBAN + ID per medewerker (beheer) ---------------- */
+function AdminDocs({ p }: { p: Profile }) {
+  const [files, setFiles] = useState<string[] | null>(null);
+  const toggle = async () => {
+    if (files !== null) return setFiles(null);
+    const { data } = await supabase.storage.from("id-documents").list(p.id);
+    setFiles((data ?? []).map((f) => f.name));
+  };
+  const download = async (name: string) => {
+    const { data, error } = await supabase.storage.from("id-documents").createSignedUrl(`${p.id}/${name}`, 60);
+    if (error || !data) return toast.error("Downloaden mislukt");
+    window.open(data.signedUrl, "_blank");
+  };
+  return (
+    <div className="text-xs text-muted-foreground pl-1 pb-1">
+      <span>IBAN: {p.iban ?? "—"}</span>
+      <button onClick={toggle} className="ml-3 underline underline-offset-2 hover:text-foreground">
+        {files === null ? "ID-documenten" : "Verberg"}
+      </button>
+      {files !== null && (
+        <div className="mt-1 space-y-1">
+          {!files.length && <span>Geen ID geüpload.</span>}
+          {files.map((f) => (
+            <div key={f} className="flex items-center gap-2">
+              <span className="truncate">{f.replace(/^\d+-/, "")}</span>
+              <button onClick={() => download(f)} className="underline underline-offset-2 hover:text-foreground">Bekijken</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ---------------- Personeelsbeheer ---------------- */
 function StaffAdmin({ profiles, reload, me }: { profiles: Profile[]; reload: () => void; me: string }) {
   const [f, setF] = useState({ name: "", email: "", password: "", isAdmin: false });
