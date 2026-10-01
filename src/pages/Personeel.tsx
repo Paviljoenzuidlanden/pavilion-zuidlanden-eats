@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { addDays, format } from "date-fns";
+import { addDays, addWeeks, format, startOfWeek } from "date-fns";
 import { nl } from "date-fns/locale";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { LogOut, Trash2, Send, Plus, KeyRound } from "lucide-react";
+import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight } from "lucide-react";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
@@ -138,36 +138,66 @@ function Availability({ user }: { user: User }) {
   );
 }
 
-/* ---------------- Rooster bekijken ---------------- */
+/* ---------------- Weeknavigatie ---------------- */
+function WeekNav({ week, setWeek, children }: { week: Date; setWeek: (d: Date) => void; children?: React.ReactNode }) {
+  const end = addDays(week, 6);
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center gap-2">
+        <Button size="icon" variant="outline" onClick={() => setWeek(addWeeks(week, -1))} aria-label="Vorige week"><ChevronLeft className="w-4 h-4" /></Button>
+        <Button size="sm" variant="outline" onClick={() => setWeek(startOfWeek(new Date(), { weekStartsOn: 1 }))}>Deze week</Button>
+        <Button size="icon" variant="outline" onClick={() => setWeek(addWeeks(week, 1))} aria-label="Volgende week"><ChevronRight className="w-4 h-4" /></Button>
+        <span className="font-display uppercase tracking-wider text-primary ml-2 capitalize">
+          {format(week, "d MMM", { locale: nl })} – {format(end, "d MMM yyyy", { locale: nl })}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/* ---------------- Rooster bekijken (agenda) ---------------- */
 function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
   const [shifts, setShifts] = useState<Shift[]>([]);
+  const [week, setWeek] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
   useEffect(() => {
     supabase.from("shifts").select("*").eq("published", true).gte("date", days()[0]).order("date").order("start_time")
       .then(({ data }) => setShifts((data ?? []) as Shift[]));
   }, []);
   const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
-  const byDate = shifts.reduce<Record<string, Shift[]>>((a, s) => ((a[s.date] ||= []).push(s), a), {});
+  const weekDays = Array.from({ length: 7 }, (_, i) => format(addDays(week, i), "yyyy-MM-dd"));
   if (!shifts.length) return <p className="text-muted-foreground">Er is nog geen rooster gepubliceerd.</p>;
   return (
     <div className="space-y-4">
-      {Object.entries(byDate).map(([d, list]) => (
-        <div key={d} className="rounded-xl border border-border bg-card p-4">
-          <h3 className="font-display uppercase tracking-wider text-primary capitalize mb-2">{nice(d)}</h3>
-          {list.map((s) => (
-            <div key={s.id} className={`flex justify-between text-sm py-1 ${s.user_id === user.id ? "font-semibold text-accent" : ""}`}>
-              <span>{name(s.user_id)}{s.user_id === user.id && " (jij)"}{s.note && <span className="text-muted-foreground font-normal"> · {s.note}</span>}</span>
-              <span>{t5(s.start_time)} – {t5(s.end_time)}</span>
+      <WeekNav week={week} setWeek={setWeek} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
+        {weekDays.map((d) => {
+          const list = shifts.filter((s) => s.date === d);
+          const today = d === days()[0];
+          return (
+            <div key={d} className={`rounded-xl border p-3 min-h-[120px] ${today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
+              <div className="capitalize text-xs font-semibold text-muted-foreground mb-2">
+                {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
+              </div>
+              {!list.length && <p className="text-xs text-muted-foreground/60">—</p>}
+              {list.map((s) => (
+                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${s.user_id === user.id ? "bg-accent text-accent-foreground font-semibold" : "bg-secondary text-secondary-foreground"}`}>
+                  <div>{name(s.user_id)}{s.user_id === user.id && " (jij)"}</div>
+                  <div className="opacity-80">{t5(s.start_time)} – {t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      ))}
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-/* ---------------- Rooster maken (beheer) ---------------- */
+/* ---------------- Rooster maken (beheer, agenda) ---------------- */
 function Planner({ profiles }: { profiles: Profile[] }) {
   const [date, setDate] = useState(days()[0]);
+  const [week, setWeek] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [avail, setAvail] = useState<Avail[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [form, setForm] = useState({ user_id: "", start: "16:00", end: "22:00", note: "" });
@@ -182,8 +212,8 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   useEffect(() => { load(); }, [load]);
 
   const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
+  const weekDays = Array.from({ length: 7 }, (_, i) => format(addDays(week, i), "yyyy-MM-dd"));
   const dayAvail = avail.filter((a) => a.date === date);
-  const dayShifts = shifts.filter((s) => s.date === date);
   const drafts = shifts.filter((s) => !s.published);
 
   const add = async (v = form) => {
@@ -201,26 +231,38 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2 overflow-x-auto pb-2 max-w-full">
-          {days().map((d) => {
-            const n = avail.filter((a) => a.date === d).length;
-            const sc = shifts.filter((s) => s.date === d).length;
-            return (
-              <button key={d} onClick={() => setDate(d)} className={`shrink-0 rounded-lg border px-3 py-2 text-xs text-left ${d === date ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border"}`}>
-                <div className="capitalize font-semibold">{format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}</div>
-                <div className="opacity-80">{n} besch. · {sc} dienst</div>
-              </button>
-            );
-          })}
-        </div>
+    <div className="space-y-4">
+      <WeekNav week={week} setWeek={setWeek}>
+        <Button onClick={publishAll} disabled={!drafts.length}><Send className="w-4 h-4" /> Publiceer concepten ({drafts.length})</Button>
+      </WeekNav>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
+        {weekDays.map((d) => {
+          const list = shifts.filter((s) => s.date === d);
+          const nAvail = avail.filter((a) => a.date === d).length;
+          const selected = d === date;
+          const today = d === days()[0];
+          return (
+            <button key={d} onClick={() => setDate(d)} className={`rounded-xl border p-3 min-h-[120px] text-left transition-colors ${selected ? "border-primary ring-2 ring-primary/30 bg-card" : today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
+              <div className="capitalize text-xs font-semibold text-muted-foreground mb-0.5">
+                {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
+              </div>
+              <div className="text-[11px] text-muted-foreground mb-2">{nAvail} beschikbaar</div>
+              {list.map((s) => (
+                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
+                  <div className="font-semibold">{name(s.user_id)}</div>
+                  <div className="opacity-80">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
+                  {!s.published && <div className="opacity-70 italic">concept</div>}
+                </div>
+              ))}
+            </button>
+          );
+        })}
       </div>
-      <Button onClick={publishAll} disabled={!drafts.length}><Send className="w-4 h-4" /> Publiceer alle concepten ({drafts.length})</Button>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="rounded-xl border border-border bg-card p-4">
-          <h3 className="font-display uppercase tracking-wider text-primary mb-3">Beschikbaar op {nice(date)}</h3>
+          <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Beschikbaar op {nice(date)}</h3>
           {!dayAvail.length && <p className="text-sm text-muted-foreground">Niemand heeft zich beschikbaar gesteld.</p>}
           {dayAvail.map((a) => (
             <div key={a.id} className="flex items-center justify-between py-1.5 text-sm border-b border-border last:border-0">
@@ -243,9 +285,9 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <h3 className="font-display uppercase tracking-wider text-primary mb-3">Rooster {nice(date)}</h3>
-          {!dayShifts.length && <p className="text-sm text-muted-foreground">Nog geen diensten.</p>}
-          {dayShifts.map((s) => (
+          <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Diensten op {nice(date)}</h3>
+          {!shifts.filter((s) => s.date === date).length && <p className="text-sm text-muted-foreground">Nog geen diensten.</p>}
+          {shifts.filter((s) => s.date === date).map((s) => (
             <div key={s.id} className="flex items-center justify-between gap-2 py-1.5 text-sm border-b border-border last:border-0">
               <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
               <span className="flex items-center gap-2">
