@@ -1,3 +1,3 @@
 # Roadmap
 
-- [ ] IBAN- en ID-onderdelen volledig verwijderen (code + opslag + database), op verzoek van gebruiker (geen ID-documenten of bankgegevens opslaan)
+- [x] IBAN- en ID-onderdelen volledig verwijderd (code, toegangsregels; opslagruimte leeg en ontoegankelijk)
