@@ -404,22 +404,22 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
         ))}
       </div>
 
-      <form onSubmit={add} className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <h3 className="font-display uppercase tracking-wider text-primary">Uren invoeren</h3>
-        {isAdmin && (
+      {isAdmin && (
+        <form onSubmit={add} className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <h3 className="font-display uppercase tracking-wider text-primary">Uren invoeren</h3>
           <select className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm" value={form.user_id} onChange={(e) => setForm({ ...form, user_id: e.target.value })}>
             {profiles.map((p) => <option key={p.id} value={p.id}>{p.display_name}{p.id === user.id ? " (jij)" : ""}</option>)}
           </select>
-        )}
-        <div className="flex flex-wrap gap-2">
-          <Input type="date" className="w-40" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />
-          <Input type="time" className="w-28" value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} required />
-          <span className="self-center text-muted-foreground">–</span>
-          <Input type="time" className="w-28" value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} required />
-        </div>
-        <Input placeholder="Opmerking (optioneel)" maxLength={200} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
-        <Button type="submit"><Plus className="w-4 h-4" /> Opslaan</Button>
-      </form>
+          <div className="flex flex-wrap gap-2">
+            <Input type="date" className="w-40" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />
+            <Input type="time" className="w-28" value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} required />
+            <span className="self-center text-muted-foreground">–</span>
+            <Input type="time" className="w-28" value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} required />
+          </div>
+          <Input placeholder="Opmerking (optioneel)" maxLength={200} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
+          <Button type="submit"><Plus className="w-4 h-4" /> Opslaan</Button>
+        </form>
+      )}
 
       <div className="rounded-xl border border-border bg-card p-4">
         <h3 className="font-display uppercase tracking-wider text-primary mb-3">Geregistreerde uren</h3>
@@ -431,7 +431,7 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
               {isAdmin && <span className="text-foreground font-medium mr-2">{name(r.user_id)}</span>}
               {t5(r.start_time)}–{t5(r.end_time)} · {fmtH(hoursOf(r))}{r.note && ` · ${r.note}`}
             </span>
-            <Button size="icon" variant="ghost" onClick={() => del(r.id)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
+            {isAdmin && <Button size="icon" variant="ghost" onClick={() => del(r.id)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>}
           </div>
         ))}
       </div>
