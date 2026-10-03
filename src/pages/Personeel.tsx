@@ -486,11 +486,13 @@ const Personeel = () => {
           <TabsList className="mb-6 flex-wrap h-auto">
             <TabsTrigger value="beschikbaarheid">Mijn beschikbaarheid</TabsTrigger>
             <TabsTrigger value="rooster">Rooster</TabsTrigger>
+            <TabsTrigger value="uren">Mijn uren</TabsTrigger>
             {isAdmin && <TabsTrigger value="planner">Rooster maken</TabsTrigger>}
             {isAdmin && <TabsTrigger value="personeel">Personeel</TabsTrigger>}
           </TabsList>
           <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>
           <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>
+          <TabsContent value="uren"><MyHours user={user} profiles={profiles} isAdmin={isAdmin} /></TabsContent>
           {isAdmin && <TabsContent value="planner"><Planner profiles={profiles} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
         </Tabs>
