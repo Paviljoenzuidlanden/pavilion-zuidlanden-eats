@@ -1,3 +1,3 @@
 # Roadmap
 
-- [x] IBAN- en ID-onderdelen volledig verwijderd (code, toegangsregels; opslagruimte leeg en ontoegankelijk)
+- [ ] Urenregistratie: tabel work_hours + tab "Mijn uren" (invoer, totalen dag/week/maand, beheerder kan voor anderen invoeren)
