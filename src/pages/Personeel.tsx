@@ -336,15 +336,12 @@ function StaffAdmin({ profiles, reload, me }: { profiles: Profile[]; reload: () 
       <div className="rounded-xl border border-border bg-card p-4">
         <h3 className="font-display uppercase tracking-wider text-primary mb-3">Personeel ({profiles.length})</h3>
         {profiles.map((p) => (
-          <div key={p.id} className="py-1.5 text-sm border-b border-border last:border-0">
-            <div className="flex items-center justify-between">
-              <span>{p.display_name} <span className="text-muted-foreground">{p.email}</span></span>
-              <span className="flex">
-                <Button size="icon" variant="ghost" onClick={() => reset(p)} aria-label="Wachtwoord wijzigen"><KeyRound className="w-4 h-4" /></Button>
-                {p.id !== me && <Button size="icon" variant="ghost" onClick={() => remove(p)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>}
-              </span>
-            </div>
-            <AdminDocs p={p} />
+          <div key={p.id} className="flex items-center justify-between py-1.5 text-sm border-b border-border last:border-0">
+            <span>{p.display_name} <span className="text-muted-foreground">{p.email}</span></span>
+            <span className="flex">
+              <Button size="icon" variant="ghost" onClick={() => reset(p)} aria-label="Wachtwoord wijzigen"><KeyRound className="w-4 h-4" /></Button>
+              {p.id !== me && <Button size="icon" variant="ghost" onClick={() => remove(p)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>}
+            </span>
           </div>
         ))}
       </div>
