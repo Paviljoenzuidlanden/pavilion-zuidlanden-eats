@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { addDays, addWeeks, format, startOfWeek } from "date-fns";
+import { addDays, addMonths, addWeeks, format, startOfWeek } from "date-fns";
 import { nl } from "date-fns/locale";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download } from "lucide-react";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
@@ -375,6 +375,8 @@ const fmtH = (h: number) => `${Math.floor(h)}:${String(Math.round((h % 1) * 60))
 function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[]; isAdmin: boolean }) {
   const [rows, setRows] = useState<WorkHour[]>([]);
   const [form, setForm] = useState({ user_id: user.id, date: days()[0], start: "16:00", end: "22:00", note: "" });
+  const [exportMonth, setExportMonth] = useState(() => format(new Date(), "yyyy-MM"));
+  const [exporting, setExporting] = useState(false);
 
   const load = useCallback(async () => {
     const q = supabase.from("work_hours").select("*").order("date", { ascending: false }).order("start_time");
@@ -395,6 +397,49 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
     load();
   };
   const del = async (id: string) => { await supabase.from("work_hours").delete().eq("id", id); load(); };
+
+  const exportCsv = async () => {
+    if (!isAdmin || !/^\d{4}-(0[1-9]|1[0-2])$/.test(exportMonth)) return;
+    setExporting(true);
+    try {
+      const from = `${exportMonth}-01`;
+      const until = format(addMonths(new Date(`${from}T12:00:00`), 1), "yyyy-MM-dd");
+      const all: WorkHour[] = [];
+      // Fetch in batches so months with more than the default result limit are complete.
+      for (let offset = 0; ; offset += 500) {
+        const { data, error } = await supabase.from("work_hours")
+          .select("id, user_id, date, start_time, end_time, note")
+          .gte("date", from).lt("date", until)
+          .order("date").order("start_time").order("id")
+          .range(offset, offset + 499);
+        if (error) throw error;
+        all.push(...((data ?? []) as WorkHour[]));
+        if (!data || data.length < 500) break;
+      }
+      if (!all.length) { toast.info("Geen geregistreerde uren in deze maand"); return; }
+
+      // Quote all cells and neutralize spreadsheet formulas in staff-provided text.
+      const cell = (value: string) => {
+        const safe = /^[\s]*[=+\-@]/.test(value) ? `'${value}` : value;
+        return `"${safe.replace(/"/g, '""')}"`;
+      };
+      const header = ["Medewerker", "E-mailadres", "Datum", "Begintijd", "Eindtijd", "Uren (decimaal)", "Opmerking"];
+      const lines = all.map((r) => {
+        const person = profiles.find((p) => p.id === r.user_id);
+        return [person?.display_name ?? "Onbekend", person?.email ?? "", r.date, t5(r.start_time), t5(r.end_time), hoursOf(r).toFixed(2).replace(".", ","), r.note ?? ""].map(cell).join(";");
+      });
+      const blob = new Blob(["\uFEFF", header.map(cell).join(";"), "\r\n", lines.join("\r\n"), "\r\n"], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `gewerkte-uren-${exportMonth}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch { toast.error("Exporteren mislukt. Probeer het opnieuw."); }
+    finally { setExporting(false); }
+  };
 
   const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
   const today = days()[0];
@@ -432,6 +477,18 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
           <Input placeholder="Opmerking (optioneel)" maxLength={200} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
           <Button type="submit"><Plus className="w-4 h-4" /> Opslaan</Button>
         </form>
+      )}
+
+      {isAdmin && (
+        <div className="flex flex-wrap items-end gap-3 border-y border-border py-4">
+          <div className="space-y-2">
+            <Label htmlFor="export-month">Maand voor salarisverwerking</Label>
+            <Input id="export-month" type="month" className="w-44" value={exportMonth} onChange={(e) => setExportMonth(e.target.value)} />
+          </div>
+          <Button type="button" variant="outline" onClick={exportCsv} disabled={exporting || !exportMonth}>
+            <Download className="w-4 h-4" /> {exporting ? "Exporteren…" : "Download CSV"}
+          </Button>
+        </div>
       )}
 
       <div className="rounded-xl border border-border bg-card p-4">
