@@ -173,19 +173,32 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
         {weekDays.map((d) => {
           const list = shifts.filter((s) => s.date === d);
+          const own = list.filter((s) => s.user_id === user.id);
+          const colleagues = list.filter((s) => s.user_id !== user.id);
           const today = d === days()[0];
           return (
-            <div key={d} className={`rounded-xl border p-3 min-h-[120px] ${today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
+            <div key={d} className={`rounded-md border p-3 min-h-[120px] min-w-0 ${today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
               <div className="capitalize text-xs font-semibold text-muted-foreground mb-2">
                 {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
               </div>
               {!list.length && <p className="text-xs text-muted-foreground/60">—</p>}
-              {list.map((s) => (
-                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${s.user_id === user.id ? "bg-accent text-accent-foreground font-semibold" : "bg-secondary text-secondary-foreground"}`}>
-                  <div>{name(s.user_id)}{s.user_id === user.id && " (jij)"}</div>
+              {own.map((s) => (
+                <div key={s.id} className="rounded-md px-2 py-1.5 mb-2 text-xs bg-accent text-accent-foreground font-semibold break-words">
+                  <div>Jouw dienst</div>
                   <div className="opacity-80">{t5(s.start_time)} – {t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
                 </div>
               ))}
+              {colleagues.length > 0 && (
+                <div className="border-t border-border pt-2 mt-2">
+                  <div className="text-[11px] font-semibold text-muted-foreground mb-1">Collega’s</div>
+                  {colleagues.map((s) => (
+                    <div key={s.id} className="text-xs py-1 break-words">
+                      <div className="font-medium text-foreground">{name(s.user_id)}</div>
+                      <div className="text-muted-foreground">{t5(s.start_time)} – {t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
