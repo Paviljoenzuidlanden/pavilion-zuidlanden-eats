@@ -374,7 +374,7 @@ const fmtH = (h: number) => `${Math.floor(h)}:${String(Math.round((h % 1) * 60))
 
 function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[]; isAdmin: boolean }) {
   const [rows, setRows] = useState<WorkHour[]>([]);
-  const [form, setForm] = useState({ user_id: user.id, date: days()[0], start: "16:00", end: "22:00", note: "" });
+  const [form, setForm] = useState({ user_id: "", date: days()[0], start: "16:00", end: "22:00", note: "" });
   const [exportMonth, setExportMonth] = useState(() => format(new Date(), "yyyy-MM"));
   const [exporting, setExporting] = useState(false);
 
@@ -387,6 +387,7 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAdmin || !form.user_id || form.user_id === user.id) return toast.error("Kies een medewerker");
     if (form.end <= form.start) return toast.error("Eindtijd moet na begintijd liggen");
     const { error } = await supabase.from("work_hours").insert({
       user_id: form.user_id, date: form.date, start_time: form.start, end_time: form.end, note: form.note.slice(0, 200) || null,
@@ -453,20 +454,21 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-3">
+      {!isAdmin && <div className="grid grid-cols-3 gap-3">
         {[["Vandaag", totDay], ["Deze week", totWeek], ["Deze maand", totMonth]].map(([label, v]) => (
           <div key={label as string} className="rounded-xl border border-border bg-card p-4 text-center">
             <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
             <div className="font-display text-2xl text-primary mt-1">{fmtH(v as number)}</div>
           </div>
         ))}
-      </div>
+      </div>}
 
       {isAdmin && (
         <form onSubmit={add} className="rounded-xl border border-border bg-card p-4 space-y-3">
           <h3 className="font-display uppercase tracking-wider text-primary">Uren invoeren</h3>
-          <select className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm" value={form.user_id} onChange={(e) => setForm({ ...form, user_id: e.target.value })}>
-            {profiles.map((p) => <option key={p.id} value={p.id}>{p.display_name}{p.id === user.id ? " (jij)" : ""}</option>)}
+          <select aria-label="Medewerker" required className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm" value={form.user_id} onChange={(e) => setForm({ ...form, user_id: e.target.value })}>
+            <option value="">Kies medewerker…</option>
+            {profiles.filter((p) => p.id !== user.id).map((p) => <option key={p.id} value={p.id}>{p.display_name}</option>)}
           </select>
           <div className="flex flex-wrap gap-2">
             <Input type="date" className="w-40" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />
@@ -475,7 +477,7 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
             <Input type="time" className="w-28" value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} required />
           </div>
           <Input placeholder="Opmerking (optioneel)" maxLength={200} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
-          <Button type="submit"><Plus className="w-4 h-4" /> Opslaan</Button>
+          <Button type="submit" disabled={!form.user_id}><Plus className="w-4 h-4" /> Opslaan</Button>
         </form>
       )}
 
@@ -514,6 +516,7 @@ const Personeel = () => {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [roleReady, setRoleReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
 
   useEffect(() => {
@@ -528,9 +531,17 @@ const Personeel = () => {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
-    supabase.from("user_roles").select("role").eq("user_id", user.id).then(({ data }) => setIsAdmin(!!data?.some((r) => r.role === "admin")));
+    if (!user) { setRoleReady(false); setIsAdmin(false); return; }
+    let active = true;
+    setRoleReady(false);
+    supabase.from("user_roles").select("role").eq("user_id", user.id).then(({ data, error }) => {
+      if (!active) return;
+      if (error) { toast.error("Je toegangsrechten konden niet worden geladen"); return; }
+      setIsAdmin(!!data?.some((r) => r.role === "admin"));
+      setRoleReady(true);
+    });
     loadProfiles();
+    return () => { active = false; };
   }, [user, loadProfiles]);
 
   const me = useMemo(() => profiles.find((p) => p.id === user?.id), [profiles, user]);
@@ -539,6 +550,7 @@ const Personeel = () => {
 
   if (!ready) return null;
   if (!user) return <Login />;
+  if (!roleReady) return <div className="min-h-screen bg-background" />;
 
   return (
     <div className="min-h-screen bg-background">
@@ -552,16 +564,16 @@ const Personeel = () => {
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <Tabs defaultValue="beschikbaarheid">
+        <Tabs defaultValue={isAdmin ? "planner" : "beschikbaarheid"}>
           <TabsList className="mb-6 flex-wrap h-auto">
-            <TabsTrigger value="beschikbaarheid">Mijn beschikbaarheid</TabsTrigger>
-            <TabsTrigger value="rooster">Rooster</TabsTrigger>
-            <TabsTrigger value="uren">Mijn uren</TabsTrigger>
+            {!isAdmin && <TabsTrigger value="beschikbaarheid">Mijn beschikbaarheid</TabsTrigger>}
+            {!isAdmin && <TabsTrigger value="rooster">Rooster</TabsTrigger>}
             {isAdmin && <TabsTrigger value="planner">Rooster maken</TabsTrigger>}
+            <TabsTrigger value="uren">{isAdmin ? "Urenregistratie" : "Mijn uren"}</TabsTrigger>
             {isAdmin && <TabsTrigger value="personeel">Personeel</TabsTrigger>}
           </TabsList>
-          <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>
-          <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>
+          {!isAdmin && <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>}
+          {!isAdmin && <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>}
           <TabsContent value="uren"><MyHours user={user} profiles={profiles} isAdmin={isAdmin} /></TabsContent>
           {isAdmin && <TabsContent value="planner"><Planner profiles={profiles} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
