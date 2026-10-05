@@ -87,6 +87,9 @@ function Login() {
 function Availability({ user }: { user: User }) {
   const [rows, setRows] = useState<Record<string, Avail>>({});
   const [draft, setDraft] = useState<Record<string, { start: string; end: string; note: string }>>({});
+  const [week, setWeek] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [month, setMonth] = useState(() => startOfMonth(new Date()));
+  const [view, setView] = useState<"week" | "month">("month");
 
   const load = useCallback(async () => {
     const { data } = await supabase.from("availability").select("*").eq("user_id", user.id).gte("date", days()[0]);
@@ -113,28 +116,108 @@ function Availability({ user }: { user: User }) {
     load();
   };
 
+  const isOpen = (d: string) => [0, 4, 5, 6].includes(new Date(d + "T12:00").getDay());
+  const maxDate = days()[days().length - 1];
+  const withinWindow = (d: string) => d >= days()[0] && d <= maxDate;
+  const isOn = (d: string) => !!rows[d] || !!draft[d];
+
+  const toggleQuick = async (d: string) => {
+    if (isOn(d)) {
+      if (rows[d]) return remove(d);
+      return setDraft((p) => { const n = { ...p }; delete n[d]; return n; });
+    }
+    const { error } = await supabase.from("availability").upsert(
+      { user_id: user.id, date: d, start_time: "16:00", end_time: "22:00", note: null },
+      { onConflict: "user_id,date" },
+    );
+    if (error) return toast.error(error.message);
+    toast.success("Beschikbaarheid doorgegeven — pas de tijden aan in de weekweergave");
+    load();
+  };
+
+  const monthStart = startOfWeek(month, { weekStartsOn: 1 });
+  const monthEnd = addDays(startOfWeek(endOfMonth(month), { weekStartsOn: 1 }), 6);
+  const monthDays = Array.from({ length: Math.round((monthEnd.getTime() - monthStart.getTime()) / 86400000) + 1 }, (_, i) => format(addDays(monthStart, i), "yyyy-MM-dd"));
+  const weekDays = Array.from({ length: 7 }, (_, i) => format(addDays(week, i), "yyyy-MM-dd"));
+
+  const monthCell = (d: string) => {
+    const outside = !d.startsWith(format(month, "yyyy-MM"));
+    const open = isOpen(d);
+    const allowed = open && withinWindow(d);
+    const on = isOn(d);
+    const v = get(d);
+    const today = d === days()[0];
+    return (
+      <div key={d} className={`border p-2 min-h-24 min-w-0 ${outside ? "bg-muted/40 border-border" : today ? "bg-accent/10 border-accent" : "bg-card border-border"}`}>
+        <div className={`capitalize text-xs font-semibold mb-1 ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
+          {format(new Date(d + "T12:00"), "d MMM", { locale: nl })}
+        </div>
+        {!open && <span className="text-xs text-muted-foreground/60">Gesloten</span>}
+        {open && !allowed && <span className="text-xs text-muted-foreground/50">—</span>}
+        {allowed && (
+          <button
+            onClick={() => toggleQuick(d)}
+            className={`w-full text-left rounded-md px-2 py-1.5 text-xs transition-colors ${on ? "bg-accent text-accent-foreground font-semibold" : "border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50"}`}
+          >
+            {on ? (<>
+              <div>{t5(v.start)}–{t5(v.end)}</div>
+              {v.note && <div className="font-normal truncate">{v.note}</div>}
+            </>) : "+ beschikbaar"}
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="space-y-2">
-      <p className="text-sm text-muted-foreground mb-4">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 4 weken vooruit).</p>
-      {openDays().map((d) => {
-        const on = !!rows[d] || !!draft[d];
-        const v = get(d);
-        return (
-          <div key={d} className={`rounded-xl border p-3 flex flex-wrap items-center gap-3 ${rows[d] ? "border-accent bg-accent/10" : "border-border bg-card"}`}>
-            <Switch checked={on} onCheckedChange={(c) => (c ? setDraft((p) => ({ ...p, [d]: v })) : rows[d] ? remove(d) : setDraft((p) => { const n = { ...p }; delete n[d]; return n; }))} />
-            <span className="w-44 capitalize font-medium text-sm">{nice(d)}</span>
-            {on && (
-              <>
-                <Input type="time" className="w-28" value={v.start} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, start: e.target.value } }))} />
-                <span className="text-muted-foreground">–</span>
-                <Input type="time" className="w-28" value={v.end} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, end: e.target.value } }))} />
-                <Input placeholder="Opmerking" className="flex-1 min-w-[140px]" maxLength={200} value={v.note} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, note: e.target.value } }))} />
-                {draft[d] && <Button size="sm" onClick={() => save(d)}>Opslaan</Button>}
-              </>
-            )}
+    <div className="space-y-4">
+      <p className="text-sm text-muted-foreground">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 4 weken vooruit). In de maandweergave klik je op een dag om je aan/af te melden; tijden en opmerkingen stel je in de weekweergave in.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-1" aria-label="Beschikbaarheidweergave">
+          <Button size="sm" variant={view === "month" ? "default" : "outline"} onClick={() => setView("month")}>Maand</Button>
+          <Button size="sm" variant={view === "week" ? "default" : "outline"} onClick={() => setView("week")}>Week</Button>
+        </div>
+        {view === "month" && <div className="flex items-center gap-2">
+          <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, -1))} aria-label="Vorige maand"><ChevronLeft className="w-4 h-4" /></Button>
+          <Button size="sm" variant="outline" onClick={() => setMonth(startOfMonth(new Date()))}>Deze maand</Button>
+          <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, 1))} aria-label="Volgende maand"><ChevronRight className="w-4 h-4" /></Button>
+          <span className="font-display uppercase text-primary capitalize">{format(month, "MMMM yyyy", { locale: nl })}</span>
+        </div>}
+      </div>
+      {view === "week" && <WeekNav week={week} setWeek={setWeek} />}
+      {view === "month" && (
+        <div className="overflow-x-auto" aria-label="Maandbeschikbaarheid">
+          <div className="min-w-[700px] grid grid-cols-7 gap-1">
+            {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-xs font-semibold uppercase text-muted-foreground py-2">{d}</div>)}
+            {monthDays.map((d) => monthCell(d))}
           </div>
-        );
-      })}
+        </div>
+      )}
+      {view === "week" && (
+        <div className="space-y-2">
+          {weekDays.filter((d) => isOpen(d)).map((d) => {
+            const allowed = withinWindow(d);
+            const on = isOn(d);
+            const v = get(d);
+            return (
+              <div key={d} className={`rounded-xl border p-3 flex flex-wrap items-center gap-3 ${on ? "border-accent bg-accent/10" : "border-border bg-card"} ${!allowed ? "opacity-50" : ""}`}>
+                <Switch disabled={!allowed} checked={on} onCheckedChange={(c) => (c ? setDraft((p) => ({ ...p, [d]: v })) : rows[d] ? remove(d) : setDraft((p) => { const n = { ...p }; delete n[d]; return n; }))} />
+                <span className="w-44 capitalize font-medium text-sm">{nice(d)}</span>
+                {on && allowed && (
+                  <>
+                    <Input type="time" className="w-28" value={v.start} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, start: e.target.value } }))} />
+                    <span className="text-muted-foreground">–</span>
+                    <Input type="time" className="w-28" value={v.end} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, end: e.target.value } }))} />
+                    <Input placeholder="Opmerking" className="flex-1 min-w-[140px]" maxLength={200} value={v.note} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, note: e.target.value } }))} />
+                    {draft[d] && <Button size="sm" onClick={() => save(d)}>Opslaan</Button>}
+                  </>
+                )}
+                {on && !allowed && <span className="text-xs text-muted-foreground italic">Buiten de aanmeldperiode</span>}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
