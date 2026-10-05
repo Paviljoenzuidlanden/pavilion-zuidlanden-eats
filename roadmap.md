@@ -4,5 +4,5 @@
 - [x] Rooster: eigen diensten en collega's per dag duidelijk onderscheiden.
 - [x] Beheerdersadres gecontroleerd: info@paviljoenzuidlanden.nl staat correct in account en applicatie.
 - [x] Maandelijkse CSV-export van geregistreerde uren voor beheerders.
-- [ ] Beheerdersweergave zonder eigen beschikbaarheid of eigen uren; personeelsuren en rooster als hoofdwerkzaamheden.
+- [x] Beheerdersweergave zonder eigen beschikbaarheid of eigen uren; personeelsuren en rooster als hoofdwerkzaamheden.
 - [ ] Mail bij publicatie van rooster — wacht op inrichting van afzenderdomein door eigenaar.
