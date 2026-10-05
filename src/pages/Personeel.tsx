@@ -19,7 +19,7 @@ type Shift = { id: string; user_id: string; date: string; start_time: string; en
 const days = () => Array.from({ length: 29 }, (_, i) => format(addDays(new Date(), i), "yyyy-MM-dd"));
 const nice = (d: string) => format(new Date(d + "T12:00"), "EEEE d MMMM", { locale: nl });
 const t5 = (t: string) => t.slice(0, 5);
-const openDays = () => days().filter((d) => new Date(d + "T12:00").getDay() >= 4 || new Date(d + "T12:00").getDay() === 0);
+const openDays = () => days().filter((d) => [0, 4, 5, 6].includes(new Date(d + "T12:00").getDay()));
 
 async function staffFn(body: Record<string, unknown>) {
   const { data, error } = await supabase.functions.invoke("manage-staff", { body });
