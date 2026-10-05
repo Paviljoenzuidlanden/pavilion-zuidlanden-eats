@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { addDays, addMonths, addWeeks, format, startOfWeek } from "date-fns";
+import { addDays, addMonths, addWeeks, endOfMonth, format, startOfMonth, startOfWeek } from "date-fns";
 import { nl } from "date-fns/locale";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,7 @@ type Shift = { id: string; user_id: string; date: string; start_time: string; en
 const days = () => Array.from({ length: 29 }, (_, i) => format(addDays(new Date(), i), "yyyy-MM-dd"));
 const nice = (d: string) => format(new Date(d + "T12:00"), "EEEE d MMMM", { locale: nl });
 const t5 = (t: string) => t.slice(0, 5);
+const openDays = () => days().filter((d) => [0, 4, 5, 6].includes(new Date(d + "T12:00").getDay()));
 
 async function staffFn(body: Record<string, unknown>) {
   const { data, error } = await supabase.functions.invoke("manage-staff", { body });
@@ -114,8 +115,8 @@ function Availability({ user }: { user: User }) {
 
   return (
     <div className="space-y-2">
-      <p className="text-sm text-muted-foreground mb-4">Zet de schakelaar aan op dagen dat je kunt werken en vul je tijden in (tot 4 weken vooruit).</p>
-      {days().map((d) => {
+      <p className="text-sm text-muted-foreground mb-4">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 4 weken vooruit).</p>
+      {openDays().map((d) => {
         const on = !!rows[d] || !!draft[d];
         const v = get(d);
         return (
@@ -160,49 +161,85 @@ function WeekNav({ week, setWeek, children }: { week: Date; setWeek: (d: Date) =
 function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [week, setWeek] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
-  useEffect(() => {
-    supabase.from("shifts").select("*").eq("published", true).gte("date", days()[0]).order("date").order("start_time")
-      .then(({ data }) => setShifts((data ?? []) as Shift[]));
-  }, []);
-  const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
+  const [month, setMonth] = useState(() => startOfMonth(new Date()));
+  const [view, setView] = useState<"week" | "month">("month");
+  const [loading, setLoading] = useState(false);
+  const monthStart = startOfWeek(month, { weekStartsOn: 1 });
+  const monthEnd = addDays(startOfWeek(endOfMonth(month), { weekStartsOn: 1 }), 6);
+  const monthDays = Array.from({ length: Math.round((monthEnd.getTime() - monthStart.getTime()) / 86400000) + 1 }, (_, i) => format(addDays(monthStart, i), "yyyy-MM-dd"));
   const weekDays = Array.from({ length: 7 }, (_, i) => format(addDays(week, i), "yyyy-MM-dd"));
-  if (!shifts.length) return <p className="text-muted-foreground">Er is nog geen rooster gepubliceerd.</p>;
+  const visibleDays = view === "month" ? monthDays : weekDays;
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    supabase.from("shifts").select("*").eq("published", true)
+      .gte("date", visibleDays[0]).lte("date", visibleDays[visibleDays.length - 1])
+      .order("date").order("start_time")
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) toast.error("Rooster kon niet worden geladen");
+        setShifts((data ?? []) as Shift[]);
+        setLoading(false);
+      });
+    return () => { active = false; };
+  }, [view, week, month]);
+  const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
+  const dayCell = (d: string, compact: boolean) => {
+    const list = shifts.filter((s) => s.date === d);
+    const own = list.filter((s) => s.user_id === user.id);
+    const colleagues = list.filter((s) => s.user_id !== user.id);
+    const today = d === days()[0];
+    const outside = compact && !d.startsWith(format(month, "yyyy-MM"));
+    return (
+      <div key={d} className={`border border-border p-2 min-w-0 ${compact ? "min-h-28" : "min-h-[120px] rounded-md"} ${today ? "bg-accent/10 border-accent" : outside ? "bg-muted/40" : "bg-card"}`}>
+        <div className={`capitalize text-xs font-semibold mb-2 ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
+          {format(new Date(d + "T12:00"), compact ? "d MMM" : "EEE d MMM", { locale: nl })}
+        </div>
+        {!list.length && <span className="text-xs text-muted-foreground/60">—</span>}
+        {own.map((s) => (
+          <div key={s.id} className="rounded-md px-2 py-1.5 mb-1 text-xs bg-accent text-accent-foreground font-semibold break-words">
+            <div>Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
+            {s.note && <div className="font-normal break-words">{s.note}</div>}
+          </div>
+        ))}
+        {colleagues.length > 0 && (
+          <div className="border-t border-border pt-1 mt-1">
+            {colleagues.map((s) => (
+              <div key={s.id} className="text-xs py-1 break-words">
+                <div className="font-medium text-foreground">{name(s.user_id)}</div>
+                <div className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
   return (
     <div className="space-y-4">
-      <WeekNav week={week} setWeek={setWeek} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
-        {weekDays.map((d) => {
-          const list = shifts.filter((s) => s.date === d);
-          const own = list.filter((s) => s.user_id === user.id);
-          const colleagues = list.filter((s) => s.user_id !== user.id);
-          const today = d === days()[0];
-          return (
-            <div key={d} className={`rounded-md border p-3 min-h-[120px] min-w-0 ${today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
-              <div className="capitalize text-xs font-semibold text-muted-foreground mb-2">
-                {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
-              </div>
-              {!list.length && <p className="text-xs text-muted-foreground/60">—</p>}
-              {own.map((s) => (
-                <div key={s.id} className="rounded-md px-2 py-1.5 mb-2 text-xs bg-accent text-accent-foreground font-semibold break-words">
-                  <div>Jouw dienst</div>
-                  <div className="opacity-80">{t5(s.start_time)} – {t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
-                </div>
-              ))}
-              {colleagues.length > 0 && (
-                <div className="border-t border-border pt-2 mt-2">
-                  <div className="text-[11px] font-semibold text-muted-foreground mb-1">Collega’s</div>
-                  {colleagues.map((s) => (
-                    <div key={s.id} className="text-xs py-1 break-words">
-                      <div className="font-medium text-foreground">{name(s.user_id)}</div>
-                      <div className="text-muted-foreground">{t5(s.start_time)} – {t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-1" aria-label="Roosterweergave">
+          <Button size="sm" variant={view === "month" ? "default" : "outline"} onClick={() => setView("month")}>Maand</Button>
+          <Button size="sm" variant={view === "week" ? "default" : "outline"} onClick={() => setView("week")}>Week</Button>
+        </div>
+        {view === "month" && <div className="flex items-center gap-2">
+          <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, -1))} aria-label="Vorige maand"><ChevronLeft className="w-4 h-4" /></Button>
+          <Button size="sm" variant="outline" onClick={() => setMonth(startOfMonth(new Date()))}>Deze maand</Button>
+          <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, 1))} aria-label="Volgende maand"><ChevronRight className="w-4 h-4" /></Button>
+          <span className="font-display uppercase text-primary capitalize">{format(month, "MMMM yyyy", { locale: nl })}</span>
+        </div>}
       </div>
+      {view === "week" && <WeekNav week={week} setWeek={setWeek} />}
+      {loading && <p className="text-sm text-muted-foreground">Rooster laden…</p>}
+      {!loading && !shifts.length && <p className="text-sm text-muted-foreground">Voor deze periode is nog geen rooster gepubliceerd.</p>}
+      {view === "month" ? (
+        <div className="overflow-x-auto" aria-label="Maandrooster">
+          <div className="min-w-[700px] grid grid-cols-7 gap-1">
+            {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-xs font-semibold uppercase text-muted-foreground py-2">{d}</div>)}
+            {monthDays.map((d) => dayCell(d, true))}
+          </div>
+        </div>
+      ) : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">{weekDays.map((d) => dayCell(d, false))}</div>}
     </div>
   );
 }
