@@ -5,4 +5,5 @@
 - [x] Beheerdersadres gecontroleerd: info@paviljoenzuidlanden.nl staat correct in account en applicatie.
 - [x] Maandelijkse CSV-export van geregistreerde uren voor beheerders.
 - [x] Beheerdersweergave zonder eigen beschikbaarheid of eigen uren; personeelsuren en rooster als hoofdwerkzaamheden.
+- [ ] Beschikbaarheid alleen donderdag t/m zondag tonen; maandoverzicht maandag t/m zondag voor medewerkers.
 - [ ] Mail bij publicatie van rooster — wacht op inrichting van afzenderdomein door eigenaar.
