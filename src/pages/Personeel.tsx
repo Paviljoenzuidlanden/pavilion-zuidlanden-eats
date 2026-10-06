@@ -147,21 +147,24 @@ function Availability({ user }: { user: User }) {
     const v = get(d);
     const today = d === days()[0];
     return (
-      <div key={d} className={`border p-2 min-h-24 min-w-0 ${outside ? "bg-muted/40 border-border" : today ? "bg-accent/10 border-accent" : "bg-card border-border"}`}>
-        <div className={`capitalize text-xs font-semibold mb-1 ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
+      <div key={d} className={`border rounded-md p-1 sm:p-2 min-h-14 sm:min-h-24 min-w-0 flex flex-col gap-1 ${outside ? "bg-muted/40 border-border" : today ? "bg-accent/10 border-accent" : "bg-card border-border"}`}>
+        <div className={`capitalize text-[11px] sm:text-xs font-semibold leading-none ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
           {format(new Date(d + "T12:00"), "d MMM", { locale: nl })}
         </div>
-        {!open && <span className="text-xs text-muted-foreground/60">Gesloten</span>}
-        {open && !allowed && <span className="text-xs text-muted-foreground/50">—</span>}
+        {!open && <span className="hidden sm:inline text-xs text-muted-foreground/60">Gesloten</span>}
+        {open && !allowed && <span className="hidden sm:inline text-xs text-muted-foreground/50">—</span>}
         {allowed && (
           <button
             onClick={() => toggleQuick(d)}
-            className={`w-full text-left rounded-md px-2 py-1.5 text-xs transition-colors ${on ? "bg-accent text-accent-foreground font-semibold" : "border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50"}`}
+            className={`mt-auto w-full text-left rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[11px] sm:text-xs leading-tight transition-colors truncate ${on ? "bg-accent text-accent-foreground font-semibold" : "border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50"}`}
           >
             {on ? (<>
-              <div>{t5(v.start)}–{t5(v.end)}</div>
-              {v.note && <div className="font-normal truncate">{v.note}</div>}
-            </>) : "+ beschikbaar"}
+              <span className="sm:hidden">✓</span>
+              <span className="hidden sm:inline">{t5(v.start)}–{t5(v.end)}{v.note ? ` · ${v.note}` : ""}</span>
+            </>) : (<>
+              <span className="sm:hidden">+</span>
+              <span className="hidden sm:inline">+ beschikbaar</span>
+            </>)}
           </button>
         )}
       </div>
@@ -180,16 +183,14 @@ function Availability({ user }: { user: User }) {
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, -1))} aria-label="Vorige maand"><ChevronLeft className="w-4 h-4" /></Button>
           <Button size="sm" variant="outline" onClick={() => setMonth(startOfMonth(new Date()))}>Deze maand</Button>
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, 1))} aria-label="Volgende maand"><ChevronRight className="w-4 h-4" /></Button>
-          <span className="font-display uppercase text-primary capitalize">{format(month, "MMMM yyyy", { locale: nl })}</span>
+          <span className="font-display uppercase text-primary capitalize w-full sm:w-auto">{format(month, "MMMM yyyy", { locale: nl })}</span>
         </div>}
       </div>
       {view === "week" && <WeekNav week={week} setWeek={setWeek} />}
       {view === "month" && (
-        <div className="overflow-x-auto" aria-label="Maandbeschikbaarheid">
-          <div className="min-w-[700px] grid grid-cols-7 gap-1">
-            {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-xs font-semibold uppercase text-muted-foreground py-2">{d}</div>)}
-            {monthDays.map((d) => monthCell(d))}
-          </div>
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1" aria-label="Maandbeschikbaarheid">
+          {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-[10px] sm:text-xs font-semibold uppercase text-muted-foreground py-1 sm:py-2">{d}</div>)}
+          {monthDays.map((d) => monthCell(d))}
         </div>
       )}
       {view === "week" && (
