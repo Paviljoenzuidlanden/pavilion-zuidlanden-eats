@@ -281,14 +281,14 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
         {!list.length && <span className="hidden sm:inline text-xs text-muted-foreground/60">—</span>}
         {own.map((s) => (
           <div key={s.id} className="rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-accent text-accent-foreground font-semibold break-words">
-            <div className="sm:hidden leading-tight">Jij<br />{t5(s.start_time)}–{t5(s.end_time)}</div>
+            <div className="sm:hidden leading-tight">Jij<br />{t5(s.start_time)}<br />–{t5(s.end_time)}</div>
             <div className="hidden sm:block">Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
             {s.note && <div className="hidden sm:block font-normal break-words">{s.note}</div>}
           </div>
         ))}
         {colleagues.length > 0 && (
           <div className="border-t border-border pt-1 mt-auto">
-            <div className="sm:hidden text-[10px] text-muted-foreground leading-tight">{colleagues.length} collega{colleagues.length > 1 ? "a's" : ""}</div>
+            <div className="sm:hidden text-[10px] text-muted-foreground leading-tight">{colleagues.length} {colleagues.length > 1 ? "collega's" : "collega"}</div>
             {colleagues.map((s) => (
               <div key={s.id} className="hidden sm:block text-xs py-1 break-words">
                 <div className="font-medium text-foreground">{name(s.user_id)}</div>
