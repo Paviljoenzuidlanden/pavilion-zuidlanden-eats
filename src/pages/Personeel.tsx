@@ -19,6 +19,8 @@ type Shift = { id: string; user_id: string; date: string; start_time: string; en
 const days = () => Array.from({ length: 29 }, (_, i) => format(addDays(new Date(), i), "yyyy-MM-dd"));
 const nice = (d: string) => format(new Date(d + "T12:00"), "EEEE d MMMM", { locale: nl });
 const t5 = (t: string) => t.slice(0, 5);
+// Compacte tijd voor smalle mobiele cellen: "16:00" -> "16", "21:30" -> "21.30"
+const tc = (t: string) => (t.endsWith(":00") ? t.slice(0, 2) : t.slice(0, 5).replace(":", "."));
 
 async function staffFn(body: Record<string, unknown>) {
   const { data, error } = await supabase.functions.invoke("manage-staff", { body });
@@ -281,7 +283,7 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
         {!list.length && <span className="hidden sm:inline text-xs text-muted-foreground/60">—</span>}
         {own.map((s) => (
           <div key={s.id} className="rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-accent text-accent-foreground font-semibold break-words">
-            <div className="sm:hidden leading-tight">Jij<br />{t5(s.start_time)}<br />–{t5(s.end_time)}</div>
+            <div className="sm:hidden leading-tight">Jij<br />{tc(s.start_time)}–{tc(s.end_time)}</div>
             <div className="hidden sm:block">Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
             {s.note && <div className="hidden sm:block font-normal break-words">{s.note}</div>}
           </div>
