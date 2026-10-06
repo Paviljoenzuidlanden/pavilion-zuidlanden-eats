@@ -19,6 +19,8 @@ type Shift = { id: string; user_id: string; date: string; start_time: string; en
 const days = () => Array.from({ length: 29 }, (_, i) => format(addDays(new Date(), i), "yyyy-MM-dd"));
 const nice = (d: string) => format(new Date(d + "T12:00"), "EEEE d MMMM", { locale: nl });
 const t5 = (t: string) => t.slice(0, 5);
+// Compacte tijd voor smalle mobiele cellen: "16:00" -> "16", "21:30" -> "21.30"
+const tc = (t: string) => (t.endsWith(":00") ? t.slice(0, 2) : t.slice(0, 5).replace(":", "."));
 
 async function staffFn(body: Record<string, unknown>) {
   const { data, error } = await supabase.functions.invoke("manage-staff", { body });
@@ -147,21 +149,24 @@ function Availability({ user }: { user: User }) {
     const v = get(d);
     const today = d === days()[0];
     return (
-      <div key={d} className={`border p-2 min-h-24 min-w-0 ${outside ? "bg-muted/40 border-border" : today ? "bg-accent/10 border-accent" : "bg-card border-border"}`}>
-        <div className={`capitalize text-xs font-semibold mb-1 ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
+      <div key={d} className={`border rounded-md p-1 sm:p-2 min-h-14 sm:min-h-24 min-w-0 flex flex-col gap-1 ${outside ? "bg-muted/40 border-border" : today ? "bg-accent/10 border-accent" : "bg-card border-border"}`}>
+        <div className={`capitalize text-[11px] sm:text-xs font-semibold leading-none ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
           {format(new Date(d + "T12:00"), "d MMM", { locale: nl })}
         </div>
-        {!open && <span className="text-xs text-muted-foreground/60">Gesloten</span>}
-        {open && !allowed && <span className="text-xs text-muted-foreground/50">—</span>}
+        {!open && <span className="hidden sm:inline text-xs text-muted-foreground/60">Gesloten</span>}
+        {open && !allowed && <span className="hidden sm:inline text-xs text-muted-foreground/50">—</span>}
         {allowed && (
           <button
             onClick={() => toggleQuick(d)}
-            className={`w-full text-left rounded-md px-2 py-1.5 text-xs transition-colors ${on ? "bg-accent text-accent-foreground font-semibold" : "border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50"}`}
+            className={`mt-auto w-full text-left rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[11px] sm:text-xs leading-tight transition-colors truncate ${on ? "bg-accent text-accent-foreground font-semibold" : "border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50"}`}
           >
             {on ? (<>
-              <div>{t5(v.start)}–{t5(v.end)}</div>
-              {v.note && <div className="font-normal truncate">{v.note}</div>}
-            </>) : "+ beschikbaar"}
+              <span className="sm:hidden">✓</span>
+              <span className="hidden sm:inline">{t5(v.start)}–{t5(v.end)}{v.note ? ` · ${v.note}` : ""}</span>
+            </>) : (<>
+              <span className="sm:hidden">+</span>
+              <span className="hidden sm:inline">+ beschikbaar</span>
+            </>)}
           </button>
         )}
       </div>
@@ -180,16 +185,14 @@ function Availability({ user }: { user: User }) {
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, -1))} aria-label="Vorige maand"><ChevronLeft className="w-4 h-4" /></Button>
           <Button size="sm" variant="outline" onClick={() => setMonth(startOfMonth(new Date()))}>Deze maand</Button>
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, 1))} aria-label="Volgende maand"><ChevronRight className="w-4 h-4" /></Button>
-          <span className="font-display uppercase text-primary capitalize">{format(month, "MMMM yyyy", { locale: nl })}</span>
+          <span className="font-display uppercase text-primary capitalize w-full sm:w-auto">{format(month, "MMMM yyyy", { locale: nl })}</span>
         </div>}
       </div>
       {view === "week" && <WeekNav week={week} setWeek={setWeek} />}
       {view === "month" && (
-        <div className="overflow-x-auto" aria-label="Maandbeschikbaarheid">
-          <div className="min-w-[700px] grid grid-cols-7 gap-1">
-            {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-xs font-semibold uppercase text-muted-foreground py-2">{d}</div>)}
-            {monthDays.map((d) => monthCell(d))}
-          </div>
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1" aria-label="Maandbeschikbaarheid">
+          {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-[10px] sm:text-xs font-semibold uppercase text-muted-foreground py-1 sm:py-2">{d}</div>)}
+          {monthDays.map((d) => monthCell(d))}
         </div>
       )}
       {view === "week" && (
@@ -230,7 +233,7 @@ function WeekNav({ week, setWeek, children }: { week: Date; setWeek: (d: Date) =
         <Button size="icon" variant="outline" onClick={() => setWeek(addWeeks(week, -1))} aria-label="Vorige week"><ChevronLeft className="w-4 h-4" /></Button>
         <Button size="sm" variant="outline" onClick={() => setWeek(startOfWeek(new Date(), { weekStartsOn: 1 }))}>Deze week</Button>
         <Button size="icon" variant="outline" onClick={() => setWeek(addWeeks(week, 1))} aria-label="Volgende week"><ChevronRight className="w-4 h-4" /></Button>
-        <span className="font-display uppercase tracking-wider text-primary ml-2 capitalize">
+        <span className="font-display uppercase tracking-wider text-primary sm:ml-2 capitalize w-full sm:w-auto">
           {format(week, "d MMM", { locale: nl })} – {format(end, "d MMM yyyy", { locale: nl })}
         </span>
       </div>
@@ -273,21 +276,23 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
     const today = d === days()[0];
     const outside = compact && !d.startsWith(format(month, "yyyy-MM"));
     return (
-      <div key={d} className={`border border-border p-2 min-w-0 ${compact ? "min-h-28" : "min-h-[120px] rounded-md"} ${today ? "bg-accent/10 border-accent" : outside ? "bg-muted/40" : "bg-card"}`}>
-        <div className={`capitalize text-xs font-semibold mb-2 ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
+      <div key={d} className={`border border-border rounded-md p-1 sm:p-2 min-w-0 flex flex-col gap-1 ${compact ? "min-h-16 sm:min-h-28" : "min-h-[120px]"} ${today ? "bg-accent/10 border-accent" : outside ? "bg-muted/40" : "bg-card"}`}>
+        <div className={`capitalize text-[11px] sm:text-xs font-semibold leading-none ${outside ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
           {format(new Date(d + "T12:00"), compact ? "d MMM" : "EEE d MMM", { locale: nl })}
         </div>
-        {!list.length && <span className="text-xs text-muted-foreground/60">—</span>}
+        {!list.length && <span className="hidden sm:inline text-xs text-muted-foreground/60">—</span>}
         {own.map((s) => (
-          <div key={s.id} className="rounded-md px-2 py-1.5 mb-1 text-xs bg-accent text-accent-foreground font-semibold break-words">
-            <div>Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
-            {s.note && <div className="font-normal break-words">{s.note}</div>}
+          <div key={s.id} className="rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-accent text-accent-foreground font-semibold break-words">
+            <div className="sm:hidden leading-tight">Jij<br />{tc(s.start_time)}–{tc(s.end_time)}</div>
+            <div className="hidden sm:block">Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
+            {s.note && <div className="hidden sm:block font-normal break-words">{s.note}</div>}
           </div>
         ))}
         {colleagues.length > 0 && (
-          <div className="border-t border-border pt-1 mt-1">
+          <div className="border-t border-border pt-1 mt-auto">
+            <div className="sm:hidden text-[10px] text-muted-foreground leading-tight">{colleagues.length} {colleagues.length > 1 ? "collega's" : "collega"}</div>
             {colleagues.map((s) => (
-              <div key={s.id} className="text-xs py-1 break-words">
+              <div key={s.id} className="hidden sm:block text-xs py-1 break-words">
                 <div className="font-medium text-foreground">{name(s.user_id)}</div>
                 <div className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
               </div>
@@ -308,18 +313,16 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, -1))} aria-label="Vorige maand"><ChevronLeft className="w-4 h-4" /></Button>
           <Button size="sm" variant="outline" onClick={() => setMonth(startOfMonth(new Date()))}>Deze maand</Button>
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, 1))} aria-label="Volgende maand"><ChevronRight className="w-4 h-4" /></Button>
-          <span className="font-display uppercase text-primary capitalize">{format(month, "MMMM yyyy", { locale: nl })}</span>
+          <span className="font-display uppercase text-primary capitalize w-full sm:w-auto">{format(month, "MMMM yyyy", { locale: nl })}</span>
         </div>}
       </div>
       {view === "week" && <WeekNav week={week} setWeek={setWeek} />}
       {loading && <p className="text-sm text-muted-foreground">Rooster laden…</p>}
       {!loading && !shifts.length && <p className="text-sm text-muted-foreground">Voor deze periode is nog geen rooster gepubliceerd.</p>}
       {view === "month" ? (
-        <div className="overflow-x-auto" aria-label="Maandrooster">
-          <div className="min-w-[700px] grid grid-cols-7 gap-1">
-            {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-xs font-semibold uppercase text-muted-foreground py-2">{d}</div>)}
-            {monthDays.map((d) => dayCell(d, true))}
-          </div>
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1" aria-label="Maandrooster">
+          {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((d) => <div key={d} className="text-center text-[10px] sm:text-xs font-semibold uppercase text-muted-foreground py-1 sm:py-2">{d}</div>)}
+          {monthDays.map((d) => dayCell(d, true))}
         </div>
       ) : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">{weekDays.map((d) => dayCell(d, false))}</div>}
     </div>
