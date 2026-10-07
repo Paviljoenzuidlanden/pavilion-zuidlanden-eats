@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const events = [
   {
@@ -75,10 +76,20 @@ const Agenda = () => {
   const [formData, setFormData] = useState({ naam: "", email: "", telefoon: "" });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.naam || !formData.email) {
-      toast({ title: "Vul je naam en e-mail in", variant: "destructive" });
+    const naam = formData.naam.trim(), email = formData.email.trim(), tel = formData.telefoon.trim();
+    if (!naam || !/^\S+@\S+\.\S+$/.test(email) || naam.length > 100 || email.length > 255 || tel.length > 30) {
+      toast({ title: "Vul een geldige naam en e-mail in", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("event_signups").insert({
+      event_title: selectedEvent!.title,
+      event_date: `${selectedEvent!.date} ${selectedEvent!.month}`,
+      name: naam, email, phone: tel || null,
+    });
+    if (error) {
+      toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
       return;
     }
     setSubmitted(true);

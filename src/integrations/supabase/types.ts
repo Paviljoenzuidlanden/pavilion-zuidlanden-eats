@@ -47,6 +47,36 @@ export type Database = {
         }
         Relationships: []
       }
+      event_signups: {
+        Row: {
+          created_at: string
+          email: string
+          event_date: string
+          event_title: string
+          id: string
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          event_date: string
+          event_title: string
+          id?: string
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          event_date?: string
+          event_title?: string
+          id?: string
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string

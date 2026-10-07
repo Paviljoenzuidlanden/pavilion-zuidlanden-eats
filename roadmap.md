@@ -7,3 +7,5 @@
 - [x] Beheerdersweergave zonder eigen beschikbaarheid of eigen uren; personeelsuren en rooster als hoofdwerkzaamheden.
 - [x] Beschikbaarheid alleen donderdag t/m zondag tonen; maandoverzicht maandag t/m zondag voor medewerkers.
 - [ ] Mail bij publicatie van rooster — wacht op inrichting van afzenderdomein door eigenaar.
+- [x] Agenda-aanmeldingen opslaan en tonen bij beheer (tab Aanmeldingen).
+- [ ] Mail bij nieuwe agenda-aanmelding — wacht op afzenderdomein.
