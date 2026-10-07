@@ -438,6 +438,50 @@ function Planner({ profiles }: { profiles: Profile[] }) {
 }
 
 /* ---------------- Personeelsbeheer ---------------- */
+type Signup = { id: string; event_title: string; event_date: string; name: string; email: string; phone: string | null; created_at: string };
+function Signups() {
+  const [rows, setRows] = useState<Signup[]>([]);
+  const load = useCallback(async () => {
+    const { data, error } = await supabase.from("event_signups").select("*").order("created_at", { ascending: false });
+    if (error) toast.error(error.message); else setRows(data as Signup[]);
+  }, []);
+  useEffect(() => { load(); }, [load]);
+  const remove = async (s: Signup) => {
+    if (!window.confirm(`Aanmelding van ${s.name} verwijderen?`)) return;
+    const { error } = await supabase.from("event_signups").delete().eq("id", s.id);
+    if (error) toast.error(error.message); else load();
+  };
+  const groups = rows.reduce<Record<string, Signup[]>>((acc, r) => {
+    const k = `${r.event_title} — ${r.event_date}`; (acc[k] ||= []).push(r); return acc;
+  }, {});
+  if (!rows.length) return <p className="text-muted-foreground py-6">Nog geen aanmeldingen voor activiteiten.</p>;
+  return (
+    <div className="space-y-6">
+      {Object.entries(groups).map(([k, list]) => (
+        <div key={k} className="rounded-xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between mb-3 gap-2">
+            <h3 className="font-display text-lg uppercase tracking-tight">{k}</h3>
+            <Badge>{list.length} aanmelding{list.length === 1 ? "" : "en"}</Badge>
+          </div>
+          <div className="divide-y divide-border">
+            {list.map((s) => (
+              <div key={s.id} className="flex items-center justify-between gap-2 py-2 text-sm">
+                <div className="min-w-0">
+                  <div className="font-semibold">{s.name}</div>
+                  <div className="text-muted-foreground break-all">
+                    <a href={`mailto:${s.email}`} className="underline">{s.email}</a>{s.phone ? ` · ${s.phone}` : ""} · {format(new Date(s.created_at), "d MMM HH:mm", { locale: nl })}
+                  </div>
+                </div>
+                <Button size="icon" variant="ghost" onClick={() => remove(s)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function StaffAdmin({ profiles, reload, me }: { profiles: Profile[]; reload: () => void; me: string }) {
   const [f, setF] = useState({ name: "", email: "", password: "", isAdmin: false });
   const [busy, setBusy] = useState(false);
@@ -693,12 +737,14 @@ const Personeel = () => {
             {isAdmin && <TabsTrigger value="planner">Rooster maken</TabsTrigger>}
             <TabsTrigger value="uren">{isAdmin ? "Urenregistratie" : "Mijn uren"}</TabsTrigger>
             {isAdmin && <TabsTrigger value="personeel">Personeel</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="aanmeldingen">Aanmeldingen</TabsTrigger>}
           </TabsList>
           {!isAdmin && <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>}
           {!isAdmin && <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>}
           <TabsContent value="uren"><MyHours user={user} profiles={profiles} isAdmin={isAdmin} /></TabsContent>
           {isAdmin && <TabsContent value="planner"><Planner profiles={profiles} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
+          {isAdmin && <TabsContent value="aanmeldingen"><Signups /></TabsContent>}
         </Tabs>
       </main>
     </div>
