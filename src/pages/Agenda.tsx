@@ -78,14 +78,15 @@ const Agenda = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedEvent) return;
     const naam = formData.naam.trim(), email = formData.email.trim(), tel = formData.telefoon.trim();
     if (!naam || !/^\S+@\S+\.\S+$/.test(email) || naam.length > 100 || email.length > 255 || tel.length > 30) {
       toast({ title: "Vul een geldige naam en e-mail in", variant: "destructive" });
       return;
     }
     const { error } = await supabase.from("event_signups").insert({
-      event_title: selectedEvent!.title,
-      event_date: `${selectedEvent!.date} ${selectedEvent!.month}`,
+      event_title: selectedEvent.title,
+      event_date: `${selectedEvent.date} ${selectedEvent.month}`,
       name: naam, email, phone: tel || null,
     });
     if (error) {
@@ -93,7 +94,6 @@ const Agenda = () => {
       return;
     }
     setSubmitted(true);
-    toast({ title: "Aanmelding ontvangen!", description: `Je bent aangemeld voor ${selectedEvent?.title}` });
   };
 
   const closeModal = () => {
@@ -279,9 +279,12 @@ const Agenda = () => {
               ) : (
                 <div className="text-center py-6">
                   <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-extrabold font-display text-foreground tracking-tight mb-2">Aangemeld!</h3>
+                  <h3 className="text-xl font-extrabold font-display text-foreground tracking-tight mb-2 break-words">Bedankt, {formData.naam.trim()}!</h3>
+                  <p className="text-muted-foreground font-body text-sm mb-3">
+                    Bedankt voor je aanmelding voor <strong>{selectedEvent.title}</strong> op {selectedEvent.date} {selectedEvent.month}.
+                  </p>
                   <p className="text-muted-foreground font-body text-sm mb-6">
-                    Je bent aangemeld voor <strong>{selectedEvent.title}</strong> op {selectedEvent.date} {selectedEvent.month}.
+                    Je ontvangt binnenkort een bevestiging van je aanmelding.
                   </p>
                   <Button onClick={closeModal} variant="outline" className="rounded-full font-body font-semibold tracking-widest text-xs uppercase">
                     Sluiten
