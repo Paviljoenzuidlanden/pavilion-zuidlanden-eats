@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download } from "lucide-react";
 
@@ -122,18 +123,27 @@ function Availability({ user }: { user: User }) {
   const withinWindow = (d: string) => d >= days()[0] && d <= maxDate;
   const isOn = (d: string) => !!rows[d] || !!draft[d];
 
-  const toggleQuick = async (d: string) => {
-    if (isOn(d)) {
-      if (rows[d]) return remove(d);
-      return setDraft((p) => { const n = { ...p }; delete n[d]; return n; });
-    }
+  const [popup, setPopup] = useState<{ d: string; start: string; end: string; note: string } | null>(null);
+  const openPopup = (d: string) => setPopup({ d, ...get(d) });
+  const savePopup = async () => {
+    if (!popup) return;
+    if (popup.end <= popup.start) return toast.error("Eindtijd moet na de begintijd liggen");
     const { error } = await supabase.from("availability").upsert(
-      { user_id: user.id, date: d, start_time: "16:00", end_time: "22:00", note: null },
+      { user_id: user.id, date: popup.d, start_time: popup.start, end_time: popup.end, note: popup.note.slice(0, 200) || null },
       { onConflict: "user_id,date" },
     );
     if (error) return toast.error(error.message);
-    toast.success("Beschikbaarheid doorgegeven — pas de tijden aan in de weekweergave");
-    load();
+    setDraft((p) => { const n = { ...p }; delete n[popup.d]; return n; });
+    setWeek(startOfWeek(new Date(popup.d + "T12:00"), { weekStartsOn: 1 }));
+    toast.success("Beschikbaarheid opgeslagen");
+    setPopup(null); load();
+  };
+  const removePopup = async () => {
+    if (!popup) return;
+    await remove(popup.d);
+    setWeek(startOfWeek(new Date(popup.d + "T12:00"), { weekStartsOn: 1 }));
+    toast.success("Afgemeld voor deze dag");
+    setPopup(null);
   };
 
   const monthStart = startOfWeek(month, { weekStartsOn: 1 });
@@ -157,7 +167,7 @@ function Availability({ user }: { user: User }) {
         {open && !allowed && <span className="hidden sm:inline text-xs text-muted-foreground/50">—</span>}
         {allowed && (
           <button
-            onClick={() => toggleQuick(d)}
+            onClick={() => openPopup(d)}
             className={`mt-auto w-full text-left rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[11px] sm:text-xs leading-tight transition-colors truncate ${on ? "bg-accent text-accent-foreground font-semibold" : "border border-dashed border-muted-foreground/40 text-muted-foreground hover:border-primary/50"}`}
           >
             {on ? (<>
@@ -175,7 +185,28 @@ function Availability({ user }: { user: User }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 4 weken vooruit). In de maandweergave klik je op een dag om je aan/af te melden; tijden en opmerkingen stel je in de weekweergave in.</p>
+      <Dialog open={!!popup} onOpenChange={(o) => !o && setPopup(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="capitalize">{popup ? nice(popup.d) : ""}</DialogTitle>
+            <DialogDescription>Geef door van hoe laat tot hoe laat je kunt werken.</DialogDescription>
+          </DialogHeader>
+          {popup && (
+            <div className="space-y-3">
+              <div className="flex items-end gap-2">
+                <div className="flex-1 space-y-1"><Label htmlFor="av-start">Van</Label><Input id="av-start" type="time" value={popup.start} onChange={(e) => setPopup({ ...popup, start: e.target.value })} /></div>
+                <div className="flex-1 space-y-1"><Label htmlFor="av-end">Tot</Label><Input id="av-end" type="time" value={popup.end} onChange={(e) => setPopup({ ...popup, end: e.target.value })} /></div>
+              </div>
+              <div className="space-y-1"><Label htmlFor="av-note">Opmerking (optioneel)</Label><Input id="av-note" maxLength={200} value={popup.note} onChange={(e) => setPopup({ ...popup, note: e.target.value })} /></div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            {popup && rows[popup.d] && <Button variant="outline" onClick={removePopup}>Niet beschikbaar</Button>}
+            <Button onClick={savePopup}>Opslaan</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <p className="text-sm text-muted-foreground">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 4 weken vooruit). Klik in de maandweergave op een dag om je tijden door te geven; dit zie je ook direct terug in de weekweergave.</p>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1" aria-label="Beschikbaarheidweergave">
           <Button size="sm" variant={view === "month" ? "default" : "outline"} onClick={() => setView("month")}>Maand</Button>
