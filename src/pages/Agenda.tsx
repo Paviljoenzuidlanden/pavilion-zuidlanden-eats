@@ -190,12 +190,9 @@ const Agenda = () => {
                       href="https://www.dewyngaard.nl"
                       target="_blank"
                       rel="noreferrer"
-                      className="flex flex-col items-end gap-1"
                       title="Naar de website van De Wyngaard"
+                      className="hover:opacity-75 transition-opacity"
                     >
-                      <span className="text-[9px] font-body uppercase tracking-widest text-muted-foreground">
-                        Georganiseerd door
-                      </span>
                       <img src={wyngaardLogo} alt="De Wyngaard" className="h-8 w-auto" />
                     </a>
                   )}
