@@ -321,7 +321,13 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
         ))}
         {colleagues.length > 0 && (
           <div className="border-t border-border pt-1 mt-auto">
-            <div className="sm:hidden text-[10px] text-muted-foreground leading-tight">{colleagues.length} {colleagues.length > 1 ? "collega's" : "collega"}</div>
+          <div className="sm:hidden space-y-0.5">
+            {colleagues.map((s) => (
+              <div key={s.id} className="text-[9px] leading-tight text-muted-foreground truncate" title={`${name(s.user_id)} · ${t5(s.start_time)}–${t5(s.end_time)}`}>
+                {name(s.user_id).split(" ")[0]} <span className="text-muted-foreground/70">{tc(s.start_time)}–{tc(s.end_time)}</span>
+              </div>
+            ))}
+          </div>
             {colleagues.map((s) => (
               <div key={s.id} className="hidden sm:block text-xs py-1 break-words">
                 <div className="font-medium text-foreground">{name(s.user_id)}</div>
