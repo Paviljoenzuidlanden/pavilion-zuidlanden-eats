@@ -18,6 +18,7 @@ type AgendaEvent = {
   category: string;
   spots: string;
   organizer: string;
+  coOrganizer?: string;
   teams?: boolean;
 };
 
