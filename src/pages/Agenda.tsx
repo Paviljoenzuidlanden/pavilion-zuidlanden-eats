@@ -1,14 +1,25 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, Building2, Users, X, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowRight, Building2, Users, Wine, X, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import wyngaardLogo from "@/assets/dewyngaard-logo.png";
 
 const events = [
+  {
+    date: "01",
+    month: "Nov",
+    title: "Wijnproeverij",
+    time: "14:00 – 17:00",
+    description: "De Wyngaard neemt hun lekkerste wijnen mee om te proeven en te bestellen. Tip: bestel alvast voor de feestdagen.",
+    category: "Proeverij",
+    spots: "Vrije inloop",
+    organizer: "wyngaard",
+  },
   {
     date: "27",
     month: "Nov",
@@ -158,10 +169,14 @@ const Agenda = () => {
                     <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
                       event.organizer === "paviljoen"
                         ? "bg-primary/10 text-primary"
-                        : "bg-accent text-accent-foreground"
+                        : event.organizer === "wyngaard"
+                          ? "bg-muted text-foreground"
+                          : "bg-accent text-accent-foreground"
                     }`}>
                       {event.organizer === "paviljoen" ? (
                         <><Building2 className="w-3 h-3" /> Paviljoen Zuidlanden</>
+                      ) : event.organizer === "wyngaard" ? (
+                        <><Wine className="w-3 h-3" /> De Wyngaard</>
                       ) : (
                         <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
                       )}
@@ -170,6 +185,17 @@ const Agenda = () => {
                 </div>
 
                 <div className="shrink-0 flex flex-col items-end gap-2">
+                  {event.organizer === "wyngaard" && (
+                    <a
+                      href="https://www.dewyngaard.nl"
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Naar de website van De Wyngaard"
+                      className="hover:opacity-75 transition-opacity"
+                    >
+                      <img src={wyngaardLogo} alt="De Wyngaard" className="h-8 w-auto" />
+                    </a>
+                  )}
                   {event.spots !== "Vrije inloop" ? (
                     <Button
                       size="sm"
