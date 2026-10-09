@@ -111,7 +111,7 @@ const Agenda = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            Van pubquiz tot live muziek — er is altijd iets te beleven
+            Bekijk wat er op de planning staat in het paviljoen
           </motion.p>
         </div>
       </section>
@@ -145,10 +145,12 @@ const Agenda = () => {
                   </h3>
                   <p className="text-muted-foreground font-body text-sm mb-3">{event.description}</p>
                   <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-body tracking-wider uppercase flex-wrap">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3 h-3" />
-                      {event.time}
-                    </span>
+                    {event.time && (
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3 h-3" />
+                        {event.time}
+                      </span>
+                    )}
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-3 h-3" />
                       Paviljoen Zuidlanden
