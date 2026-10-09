@@ -170,21 +170,13 @@ const Agenda = () => {
                       event.organizer === "paviljoen"
                         ? "bg-primary/10 text-primary"
                         : event.organizer === "wyngaard"
-                          ? "bg-muted border border-border"
+                          ? "bg-muted text-foreground"
                           : "bg-accent text-accent-foreground"
                     }`}>
                       {event.organizer === "paviljoen" ? (
                         <><Building2 className="w-3 h-3" /> Paviljoen Zuidlanden</>
                       ) : event.organizer === "wyngaard" ? (
-                        <a
-                          href="https://www.dewyngaard.nl"
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center hover:opacity-75 transition-opacity"
-                          title="Naar de website van De Wyngaard"
-                        >
-                          <img src={wyngaardLogo} alt="De Wyngaard" className="h-6 w-auto" />
-                        </a>
+                        <><Wine className="w-3 h-3" /> De Wyngaard</>
                       ) : (
                         <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
                       )}
@@ -193,6 +185,20 @@ const Agenda = () => {
                 </div>
 
                 <div className="shrink-0 flex flex-col items-end gap-2">
+                  {event.organizer === "wyngaard" && (
+                    <a
+                      href="https://www.dewyngaard.nl"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex flex-col items-end gap-1"
+                      title="Naar de website van De Wyngaard"
+                    >
+                      <span className="text-[9px] font-body uppercase tracking-widest text-muted-foreground">
+                        Georganiseerd door
+                      </span>
+                      <img src={wyngaardLogo} alt="De Wyngaard" className="h-8 w-auto" />
+                    </a>
+                  )}
                   {event.spots !== "Vrije inloop" ? (
                     <Button
                       size="sm"
