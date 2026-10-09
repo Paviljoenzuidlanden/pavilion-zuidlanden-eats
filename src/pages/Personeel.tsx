@@ -437,14 +437,25 @@ function Planner({ profiles }: { profiles: Profile[] }) {
         <div className="rounded-xl border border-border bg-card p-4">
           <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Beschikbaar op {nice(date)}</h3>
           {!dayAvail.length && <p className="text-sm text-muted-foreground">Niemand heeft zich beschikbaar gesteld.</p>}
-          {dayAvail.map((a) => (
+          {dayAvail.map((a) => {
+            const planned = shifts.some((s) => s.date === date && s.user_id === a.user_id);
+            return (
             <div key={a.id} className="flex items-center justify-between py-1.5 text-sm border-b border-border last:border-0">
               <span>{name(a.user_id)} <span className="text-muted-foreground">{t5(a.start_time)}–{t5(a.end_time)}{a.note && ` · ${a.note}`}</span></span>
-              <Button size="sm" variant="outline" onClick={() => add({ user_id: a.user_id, start: t5(a.start_time), end: t5(a.end_time), note: "" })}><Plus className="w-3 h-3" /> Inplannen</Button>
+              {planned ? (
+                <Badge variant="default">Gepland</Badge>
+              ) : (
+                <Button size="sm" variant="outline" onClick={() => {
+                  setForm({ user_id: a.user_id, start: t5(a.start_time), end: t5(a.end_time), note: "" });
+                  document.getElementById("plan-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  toast("Pas de tijden aan en klik op Toevoegen");
+                }}><Plus className="w-3 h-3" /> Inplannen</Button>
+              )}
             </div>
-          ))}
-          <div className="mt-4 pt-4 border-t border-border space-y-2">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Handmatig inplannen</p>
+            );
+          })}
+          <div id="plan-form" className="mt-4 pt-4 border-t border-border space-y-2">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Inplannen</p>
             <select className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm" value={form.user_id} onChange={(e) => setForm({ ...form, user_id: e.target.value })}>
               <option value="">Kies medewerker…</option>
               {profiles.map((p) => <option key={p.id} value={p.id}>{p.display_name}</option>)}
