@@ -258,7 +258,7 @@ const Agenda = () => {
                         {event.organizer === "wyngaard" ? (
                           <><Wine className="w-3 h-3" /> De Wyngaard</>
                         ) : (
-                          <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
+                          <><Users className="w-3 h-3" /> Wijkpanel de Zuidlanden</>
                         )}
                       </span>
                     )}
