@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2, Store } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ type AgendaEvent = {
   category: string;
   spots: string;
   organizer: string;
+  coOrganizer?: string;
   teams?: boolean;
 };
 
@@ -32,7 +33,8 @@ const events: AgendaEvent[] = [
     description: "De Wyngaard neemt hun lekkerste wijnen mee om te proeven en te bestellen. Tip: bestel alvast voor de feestdagen.",
     category: "Proeverij",
     spots: "Vrije inloop",
-    organizer: "wyngaard",
+    organizer: "paviljoen",
+    coOrganizer: "wyngaard",
   },
   {
     date: "27",
@@ -236,10 +238,17 @@ const Agenda = () => {
                         {event.time}
                       </span>
                     )}
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3 h-3" />
-                      Paviljoen Zuidlanden
-                    </span>
+                    {event.organizer !== "paviljoen" && (
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="w-3 h-3" />
+                        Paviljoen Zuidlanden
+                      </span>
+                    )}
+                    {event.organizer === "paviljoen" && (
+                      <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-primary text-primary-foreground">
+                        <Store className="w-3 h-3" /> Paviljoen Zuidlanden
+                      </span>
+                    )}
                     {event.organizer !== "paviljoen" && (
                       <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
                         event.organizer === "wyngaard"
@@ -253,11 +262,16 @@ const Agenda = () => {
                         )}
                       </span>
                     )}
+                    {event.coOrganizer === "wyngaard" && (
+                      <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-muted text-foreground">
+                        <Wine className="w-3 h-3" /> De Wyngaard
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <div className="shrink-0 flex flex-col items-end gap-2">
-                  {event.organizer === "wyngaard" && (
+                  {(event.organizer === "wyngaard" || event.coOrganizer === "wyngaard") && (
                     <a
                       href="https://www.dewyngaard.nl"
                       target="_blank"
