@@ -33,7 +33,8 @@ const events: AgendaEvent[] = [
     description: "De Wyngaard neemt hun lekkerste wijnen mee om te proeven en te bestellen. Tip: bestel alvast voor de feestdagen.",
     category: "Proeverij",
     spots: "Vrije inloop",
-    organizer: "wyngaard",
+    organizer: "paviljoen",
+    coOrganizer: "wyngaard",
   },
   {
     date: "27",
@@ -265,7 +266,7 @@ const Agenda = () => {
                 </div>
 
                 <div className="shrink-0 flex flex-col items-end gap-2">
-                  {event.organizer === "wyngaard" && (
+                  {(event.organizer === "wyngaard" || event.coOrganizer === "wyngaard") && (
                     <a
                       href="https://www.dewyngaard.nl"
                       target="_blank"
