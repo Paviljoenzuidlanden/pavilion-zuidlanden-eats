@@ -9,3 +9,5 @@
 - [ ] Mail bij publicatie van rooster — wacht op inrichting van afzenderdomein door eigenaar.
 - [x] Agenda-aanmeldingen opslaan en tonen bij beheer (tab Aanmeldingen).
 - [ ] Mail bij nieuwe agenda-aanmelding — wacht op afzenderdomein.
+- [ ] E-maildomein paviljoenzuidlanden.nl instellen als afzender (aangevraagd 9 okt).
+- [x] Mobiel rooster: namen van collega's tonen in maandcellen.
