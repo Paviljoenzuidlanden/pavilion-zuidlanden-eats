@@ -10,64 +10,44 @@ import { supabase } from "@/integrations/supabase/client";
 
 const events = [
   {
-    date: "15",
-    month: "Mrt",
-    title: "Pubquiz Avond",
-    time: "20:00 – 22:30",
-    description: "Test je kennis met vrienden en win leuke prijzen! Teams van 2-6 personen.",
-    category: "Quiz",
-    spots: "Nog 8 plekken",
-    organizer: "paviljoen",
-  },
-  {
-    date: "22",
-    month: "Mrt",
-    title: "Live Muziek: Akoestisch",
-    time: "19:30 – 22:00",
-    description: "Geniet van live akoestische muziek met een drankje en hapje erbij.",
-    category: "Muziek",
+    date: "27",
+    month: "Nov",
+    title: "Jeugdsoos",
+    time: "",
+    description: "Gezellige avond voor de jeugd van de Zuidlanden, georganiseerd door het Wijkpanel.",
+    category: "Jeugd",
     spots: "Vrije inloop",
-    organizer: "paviljoen",
-  },
-  {
-    date: "29",
-    month: "Mrt",
-    title: "Bingo Middag",
-    time: "14:00 – 17:00",
-    description: "Gezellige bingo voor jong en oud. Mooie prijzen te winnen!",
-    category: "Spel",
-    spots: "Nog 20 plekken",
     organizer: "wijkpanel",
   },
   {
-    date: "05",
-    month: "Apr",
-    title: "Kindermiddag",
-    time: "13:00 – 16:00",
-    description: "Springkussen, schmink en natuurlijk verse friet voor de kleintjes.",
-    category: "Familie",
+    date: "15",
+    month: "Jan",
+    title: "Jeugdsoos",
+    time: "",
+    description: "Gezellige avond voor de jeugd van de Zuidlanden, georganiseerd door het Wijkpanel.",
+    category: "Jeugd",
     spots: "Vrije inloop",
     organizer: "wijkpanel",
   },
   {
     date: "12",
-    month: "Apr",
-    title: "Wijnproeverij",
-    time: "19:00 – 21:30",
-    description: "Ontdek bijzondere wijnen in combinatie met onze borrelhapjes.",
-    category: "Proeverij",
-    spots: "Nog 12 plekken",
-    organizer: "paviljoen",
+    month: "Feb",
+    title: "Jeugdsoos",
+    time: "",
+    description: "Gezellige avond voor de jeugd van de Zuidlanden, georganiseerd door het Wijkpanel.",
+    category: "Jeugd",
+    spots: "Vrije inloop",
+    organizer: "wijkpanel",
   },
   {
-    date: "19",
-    month: "Apr",
-    title: "DJ Avond",
-    time: "21:00 – 01:00",
-    description: "Dansen tot in de late uurtjes met DJ sets en lekkere drankjes.",
-    category: "Feest",
+    date: "12",
+    month: "Mrt",
+    title: "Jeugdsoos",
+    time: "",
+    description: "Gezellige avond voor de jeugd van de Zuidlanden, georganiseerd door het Wijkpanel.",
+    category: "Jeugd",
     spots: "Vrije inloop",
-    organizer: "paviljoen",
+    organizer: "wijkpanel",
   },
 ];
 
@@ -131,7 +111,7 @@ const Agenda = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            Van pubquiz tot live muziek — er is altijd iets te beleven
+            Bekijk wat er op de planning staat in het paviljoen
           </motion.p>
         </div>
       </section>
@@ -165,10 +145,12 @@ const Agenda = () => {
                   </h3>
                   <p className="text-muted-foreground font-body text-sm mb-3">{event.description}</p>
                   <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-body tracking-wider uppercase flex-wrap">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3 h-3" />
-                      {event.time}
-                    </span>
+                    {event.time && (
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3 h-3" />
+                        {event.time}
+                      </span>
+                    )}
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-3 h-3" />
                       Paviljoen Zuidlanden
