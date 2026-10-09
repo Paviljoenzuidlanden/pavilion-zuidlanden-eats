@@ -22,6 +22,13 @@
       "when": 1791351565691,
       "tag": "0002_event_signups",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791529716975,
+      "tag": "0003_quiz_team_registration",
+      "breakpoints": true
     }
   ]
 }
