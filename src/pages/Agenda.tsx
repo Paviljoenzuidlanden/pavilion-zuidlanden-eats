@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, Building2, Users, Wine, X, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -240,21 +240,19 @@ const Agenda = () => {
                       <MapPin className="w-3 h-3" />
                       Paviljoen Zuidlanden
                     </span>
-                    <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
-                      event.organizer === "paviljoen"
-                        ? "bg-primary/10 text-primary"
-                        : event.organizer === "wyngaard"
+                    {event.organizer !== "paviljoen" && (
+                      <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
+                        event.organizer === "wyngaard"
                           ? "bg-muted text-foreground"
                           : "bg-accent text-accent-foreground"
-                    }`}>
-                      {event.organizer === "paviljoen" ? (
-                        <><Building2 className="w-3 h-3" /> Paviljoen Zuidlanden</>
-                      ) : event.organizer === "wyngaard" ? (
-                        <><Wine className="w-3 h-3" /> De Wyngaard</>
-                      ) : (
-                        <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
-                      )}
-                    </span>
+                      }`}>
+                        {event.organizer === "wyngaard" ? (
+                          <><Wine className="w-3 h-3" /> De Wyngaard</>
+                        ) : (
+                          <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
+                        )}
+                      </span>
+                    )}
                   </div>
                 </div>
 
