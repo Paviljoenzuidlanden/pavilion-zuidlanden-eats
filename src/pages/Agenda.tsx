@@ -170,7 +170,7 @@ const Agenda = () => {
                       event.organizer === "paviljoen"
                         ? "bg-primary/10 text-primary"
                         : event.organizer === "wyngaard"
-                          ? "bg-muted text-foreground"
+                          ? "bg-muted border border-border"
                           : "bg-accent text-accent-foreground"
                     }`}>
                       {event.organizer === "paviljoen" ? (
@@ -180,10 +180,10 @@ const Agenda = () => {
                           href="https://www.dewyngaard.nl"
                           target="_blank"
                           rel="noreferrer"
-                          className="flex items-center gap-1.5 hover:opacity-75 transition-opacity"
+                          className="flex items-center hover:opacity-75 transition-opacity"
+                          title="Naar de website van De Wyngaard"
                         >
-                          <img src={wyngaardLogo} alt="De Wyngaard" className="h-3.5 w-auto" />
-                          <span>De Wyngaard</span>
+                          <img src={wyngaardLogo} alt="De Wyngaard" className="h-6 w-auto" />
                         </a>
                       ) : (
                         <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
