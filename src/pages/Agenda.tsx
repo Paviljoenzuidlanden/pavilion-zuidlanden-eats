@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, MapPin, ArrowRight, Building2, Users, Wine, X, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -9,7 +9,21 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import wyngaardLogo from "@/assets/dewyngaard-logo.png";
 
-const events = [
+type AgendaEvent = {
+  date: string;
+  month: string;
+  title: string;
+  time: string;
+  description: string;
+  category: string;
+  spots: string;
+  organizer: string;
+  teams?: boolean;
+};
+
+const MAX_QUIZ_TEAMS = 12;
+
+const events: AgendaEvent[] = [
   {
     date: "01",
     month: "Nov",
@@ -29,6 +43,17 @@ const events = [
     category: "Jeugd",
     spots: "Vrije inloop",
     organizer: "wijkpanel",
+  },
+  {
+    date: "10",
+    month: "Dec",
+    title: "Zuidlanden Pubquiz",
+    time: "",
+    description: "De echte Zuidlanden Pubquiz! Aanmelden verplicht — maximaal 12 teams van 4 personen. €2,50 per persoon.",
+    category: "Quiz",
+    spots: "Aanmelden verplicht",
+    organizer: "paviljoen",
+    teams: true,
   },
   {
     date: "15",
@@ -63,9 +88,20 @@ const events = [
 ];
 
 const Agenda = () => {
-  const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
-  const [formData, setFormData] = useState({ naam: "", email: "", telefoon: "" });
+  const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
+  const [formData, setFormData] = useState({ naam: "", email: "", telefoon: "", team: "", size: "4" });
   const [submitted, setSubmitted] = useState(false);
+  const [vol, setVol] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    events.filter((e) => e.teams).forEach(async (e) => {
+      const { data } = await supabase.rpc("quiz_team_count", {
+        _event_title: e.title,
+        _event_date: `${e.date} ${e.month}`,
+      });
+      if (typeof data === "number") setVol((p) => ({ ...p, [e.title]: data >= MAX_QUIZ_TEAMS }));
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,9 +111,47 @@ const Agenda = () => {
       toast({ title: "Vul een geldige naam en e-mail in", variant: "destructive" });
       return;
     }
+    const eventDate = `${selectedEvent.date} ${selectedEvent.month}`;
+
+    if (selectedEvent.teams) {
+      const team = formData.team.trim();
+      if (!team || team.length > 80) {
+        toast({ title: "Geef een teamnaam op", variant: "destructive" });
+        return;
+      }
+      const { data, error } = await supabase.rpc("register_quiz_team", {
+        _event_title: selectedEvent.title,
+        _event_date: eventDate,
+        _team_name: team,
+        _name: naam,
+        _email: email,
+        _phone: tel,
+        _team_size: Number(formData.size),
+      });
+      if (error) {
+        toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
+        return;
+      }
+      if (data === "vol") {
+        setVol((p) => ({ ...p, [selectedEvent.title]: true }));
+        toast({ title: "Alle 12 teams zijn vol", variant: "destructive" });
+        return;
+      }
+      if (data === "team_bestaat") {
+        toast({ title: "Deze teamnaam is al ingeschreven", variant: "destructive" });
+        return;
+      }
+      if (data !== "ok") {
+        toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
+        return;
+      }
+      setSubmitted(true);
+      return;
+    }
+
     const { error } = await supabase.from("event_signups").insert({
       event_title: selectedEvent.title,
-      event_date: `${selectedEvent.date} ${selectedEvent.month}`,
+      event_date: eventDate,
       name: naam, email, phone: tel || null,
     });
     if (error) {
@@ -89,7 +163,7 @@ const Agenda = () => {
 
   const closeModal = () => {
     setSelectedEvent(null);
-    setFormData({ naam: "", email: "", telefoon: "" });
+    setFormData({ naam: "", email: "", telefoon: "", team: "", size: "4" });
     setSubmitted(false);
   };
 
@@ -197,13 +271,17 @@ const Agenda = () => {
                     </a>
                   )}
                   {event.spots !== "Vrije inloop" ? (
-                    <Button
-                      size="sm"
-                      className="rounded-full font-body font-semibold tracking-widest text-xs uppercase"
-                      onClick={() => setSelectedEvent(event)}
-                    >
-                      Aanmelden
-                    </Button>
+                    vol[event.title] ? (
+                      <span className="text-xs font-body font-semibold uppercase tracking-widest text-primary">Vol</span>
+                    ) : (
+                      <Button
+                        size="sm"
+                        className="rounded-full font-body font-semibold tracking-widest text-xs uppercase"
+                        onClick={() => setSelectedEvent(event)}
+                      >
+                        Aanmelden
+                      </Button>
+                    )
                   ) : (
                     <span className="text-xs font-body text-muted-foreground italic">Vrije inloop</span>
                   )}
@@ -245,13 +323,42 @@ const Agenda = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-extrabold font-display text-foreground tracking-tight">{selectedEvent.title}</h3>
-                      <p className="text-xs text-muted-foreground font-body">{selectedEvent.time}</p>
+                      <p className="text-xs text-muted-foreground font-body">{selectedEvent.time || selectedEvent.spots}</p>
                     </div>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-4">
+                    {selectedEvent.teams && (
+                      <>
+                        <div>
+                          <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">Teamnaam *</label>
+                          <Input
+                            value={formData.team}
+                            onChange={(e) => setFormData(prev => ({ ...prev, team: e.target.value }))}
+                            placeholder="Naam van jullie team"
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">
+                            Aantal personen * <span className="normal-case tracking-normal font-normal">(max. 4)</span>
+                          </label>
+                          <select
+                            value={formData.size}
+                            onChange={(e) => setFormData(prev => ({ ...prev, size: e.target.value }))}
+                            className="w-full h-10 px-3 rounded-xl border border-border bg-background text-sm font-body text-foreground"
+                          >
+                            {[1, 2, 3, 4].map((n) => (
+                              <option key={n} value={String(n)}>{n} {n === 1 ? "persoon" : "personen"}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </>
+                    )}
                     <div>
-                      <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">Naam *</label>
+                      <label className="text-xs font-body font-semibold text-foreground uppercase tracking-widest mb-1.5 block">
+                        {selectedEvent.teams ? "Jouw naam *" : "Naam *"}
+                      </label>
                       <Input
                         value={formData.naam}
                         onChange={(e) => setFormData(prev => ({ ...prev, naam: e.target.value }))}
@@ -291,6 +398,11 @@ const Agenda = () => {
                   <p className="text-muted-foreground font-body text-sm mb-3">
                     Bedankt voor je aanmelding voor <strong>{selectedEvent.title}</strong> op {selectedEvent.date} {selectedEvent.month}.
                   </p>
+                  {selectedEvent.teams && (
+                    <p className="text-muted-foreground font-body text-sm mb-3">
+                      We hebben <strong>{formData.team.trim()}</strong> ({formData.size} {formData.size === "1" ? "persoon" : "personen"}) voor je genoteerd.
+                    </p>
+                  )}
                   <p className="text-muted-foreground font-body text-sm mb-6">
                     Je ontvangt binnenkort een bevestiging van je aanmelding.
                   </p>
