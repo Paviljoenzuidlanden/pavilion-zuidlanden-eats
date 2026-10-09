@@ -169,10 +169,22 @@ const Agenda = () => {
                     <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
                       event.organizer === "paviljoen"
                         ? "bg-primary/10 text-primary"
-                        : "bg-accent text-accent-foreground"
+                        : event.organizer === "wyngaard"
+                          ? "bg-muted text-foreground"
+                          : "bg-accent text-accent-foreground"
                     }`}>
                       {event.organizer === "paviljoen" ? (
                         <><Building2 className="w-3 h-3" /> Paviljoen Zuidlanden</>
+                      ) : event.organizer === "wyngaard" ? (
+                        <a
+                          href="https://www.dewyngaard.nl"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-1.5 hover:opacity-75 transition-opacity"
+                        >
+                          <img src={wyngaardLogo} alt="De Wyngaard" className="h-3.5 w-auto" />
+                          <span>De Wyngaard</span>
+                        </a>
                       ) : (
                         <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
                       )}
