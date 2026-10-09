@@ -247,6 +247,19 @@ const Agenda = () => {
                         <Store className="w-3 h-3" /> Paviljoen Zuidlanden
                       </span>
                     )}
+                    {event.organizer !== "paviljoen" && (
+                      <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
+                        event.organizer === "wyngaard"
+                          ? "bg-muted text-foreground"
+                          : "bg-accent text-accent-foreground"
+                      }`}>
+                        {event.organizer === "wyngaard" ? (
+                          <><Wine className="w-3 h-3" /> De Wyngaard</>
+                        ) : (
+                          <><Users className="w-3 h-3" /> Wijkpanel Zuidlanden</>
+                        )}
+                      </span>
+                    )}
                   </div>
                 </div>
 
