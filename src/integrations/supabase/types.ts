@@ -56,6 +56,8 @@ export type Database = {
           id: string
           name: string
           phone: string | null
+          team_name: string | null
+          team_size: number | null
         }
         Insert: {
           created_at?: string
@@ -65,6 +67,8 @@ export type Database = {
           id?: string
           name: string
           phone?: string | null
+          team_name?: string | null
+          team_size?: number | null
         }
         Update: {
           created_at?: string
@@ -74,6 +78,8 @@ export type Database = {
           id?: string
           name?: string
           phone?: string | null
+          team_name?: string | null
+          team_size?: number | null
         }
         Relationships: []
       }
@@ -251,6 +257,22 @@ export type Database = {
           _phone: string
           _time_slot: string
           _total_price: number
+        }
+        Returns: string
+      }
+      quiz_team_count: {
+        Args: { _event_date: string; _event_title: string }
+        Returns: number
+      }
+      register_quiz_team: {
+        Args: {
+          _email: string
+          _event_date: string
+          _event_title: string
+          _name: string
+          _phone: string
+          _team_name: string
+          _team_size: number
         }
         Returns: string
       }
