@@ -7,8 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import wyngaardLogo from "@/assets/dewyngaard-logo.png";
 
 const events = [
+  {
+    date: "01",
+    month: "Nov",
+    title: "Wijnproeverij",
+    time: "14:00 – 17:00",
+    description: "De Wyngaard neemt hun lekkerste wijnen mee om te proeven en te bestellen. Tip: bestel alvast voor de feestdagen.",
+    category: "Proeverij",
+    spots: "Vrije inloop",
+    organizer: "wyngaard",
+  },
   {
     date: "27",
     month: "Nov",
