@@ -476,7 +476,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
 }
 
 /* ---------------- Personeelsbeheer ---------------- */
-type Signup = { id: string; event_title: string; event_date: string; name: string; email: string; phone: string | null; created_at: string };
+type Signup = { id: string; event_title: string; event_date: string; name: string; email: string; phone: string | null; team_name: string | null; team_size: number | null; created_at: string };
 function Signups() {
   const [rows, setRows] = useState<Signup[]>([]);
   const load = useCallback(async () => {
@@ -499,15 +499,23 @@ function Signups() {
         <div key={k} className="rounded-xl border border-border bg-card p-4">
           <div className="flex items-center justify-between mb-3 gap-2">
             <h3 className="font-display text-lg uppercase tracking-tight">{k}</h3>
-            <Badge>{list.length} aanmelding{list.length === 1 ? "" : "en"}</Badge>
+            <Badge>
+              {list.some((s) => s.team_name)
+                ? `${list.length} team${list.length === 1 ? "" : "s"} · ${list.reduce((n, s) => n + (s.team_size ?? 0), 0)} personen`
+                : `${list.length} aanmelding${list.length === 1 ? "" : "en"}`}
+            </Badge>
           </div>
           <div className="divide-y divide-border">
             {list.map((s) => (
               <div key={s.id} className="flex items-center justify-between gap-2 py-2 text-sm">
                 <div className="min-w-0">
-                  <div className="font-semibold">{s.name}</div>
-                  <div className="text-muted-foreground break-all">
-                    <a href={`mailto:${s.email}`} className="underline">{s.email}</a>{s.phone ? ` · ${s.phone}` : ""} · {format(new Date(s.created_at), "d MMM HH:mm", { locale: nl })}
+                  <div className="font-semibold">
+                    {s.team_name
+                      ? `${s.team_name} · ${s.team_size ?? "?"} ${s.team_size === 1 ? "persoon" : "personen"}`
+                      : s.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {s.team_name ? `Contact: ${s.name} · ` : ""}<a href={`mailto:${s.email}`} className="underline">{s.email}</a>{s.phone ? ` · ${s.phone}` : ""} · {format(new Date(s.created_at), "d MMM HH:mm", { locale: nl })}
                   </div>
                 </div>
                 <Button size="icon" variant="ghost" onClick={() => remove(s)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
