@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2, Store } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -239,6 +239,9 @@ const Agenda = () => {
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-3 h-3" />
                       Paviljoen Zuidlanden
+                    </span>
+                    <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-primary text-primary-foreground">
+                      <Store className="w-3 h-3" /> Paviljoen Zuidlanden
                     </span>
                     {event.organizer !== "paviljoen" && (
                       <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold ${
