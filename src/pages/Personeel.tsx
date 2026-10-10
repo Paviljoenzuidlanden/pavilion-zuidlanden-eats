@@ -302,6 +302,7 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
   const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
   const dayCell = (d: string, compact: boolean) => {
     const list = shifts.filter((s) => s.date === d);
+    const past = d < days()[0];
     const own = list.filter((s) => s.user_id === user.id);
     const colleagues = list.filter((s) => s.user_id !== user.id);
     const today = d === days()[0];
@@ -313,14 +314,14 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
         </div>
         {!list.length && <span className="hidden sm:inline text-xs text-muted-foreground/60">—</span>}
         {own.map((s) => (
-          <div key={s.id} className="rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-accent text-accent-foreground font-semibold break-words">
+          <div key={s.id} className={`rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold break-words ${past ? "bg-muted text-muted-foreground border border-border" : "bg-accent text-accent-foreground"}`}>
             <div className="sm:hidden leading-tight">Jij<br />{tc(s.start_time)}–{tc(s.end_time)}</div>
             <div className="hidden sm:block">Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
             {s.note && <div className="hidden sm:block font-normal break-words">{s.note}</div>}
           </div>
         ))}
         {colleagues.length > 0 && (
-          <div className="border-t border-border pt-1 mt-auto">
+          <div className={`border-t border-border pt-1 mt-auto ${past ? "opacity-50" : ""}`}>
           <div className="sm:hidden space-y-0.5">
             {colleagues.map((s) => (
               <div key={s.id} className="text-[9px] leading-tight" title={`${name(s.user_id)} · ${t5(s.start_time)}–${t5(s.end_time)}`}>
@@ -380,7 +381,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   const load = useCallback(async () => {
     const [a, s] = await Promise.all([
       supabase.from("availability").select("*").gte("date", days()[0]),
-      supabase.from("shifts").select("*").gte("date", days()[0]).order("start_time"),
+      supabase.from("shifts").select("*").order("date").order("start_time"),
     ]);
     setAvail((a.data ?? []) as Avail[]); setShifts((s.data ?? []) as Shift[]);
   }, []);
@@ -424,14 +425,15 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           const nAvail = avail.filter((a) => a.date === d).length;
           const selected = d === date;
           const today = d === days()[0];
+          const past = d < days()[0];
           return (
-            <button key={d} onClick={() => setDate(d)} className={`rounded-xl border p-3 min-h-[120px] text-left transition-colors ${selected ? "border-primary ring-2 ring-primary/30 bg-card" : today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
+            <button key={d} onClick={() => setDate(d)} className={`rounded-xl border p-3 min-h-[120px] text-left transition-colors ${selected ? "border-primary ring-2 ring-primary/30 bg-card" : past ? "border-border bg-muted/40" : today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
               <div className="capitalize text-xs font-semibold text-muted-foreground mb-0.5">
                 {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
               </div>
               <div className="text-[11px] text-muted-foreground mb-2">{nAvail} beschikbaar</div>
               {list.map((s) => (
-                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
+                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${past ? "bg-muted text-muted-foreground border border-border" : s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
                   <div className="font-semibold">{name(s.user_id)}</div>
                   <div className="opacity-80">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
                   {!s.published && <div className="opacity-70 italic">concept</div>}
@@ -481,7 +483,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Diensten op {nice(date)}</h3>
           {!shifts.filter((s) => s.date === date).length && <p className="text-sm text-muted-foreground">Nog geen diensten.</p>}
           {shifts.filter((s) => s.date === date).map((s) => (
-            <div key={s.id} className="py-1.5 text-sm border-b border-border last:border-0">
+            <div key={s.id} className={`py-1.5 text-sm border-b border-border last:border-0 ${date < days()[0] ? "opacity-60" : ""}`}>
               <div className="flex items-center justify-between gap-2">
                 <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
                 <span className="flex items-center gap-2">
