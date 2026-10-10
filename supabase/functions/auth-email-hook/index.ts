@@ -15,7 +15,7 @@ const corsHeaders = {
 }
 
 // Configuration
-const SITE_NAME = "Pavilion Snack Bar"
+const SITE_NAME = "Paviljoen Zuidlanden"
 const SENDER_DOMAIN = "admin.paviljoenzuidlanden.nl"
 const ROOT_DOMAIN = "paviljoenzuidlanden.nl"
 const FROM_DOMAIN = "paviljoenzuidlanden.nl"

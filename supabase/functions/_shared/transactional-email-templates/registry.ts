@@ -1,4 +1,8 @@
 import type { ComponentType } from 'npm:react@18.3.1'
+import { template as signupConfirmation } from './signup-confirmation.tsx'
+import { template as signupNotification } from './signup-notification.tsx'
+import { template as bookingNotification } from './booking-notification.tsx'
+import { template as schedulePublished } from './schedule-published.tsx'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -14,8 +18,8 @@ export interface TemplateEntry {
  * Import and register new templates here after creating them in this directory.
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  'signup-confirmation': import('./signup-confirmation.tsx').then((m) => m.template) as never,
-  'signup-notification': import('./signup-notification.tsx').then((m) => m.template) as never,
-  'booking-notification': import('./booking-notification.tsx').then((m) => m.template) as never,
-  'schedule-published': import('./schedule-published.tsx').then((m) => m.template) as never,
+  'signup-confirmation': signupConfirmation,
+  'signup-notification': signupNotification,
+  'booking-notification': bookingNotification,
+  'schedule-published': schedulePublished,
 }
