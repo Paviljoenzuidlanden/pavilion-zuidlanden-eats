@@ -302,6 +302,7 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
   const name = (id: string) => profiles.find((p) => p.id === id)?.display_name ?? "—";
   const dayCell = (d: string, compact: boolean) => {
     const list = shifts.filter((s) => s.date === d);
+    const past = d < days()[0];
     const own = list.filter((s) => s.user_id === user.id);
     const colleagues = list.filter((s) => s.user_id !== user.id);
     const today = d === days()[0];
@@ -313,7 +314,7 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
         </div>
         {!list.length && <span className="hidden sm:inline text-xs text-muted-foreground/60">—</span>}
         {own.map((s) => (
-          <div key={s.id} className="rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs bg-accent text-accent-foreground font-semibold break-words">
+          <div key={s.id} className={`rounded-md px-1.5 sm:px-2 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold break-words ${past ? "bg-muted text-muted-foreground border border-border" : "bg-accent text-accent-foreground"}`}>
             <div className="sm:hidden leading-tight">Jij<br />{tc(s.start_time)}–{tc(s.end_time)}</div>
             <div className="hidden sm:block">Jij · {t5(s.start_time)}–{t5(s.end_time)}</div>
             {s.note && <div className="hidden sm:block font-normal break-words">{s.note}</div>}
