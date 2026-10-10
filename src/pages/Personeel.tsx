@@ -406,10 +406,21 @@ function Planner({ profiles }: { profiles: Profile[] }) {
     if (error) return toast.error(error.message);
     toast.success("Dienst aangepast"); setEditId(null); load();
   };
-  const togglePub = async (s: Shift) => { await supabase.from("shifts").update({ published: !s.published }).eq("id", s.id); load(); };
+  const notifyPublished = async (ids: string[]) => {
+    if (!ids.length) return;
+    try { await supabase.functions.invoke("notify-schedule-published", { body: { shiftIds: ids } }); } catch { /* stille fout */ }
+  };
+  const togglePub = async (s: Shift) => {
+    const publishing = !s.published;
+    await supabase.from("shifts").update({ published: !s.published }).eq("id", s.id);
+    if (publishing) notifyPublished([s.id]);
+    load();
+  };
   const publishAll = async () => {
+    const ids = drafts.map((d) => d.id);
     const { error } = await supabase.from("shifts").update({ published: true }).eq("published", false);
     if (error) return toast.error(error.message);
+    notifyPublished(ids);
     toast.success("Rooster gepubliceerd"); load();
   };
 

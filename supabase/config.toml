@@ -3,3 +3,11 @@ project_id = "vmcsatsmxhvmnjiivgxr"
 [functions]
   [functions.auth-email-hook]
     verify_jwt = false
+  [functions.preview-transactional-email]
+    verify_jwt = false
+  [functions.event-signup]
+    verify_jwt = false
+  [functions.booking-request]
+    verify_jwt = false
+  [functions.notify-schedule-published]
+    verify_jwt = true

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { PartyPopper, Calendar, Users, Sparkles, ChevronDown, Beer, GlassWater } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
@@ -55,13 +56,20 @@ const Events = () => {
     name: "", email: "", phone: "", occasion: "", guests: "", date: "", message: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sendError, setSendError] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSendError(false);
+    const { error } = await supabase.functions.invoke("booking-request", { body: { ...form } });
+    if (error) {
+      setSendError(true);
+      return;
+    }
     setSubmitted(true);
   };
 
@@ -415,6 +423,11 @@ const Events = () => {
                 <textarea name="message" rows={4} maxLength={1000} value={form.message} onChange={handleChange}
               className="w-full px-4 py-3.5 bg-card border border-border rounded-xl font-body text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none transition-shadow" />
               </div>
+              {sendError && (
+                <p className="text-sm font-body text-red-600 text-center">
+                  Versturen is niet gelukt. Probeer het later opnieuw.
+                </p>
+              )}
               <motion.button
               type="submit"
               className="w-full bg-primary text-primary-foreground py-4 rounded-full text-sm font-body font-semibold tracking-widest uppercase hover:scale-[1.02] transition-transform"

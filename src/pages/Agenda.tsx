@@ -115,52 +115,39 @@ const Agenda = () => {
     }
     const eventDate = `${selectedEvent.date} ${selectedEvent.month}`;
 
-    if (selectedEvent.teams) {
-      const team = formData.team.trim();
-      if (!team || team.length > 80) {
-        toast({ title: "Geef een teamnaam op", variant: "destructive" });
-        return;
-      }
-      const { data, error } = await supabase.rpc("register_quiz_team", {
-        _event_title: selectedEvent.title,
-        _event_date: eventDate,
-        _team_name: team,
-        _name: naam,
-        _email: email,
-        _phone: tel,
-        _team_size: Number(formData.size),
+    const team = selectedEvent.teams ? formData.team.trim() : "";
+    if (selectedEvent.teams && (!team || team.length > 80)) {
+      toast({ title: "Geef een teamnaam op", variant: "destructive" });
+      return;
+    }
+      const { data, error } = await supabase.functions.invoke("event-signup", {
+        body: {
+          eventTitle: selectedEvent.title,
+          eventDate,
+          name: naam,
+          email,
+          phone: tel,
+          ...(selectedEvent.teams ? { teamName: team, teamSize: Number(formData.size) } : {}),
+        },
       });
       if (error) {
         toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
         return;
       }
-      if (data === "vol") {
+      if (data?.status === "vol") {
         setVol((p) => ({ ...p, [selectedEvent.title]: true }));
         toast({ title: "Alle 12 teams zijn vol", variant: "destructive" });
         return;
       }
-      if (data === "team_bestaat") {
+      if (data?.status === "team_bestaat") {
         toast({ title: "Deze teamnaam is al ingeschreven", variant: "destructive" });
         return;
       }
-      if (data !== "ok") {
+      if (data?.status !== "ok") {
         toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
         return;
       }
       setSubmitted(true);
-      return;
-    }
-
-    const { error } = await supabase.from("event_signups").insert({
-      event_title: selectedEvent.title,
-      event_date: eventDate,
-      name: naam, email, phone: tel || null,
-    });
-    if (error) {
-      toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
-      return;
-    }
-    setSubmitted(true);
   };
 
   const closeModal = () => {
