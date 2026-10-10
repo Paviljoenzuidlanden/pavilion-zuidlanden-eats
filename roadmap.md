@@ -13,6 +13,7 @@
 - [x] Wijnproeverij toegevoegd: 1 nov, 14:00–17:00, vrije inloop, met logo van De Wyngaard in de kaart.
 - [x] Zuidlanden Pubquiz toegevoegd: 10 dec, aanmelden verplicht, teamaanmelding met limiet van 12 teams van max. 4 personen, €2,50 p.p.
 - [x] Aanmeldingen in beheer tonen met teamnaam en aantal personen.
-- [ ] Mail bij publicatie van rooster — domein is ingesteld, bouwen kan nu.
-- [ ] Mail bij nieuwe agenda-aanmelding — domein is ingesteld, bouwen kan nu.
-- [ ] Mail voor contactformulier naar info@paviljoenzuidlanden.nl — domein is ingesteld, bouwen kan nu.
+- [x] Mail bij publicatie van rooster — medewerkers ontvangen hun eigen diensten per e-mail.
+- [x] Mail bij nieuwe agenda-aanmelding — notificatie naar info@paviljoenzuidlanden.nl + bevestiging naar aanmelder.
+- [x] Mail voor contactformulier (feestreserveringen) naar info@paviljoenzuidlanden.nl.
+
