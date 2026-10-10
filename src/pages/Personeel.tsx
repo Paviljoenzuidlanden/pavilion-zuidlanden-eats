@@ -481,12 +481,28 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Diensten op {nice(date)}</h3>
           {!shifts.filter((s) => s.date === date).length && <p className="text-sm text-muted-foreground">Nog geen diensten.</p>}
           {shifts.filter((s) => s.date === date).map((s) => (
-            <div key={s.id} className="flex items-center justify-between gap-2 py-1.5 text-sm border-b border-border last:border-0">
-              <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
-              <span className="flex items-center gap-2">
-                <button onClick={() => togglePub(s)}><Badge variant={s.published ? "default" : "outline"}>{s.published ? "Gepubliceerd" : "Concept"}</Badge></button>
-                <Button size="icon" variant="ghost" onClick={() => del(s.id)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
-              </span>
+            <div key={s.id} className="py-1.5 text-sm border-b border-border last:border-0">
+              <div className="flex items-center justify-between gap-2">
+                <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
+                <span className="flex items-center gap-2">
+                  <button onClick={() => togglePub(s)}><Badge variant={s.published ? "default" : "outline"}>{s.published ? "Gepubliceerd" : "Concept"}</Badge></button>
+                  <Button size="icon" variant="ghost" onClick={() => (editId === s.id ? setEditId(null) : startEdit(s))} aria-label="Bewerken"><Pencil className="w-4 h-4" /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => del(s.id)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
+                </span>
+              </div>
+              {editId === s.id && (
+                <div className="mt-2 space-y-2 rounded-lg border border-border bg-background p-3">
+                  <div className="flex gap-2">
+                    <Input type="time" value={editForm.start} onChange={(e) => setEditForm({ ...editForm, start: e.target.value })} />
+                    <Input type="time" value={editForm.end} onChange={(e) => setEditForm({ ...editForm, end: e.target.value })} />
+                  </div>
+                  <Input placeholder="Taak / opmerking (bijv. bar, keuken)" maxLength={200} value={editForm.note} onChange={(e) => setEditForm({ ...editForm, note: e.target.value })} />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={saveEdit}><Check className="w-4 h-4" /> Opslaan</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setEditId(null)}><X className="w-4 h-4" /> Annuleren</Button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
