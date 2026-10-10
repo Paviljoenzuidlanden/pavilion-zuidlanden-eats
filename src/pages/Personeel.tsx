@@ -433,7 +433,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
               </div>
               <div className="text-[11px] text-muted-foreground mb-2">{nAvail} beschikbaar</div>
               {list.map((s) => (
-                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
+                <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${past ? "bg-muted text-muted-foreground border border-border" : s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
                   <div className="font-semibold">{name(s.user_id)}</div>
                   <div className="opacity-80">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</div>
                   {!s.published && <div className="opacity-70 italic">concept</div>}
@@ -483,7 +483,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Diensten op {nice(date)}</h3>
           {!shifts.filter((s) => s.date === date).length && <p className="text-sm text-muted-foreground">Nog geen diensten.</p>}
           {shifts.filter((s) => s.date === date).map((s) => (
-            <div key={s.id} className="py-1.5 text-sm border-b border-border last:border-0">
+            <div key={s.id} className={`py-1.5 text-sm border-b border-border last:border-0 ${date < days()[0] ? "opacity-60" : ""}`}>
               <div className="flex items-center justify-between gap-2">
                 <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
                 <span className="flex items-center gap-2">
