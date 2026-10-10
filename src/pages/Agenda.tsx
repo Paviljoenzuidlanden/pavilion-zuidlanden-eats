@@ -115,12 +115,11 @@ const Agenda = () => {
     }
     const eventDate = `${selectedEvent.date} ${selectedEvent.month}`;
 
-    if (selectedEvent.teams) {
-      const team = formData.team.trim();
-      if (!team || team.length > 80) {
-        toast({ title: "Geef een teamnaam op", variant: "destructive" });
-        return;
-      }
+    const team = selectedEvent.teams ? formData.team.trim() : "";
+    if (selectedEvent.teams && (!team || team.length > 80)) {
+      toast({ title: "Geef een teamnaam op", variant: "destructive" });
+      return;
+    }
       const { data, error } = await supabase.functions.invoke("event-signup", {
         body: {
           eventTitle: selectedEvent.title,
