@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { sendTemplateEmail } from "../_shared/transactional-email-templates/send-email.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -43,16 +44,61 @@ Deno.serve(async (req) => {
     if (action === "create") {
       const email = String(body.email ?? "").trim().toLowerCase();
       const name = String(body.name ?? "").trim().slice(0, 100);
-      const password = String(body.password ?? "");
-      if (!/^\S+@\S+\.\S+$/.test(email) || !name || password.length < 8)
-        return json({ error: "Vul naam, geldig e-mailadres en wachtwoord (min. 8 tekens) in" }, 400);
-      const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
+      if (!/^\S+@\S+\.\S+$/.test(email) || !name)
+        return json({ error: "Vul naam en geldig e-mailadres in" }, 400);
+      const tempPassword = crypto.randomUUID() + crypto.randomUUID();
+      const { data, error } = await admin.auth.admin.createUser({ email, password: tempPassword, email_confirm: true });
       if (error) return json({ error: error.message }, 400);
       await admin.from("profiles").insert({ id: data.user.id, display_name: name, email });
       const roles = [{ user_id: data.user.id, role: "staff" }];
       if (body.isAdmin) roles.push({ user_id: data.user.id, role: "admin" });
       await admin.from("user_roles").insert(roles);
-      return json({ ok: true });
+      // Welkomstmail met link om zelf een wachtwoord in te stellen
+      let mailSent = false;
+      try {
+        const origin = String(body.origin ?? "").slice(0, 200) || "https://pavilion-zuidlanden-eats.lovable.app";
+        const { data: link } = await admin.auth.admin.generateLink({
+          type: "recovery",
+          email,
+          options: { redirectTo: `${origin}/#/personeel` },
+        });
+        const actionUrl = link?.properties?.action_link ?? "";
+        if (actionUrl) {
+          const res = await sendTemplateEmail("staff-welcome", email, {
+            templateData: { name, actionUrl },
+            idempotencyKey: `staff-welcome-${data.user.id}`,
+          });
+          mailSent = res.sent;
+        }
+      } catch { /* mail is best-effort; account bestaat al */ }
+      return json({ ok: true, mailSent });
+    }
+    if (action === "list") {
+      // Laatste inlogmoment per gebruiker (voor beheerdersoverzicht)
+      const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
+      if (error) return json({ error: error.message }, 400);
+      const users = (data?.users ?? []).map((usr) => ({ id: usr.id, last_sign_in_at: usr.last_sign_in_at ?? null }));
+      return json({ users });
+    }
+    if (action === "send_reset") {
+      // Stuur opnieuw een wachtwoord-instel-link naar een medewerker
+      const email = String(body.email ?? "").trim().toLowerCase();
+      if (!/^\S+@\S+\.\S+$/.test(email)) return json({ error: "Ongeldig e-mailadres" }, 400);
+      const origin = String(body.origin ?? "").slice(0, 200) || "https://pavilion-zuidlanden-eats.lovable.app";
+      const { data: link, error } = await admin.auth.admin.generateLink({
+        type: "recovery",
+        email,
+        options: { redirectTo: `${origin}/#/personeel` },
+      });
+      if (error) return json({ error: error.message }, 400);
+      const actionUrl = link?.properties?.action_link ?? "";
+      if (!actionUrl) return json({ error: "Kon geen link maken" }, 500);
+      const name = String(body.name ?? "").slice(0, 100);
+      const res = await sendTemplateEmail("staff-welcome", email, {
+        templateData: { name, actionUrl },
+        idempotencyKey: `staff-reset-${email}-${Date.now()}`,
+      });
+      return json({ ok: true, mailSent: res.sent });
     }
     if (action === "reset_password") {
       const password = String(body.password ?? "");
