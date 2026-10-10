@@ -11,3 +11,5 @@ project_id = "vmcsatsmxhvmnjiivgxr"
     verify_jwt = false
   [functions.notify-schedule-published]
     verify_jwt = true
+  [functions.send-test-email]
+    verify_jwt = false
