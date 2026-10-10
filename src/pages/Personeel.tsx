@@ -843,12 +843,29 @@ const Personeel = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [roleReady, setRoleReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [recovery, setRecovery] = useState(false);
+  const [newPw, setNewPw] = useState("");
+  const [pwBusy, setPwBusy] = useState(false);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((e, s) => {
+      setUser(s?.user ?? null);
+      if (e === "PASSWORD_RECOVERY") setRecovery(true);
+    });
     supabase.auth.getUser().then(({ data }) => { setUser(data.user); setReady(true); });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  const saveNewPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: newPw });
+    setPwBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Wachtwoord ingesteld — je bent nu ingelogd");
+    setRecovery(false);
+    setNewPw("");
+  };
 
   const loadProfiles = useCallback(async () => {
     const { data } = await supabase.from("profiles").select("id, display_name, email").order("display_name");
@@ -874,6 +891,21 @@ const Personeel = () => {
   useEffect(() => { document.title = "Personeel – Paviljoen Zuidlanden"; }, []);
 
   if (!ready) return null;
+  if (recovery) return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <form onSubmit={saveNewPassword} className="w-full max-w-sm bg-card border border-border rounded-2xl p-8 shadow-sm space-y-5">
+        <div>
+          <h1 className="font-display text-3xl uppercase tracking-wider text-primary">Nieuw wachtwoord</h1>
+          <p className="text-sm text-muted-foreground mt-1">Kies een nieuw wachtwoord voor je account</p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="newpw">Nieuw wachtwoord</Label>
+          <Input id="newpw" type="password" minLength={8} value={newPw} onChange={(e) => setNewPw(e.target.value)} required />
+        </div>
+        <Button type="submit" className="w-full" disabled={pwBusy}>Wachtwoord instellen</Button>
+      </form>
+    </div>
+  );
   if (!user) return <Login />;
   if (!roleReady) return <div className="min-h-screen bg-background" />;
 
