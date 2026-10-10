@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download, Pencil, Check, X } from "lucide-react";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
@@ -374,6 +374,8 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   const [avail, setAvail] = useState<Avail[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [form, setForm] = useState({ user_id: "", start: "16:00", end: "22:00", note: "" });
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ start: "", end: "", note: "" });
 
   const load = useCallback(async () => {
     const [a, s] = await Promise.all([
@@ -396,6 +398,13 @@ function Planner({ profiles }: { profiles: Profile[] }) {
     load();
   };
   const del = async (id: string) => { await supabase.from("shifts").delete().eq("id", id); load(); };
+  const startEdit = (s: Shift) => { setEditId(s.id); setEditForm({ start: t5(s.start_time), end: t5(s.end_time), note: s.note ?? "" }); };
+  const saveEdit = async () => {
+    if (!editId) return;
+    const { error } = await supabase.from("shifts").update({ start_time: editForm.start, end_time: editForm.end, note: editForm.note || null }).eq("id", editId);
+    if (error) return toast.error(error.message);
+    toast.success("Dienst aangepast"); setEditId(null); load();
+  };
   const togglePub = async (s: Shift) => { await supabase.from("shifts").update({ published: !s.published }).eq("id", s.id); load(); };
   const publishAll = async () => {
     const { error } = await supabase.from("shifts").update({ published: true }).eq("published", false);
@@ -472,12 +481,28 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           <h3 className="font-display uppercase tracking-wider text-primary mb-3 capitalize">Diensten op {nice(date)}</h3>
           {!shifts.filter((s) => s.date === date).length && <p className="text-sm text-muted-foreground">Nog geen diensten.</p>}
           {shifts.filter((s) => s.date === date).map((s) => (
-            <div key={s.id} className="flex items-center justify-between gap-2 py-1.5 text-sm border-b border-border last:border-0">
-              <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
-              <span className="flex items-center gap-2">
-                <button onClick={() => togglePub(s)}><Badge variant={s.published ? "default" : "outline"}>{s.published ? "Gepubliceerd" : "Concept"}</Badge></button>
-                <Button size="icon" variant="ghost" onClick={() => del(s.id)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
-              </span>
+            <div key={s.id} className="py-1.5 text-sm border-b border-border last:border-0">
+              <div className="flex items-center justify-between gap-2">
+                <span>{name(s.user_id)} <span className="text-muted-foreground">{t5(s.start_time)}–{t5(s.end_time)}{s.note && ` · ${s.note}`}</span></span>
+                <span className="flex items-center gap-2">
+                  <button onClick={() => togglePub(s)}><Badge variant={s.published ? "default" : "outline"}>{s.published ? "Gepubliceerd" : "Concept"}</Badge></button>
+                  <Button size="icon" variant="ghost" onClick={() => (editId === s.id ? setEditId(null) : startEdit(s))} aria-label="Bewerken"><Pencil className="w-4 h-4" /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => del(s.id)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
+                </span>
+              </div>
+              {editId === s.id && (
+                <div className="mt-2 space-y-2 rounded-lg border border-border bg-background p-3">
+                  <div className="flex gap-2">
+                    <Input type="time" value={editForm.start} onChange={(e) => setEditForm({ ...editForm, start: e.target.value })} />
+                    <Input type="time" value={editForm.end} onChange={(e) => setEditForm({ ...editForm, end: e.target.value })} />
+                  </div>
+                  <Input placeholder="Taak / opmerking (bijv. bar, keuken)" maxLength={200} value={editForm.note} onChange={(e) => setEditForm({ ...editForm, note: e.target.value })} />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={saveEdit}><Check className="w-4 h-4" /> Opslaan</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setEditId(null)}><X className="w-4 h-4" /> Annuleren</Button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
