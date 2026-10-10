@@ -321,7 +321,7 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
           </div>
         ))}
         {colleagues.length > 0 && (
-          <div className="border-t border-border pt-1 mt-auto">
+          <div className={`border-t border-border pt-1 mt-auto ${past ? "opacity-50" : ""}`}>
           <div className="sm:hidden space-y-0.5">
             {colleagues.map((s) => (
               <div key={s.id} className="text-[9px] leading-tight" title={`${name(s.user_id)} · ${t5(s.start_time)}–${t5(s.end_time)}`}>
@@ -381,7 +381,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   const load = useCallback(async () => {
     const [a, s] = await Promise.all([
       supabase.from("availability").select("*").gte("date", days()[0]),
-      supabase.from("shifts").select("*").gte("date", days()[0]).order("start_time"),
+      supabase.from("shifts").select("*").order("date").order("start_time"),
     ]);
     setAvail((a.data ?? []) as Avail[]); setShifts((s.data ?? []) as Shift[]);
   }, []);
