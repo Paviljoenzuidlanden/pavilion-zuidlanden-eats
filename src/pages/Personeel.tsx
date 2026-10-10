@@ -79,7 +79,21 @@ function Login() {
           <Input id="pw" type="password" minLength={needsSetup ? 8 : undefined} value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         <Button type="submit" className="w-full" disabled={busy}>{needsSetup ? "Beheeraccount aanmaken" : "Inloggen"}</Button>
-        {!needsSetup && <p className="text-xs text-muted-foreground">Wachtwoord vergeten? Vraag de beheerder om een nieuw wachtwoord.</p>}
+        {!needsSetup && (
+          <button
+            type="button"
+            className="text-xs text-primary hover:underline w-full text-center"
+            onClick={async () => {
+              const em = email.trim();
+              if (!/^\S+@\S+\.\S+$/.test(em)) { toast.error("Vul eerst je e-mailadres in"); return; }
+              const { error } = await supabase.auth.resetPasswordForEmail(em, { redirectTo: `${window.location.origin}/#/personeel` });
+              if (error) toast.error(error.message);
+              else toast.success("Check je e-mail voor een link om een nieuw wachtwoord in te stellen");
+            }}
+          >
+            Wachtwoord vergeten?
+          </button>
+        )}
       </form>
     </div>
   );
