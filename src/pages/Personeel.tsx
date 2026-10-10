@@ -526,6 +526,56 @@ function Planner({ profiles }: { profiles: Profile[] }) {
 
 /* ---------------- Personeelsbeheer ---------------- */
 type Signup = { id: string; event_title: string; event_date: string; name: string; email: string; phone: string | null; team_name: string | null; team_size: number | null; created_at: string };
+const EVENT_LABELS: Record<string, string> = {
+  sent: "Verstuurd", rejected: "Geweigerd", bounced: "Onbestelbaar", complained: "Als spam gemeld",
+  unsubscribed: "Afgemeld", suppressed: "Geblokkeerd", rate_limited: "Te veel tegelijk",
+};
+
+function MailTest() {
+  const [busy, setBusy] = useState(false);
+  const [events, setEvents] = useState<{ timestamp: string; event_type: string; status?: string }[] | null>(null);
+  const run = async (action: "send" | "status") => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("send-test-email", { body: { action } });
+    setBusy(false);
+    if (error) { toast.error("Controleren mislukt"); return; }
+    if (data?.send) (data.send.ok ? toast.success : toast.error)(data.send.message);
+    setEvents(data?.events ?? []);
+  };
+  return (
+    <div className="mb-6 rounded-lg border border-border bg-card p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="font-display uppercase tracking-wider text-sm">Meldingen testen</p>
+          <p className="text-sm text-muted-foreground">Stuur een testmail naar info@paviljoenzuidlanden.nl en bekijk de afleverstatus.</p>
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" onClick={() => run("send")} disabled={busy}><Send className="w-4 h-4 mr-1" />Testmelding sturen</Button>
+          <Button size="sm" variant="outline" onClick={() => run("status")} disabled={busy}>Status controleren</Button>
+        </div>
+      </div>
+      {events && (
+        <div className="mt-3 text-sm">
+          {events.length === 0 ? (
+            <p className="text-muted-foreground">Nog geen mails naar dit adres in de afgelopen 7 dagen.</p>
+          ) : (
+            <ul className="space-y-1">
+              {events.map((e, i) => (
+                <li key={i} className="flex flex-wrap gap-2">
+                  <span className="text-muted-foreground">{new Date(e.timestamp).toLocaleString("nl-NL")}</span>
+                  <Badge variant={e.event_type === "sent" ? "default" : "destructive"}>{EVENT_LABELS[e.event_type] ?? e.event_type}</Badge>
+                  {e.status && <span className="text-muted-foreground">{e.status}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-2 text-xs text-muted-foreground">"Verstuurd" betekent dat de mail is afgegeven; of hij geopend is, wordt niet bijgehouden.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Signups() {
   const [rows, setRows] = useState<Signup[]>([]);
   const load = useCallback(async () => {
@@ -839,7 +889,7 @@ const Personeel = () => {
           <TabsContent value="uren"><MyHours user={user} profiles={profiles} isAdmin={isAdmin} /></TabsContent>
           {isAdmin && <TabsContent value="planner"><Planner profiles={profiles} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
-          {isAdmin && <TabsContent value="aanmeldingen"><Signups /></TabsContent>}
+          {isAdmin && <TabsContent value="aanmeldingen"><MailTest /><Signups /></TabsContent>}
         </Tabs>
       </main>
     </div>

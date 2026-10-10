@@ -3,6 +3,7 @@ import { template as signupConfirmation } from './signup-confirmation.tsx'
 import { template as signupNotification } from './signup-notification.tsx'
 import { template as bookingNotification } from './booking-notification.tsx'
 import { template as schedulePublished } from './schedule-published.tsx'
+import { template as testNotification } from './test-notification.tsx'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -22,4 +23,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'signup-notification': signupNotification,
   'booking-notification': bookingNotification,
   'schedule-published': schedulePublished,
+  'test-notification': testNotification,
 }
