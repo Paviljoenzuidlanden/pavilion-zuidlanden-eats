@@ -425,8 +425,9 @@ function Planner({ profiles }: { profiles: Profile[] }) {
           const nAvail = avail.filter((a) => a.date === d).length;
           const selected = d === date;
           const today = d === days()[0];
+          const past = d < days()[0];
           return (
-            <button key={d} onClick={() => setDate(d)} className={`rounded-xl border p-3 min-h-[120px] text-left transition-colors ${selected ? "border-primary ring-2 ring-primary/30 bg-card" : today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
+            <button key={d} onClick={() => setDate(d)} className={`rounded-xl border p-3 min-h-[120px] text-left transition-colors ${selected ? "border-primary ring-2 ring-primary/30 bg-card" : past ? "border-border bg-muted/40" : today ? "border-accent bg-accent/5" : "border-border bg-card"}`}>
               <div className="capitalize text-xs font-semibold text-muted-foreground mb-0.5">
                 {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
               </div>
