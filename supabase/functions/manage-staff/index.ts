@@ -34,6 +34,27 @@ Deno.serve(async (req) => {
       return json({ needs: (count ?? 0) === 0 });
     }
 
+    // Publiek: medewerker vraagt zelf een wachtwoord-link aan.
+    // Geeft altijd ok terug (geen e-mail-enumeratie); mail gaat alleen naar het account zelf.
+    if (action === "request_reset") {
+      const email = String(body.email ?? "").trim().toLowerCase();
+      const origin = String(body.origin ?? "").slice(0, 200) || "https://pavilion-zuidlanden-eats.lovable.app";
+      if (/^\S+@\S+\.\S+$/.test(email)) {
+        try {
+          const { data: link } = await admin.auth.admin.generateLink({ type: "recovery", email });
+          const tokenHash = link?.properties?.hashed_token ?? "";
+          if (tokenHash) {
+            const actionUrl = `${origin}/#/personeel?recovery_token=${encodeURIComponent(tokenHash)}`;
+            await sendTemplateEmail("staff-welcome", email, {
+              templateData: { name: "", actionUrl },
+              idempotencyKey: `staff-reset-${email}-${Date.now()}`,
+            });
+          }
+        } catch { /* best-effort */ }
+      }
+      return json({ ok: true });
+    }
+
     // Overige acties: alleen beheerders
     const token = req.headers.get("Authorization")?.replace("Bearer ", "") ?? "";
     const { data: u } = await admin.auth.getUser(token);
@@ -57,12 +78,9 @@ Deno.serve(async (req) => {
       let mailSent = false;
       try {
         const origin = String(body.origin ?? "").slice(0, 200) || "https://pavilion-zuidlanden-eats.lovable.app";
-        const { data: link } = await admin.auth.admin.generateLink({
-          type: "recovery",
-          email,
-          options: { redirectTo: `${origin}/#/personeel` },
-        });
-        const actionUrl = link?.properties?.action_link ?? "";
+        const { data: link } = await admin.auth.admin.generateLink({ type: "recovery", email });
+        const tokenHash = link?.properties?.hashed_token ?? "";
+        const actionUrl = tokenHash ? `${origin}/#/personeel?recovery_token=${encodeURIComponent(tokenHash)}` : "";
         if (actionUrl) {
           const res = await sendTemplateEmail("staff-welcome", email, {
             templateData: { name, actionUrl },
@@ -85,13 +103,10 @@ Deno.serve(async (req) => {
       const email = String(body.email ?? "").trim().toLowerCase();
       if (!/^\S+@\S+\.\S+$/.test(email)) return json({ error: "Ongeldig e-mailadres" }, 400);
       const origin = String(body.origin ?? "").slice(0, 200) || "https://pavilion-zuidlanden-eats.lovable.app";
-      const { data: link, error } = await admin.auth.admin.generateLink({
-        type: "recovery",
-        email,
-        options: { redirectTo: `${origin}/#/personeel` },
-      });
+      const { data: link, error } = await admin.auth.admin.generateLink({ type: "recovery", email });
       if (error) return json({ error: error.message }, 400);
-      const actionUrl = link?.properties?.action_link ?? "";
+      const tokenHash = link?.properties?.hashed_token ?? "";
+      const actionUrl = tokenHash ? `${origin}/#/personeel?recovery_token=${encodeURIComponent(tokenHash)}` : "";
       if (!actionUrl) return json({ error: "Kon geen link maken" }, 500);
       const name = String(body.name ?? "").slice(0, 100);
       const res = await sendTemplateEmail("staff-welcome", email, {

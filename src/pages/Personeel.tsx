@@ -86,9 +86,10 @@ function Login() {
             onClick={async () => {
               const em = email.trim();
               if (!/^\S+@\S+\.\S+$/.test(em)) { toast.error("Vul eerst je e-mailadres in"); return; }
-              const { error } = await supabase.auth.resetPasswordForEmail(em, { redirectTo: `${window.location.origin}/#/personeel` });
-              if (error) toast.error(error.message);
-              else toast.success("Check je e-mail voor een link om een nieuw wachtwoord in te stellen");
+              try {
+                await staffFn({ action: "request_reset", email: em, origin: window.location.origin });
+                toast.success("Check je e-mail voor een link om een nieuw wachtwoord in te stellen");
+              } catch { toast.error("Er ging iets mis — probeer het later opnieuw"); }
             }}
           >
             Wachtwoord vergeten?
@@ -874,7 +875,19 @@ const Personeel = () => {
       setUser(s?.user ?? null);
       if (e === "PASSWORD_RECOVERY") setRecovery(true);
     });
-    supabase.auth.getUser().then(({ data }) => { setUser(data.user); setReady(true); });
+    // Eigen herstel-link uit de e-mail: /#/personeel?recovery_token=...
+    const hashQuery = window.location.hash.split("?")[1] ?? "";
+    const recoveryToken = new URLSearchParams(hashQuery).get("recovery_token");
+    if (recoveryToken) {
+      supabase.auth.verifyOtp({ token_hash: recoveryToken, type: "recovery" }).then(({ error }) => {
+        if (error) toast.error("Deze link is verlopen of al gebruikt — vraag een nieuwe aan");
+        else setRecovery(true);
+        window.history.replaceState(null, "", `${window.location.pathname}#/personeel`);
+        setReady(true);
+      });
+    } else {
+      supabase.auth.getUser().then(({ data }) => { setUser(data.user); setReady(true); });
+    }
     return () => sub.subscription.unsubscribe();
   }, []);
 
