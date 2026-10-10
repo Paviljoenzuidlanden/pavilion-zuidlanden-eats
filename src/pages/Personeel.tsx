@@ -79,7 +79,21 @@ function Login() {
           <Input id="pw" type="password" minLength={needsSetup ? 8 : undefined} value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         <Button type="submit" className="w-full" disabled={busy}>{needsSetup ? "Beheeraccount aanmaken" : "Inloggen"}</Button>
-        {!needsSetup && <p className="text-xs text-muted-foreground">Wachtwoord vergeten? Vraag de beheerder om een nieuw wachtwoord.</p>}
+        {!needsSetup && (
+          <button
+            type="button"
+            className="text-xs text-primary hover:underline w-full text-center"
+            onClick={async () => {
+              const em = email.trim();
+              if (!/^\S+@\S+\.\S+$/.test(em)) { toast.error("Vul eerst je e-mailadres in"); return; }
+              const { error } = await supabase.auth.resetPasswordForEmail(em, { redirectTo: `${window.location.origin}/#/personeel` });
+              if (error) toast.error(error.message);
+              else toast.success("Check je e-mail voor een link om een nieuw wachtwoord in te stellen");
+            }}
+          >
+            Wachtwoord vergeten?
+          </button>
+        )}
       </form>
     </div>
   );
@@ -628,23 +642,46 @@ function Signups() {
 }
 
 function StaffAdmin({ profiles, reload, me }: { profiles: Profile[]; reload: () => void; me: string }) {
-  const [f, setF] = useState({ name: "", email: "", password: "", isAdmin: false });
+  const [f, setF] = useState({ name: "", email: "", isAdmin: false });
   const [busy, setBusy] = useState(false);
+  const [lastSeen, setLastSeen] = useState<Record<string, string | null>>({});
+
+  const loadLastSeen = useCallback(async () => {
+    try {
+      const d = await staffFn({ action: "list" });
+      const map: Record<string, string | null> = {};
+      (d?.users ?? []).forEach((u: { id: string; last_sign_in_at: string | null }) => { map[u.id] = u.last_sign_in_at; });
+      setLastSeen(map);
+    } catch { /* niet kritiek */ }
+  }, []);
+  useEffect(() => { loadLastSeen(); }, [loadLastSeen]);
+
   const create = async (e: React.FormEvent) => {
     e.preventDefault(); setBusy(true);
-    try { await staffFn({ action: "create", ...f }); toast.success("Medewerker toegevoegd"); setF({ name: "", email: "", password: "", isAdmin: false }); reload(); }
+    try {
+      const d = await staffFn({ action: "create", ...f, origin: window.location.origin });
+      toast.success(d?.mailSent ? "Medewerker toegevoegd — welkomstmail verstuurd" : "Medewerker toegevoegd (welkomstmail kon niet worden verstuurd)");
+      setF({ name: "", email: "", isAdmin: false }); reload(); loadLastSeen();
+    }
     catch (err) { toast.error((err as Error).message); }
     setBusy(false);
   };
-  const reset = async (p: Profile) => {
-    const pw = window.prompt(`Nieuw wachtwoord voor ${p.display_name} (min. 8 tekens):`);
-    if (!pw) return;
-    try { await staffFn({ action: "reset_password", userId: p.id, password: pw }); toast.success("Wachtwoord gewijzigd"); }
+  const sendReset = async (p: Profile) => {
+    try {
+      const d = await staffFn({ action: "send_reset", email: p.email, name: p.display_name, origin: window.location.origin });
+      toast.success(d?.mailSent ? `Wachtwoord-link verstuurd naar ${p.email}` : "E-mail kon niet worden verstuurd");
+    }
     catch (err) { toast.error((err as Error).message); }
   };
   const remove = async (p: Profile) => {
     if (!window.confirm(`${p.display_name} verwijderen?`)) return;
     try { await staffFn({ action: "delete", userId: p.id }); reload(); } catch (err) { toast.error((err as Error).message); }
+  };
+  const seen = (id: string) => {
+    const v = lastSeen[id];
+    if (v === undefined) return null;
+    if (!v) return <span className="block text-xs text-amber-600">Nog niet ingelogd</span>;
+    return <span className="block text-xs text-muted-foreground">Laatst ingelogd: {format(new Date(v), "d MMM yyyy, HH:mm", { locale: nl })}</span>;
   };
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -652,18 +689,17 @@ function StaffAdmin({ profiles, reload, me }: { profiles: Profile[]; reload: () 
         <h3 className="font-display uppercase tracking-wider text-primary">Medewerker toevoegen</h3>
         <Input placeholder="Naam" maxLength={100} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} required />
         <Input type="email" placeholder="E-mailadres" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} required />
-        <Input type="text" placeholder="Wachtwoord (min. 8 tekens)" minLength={8} value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} required />
         <label className="flex items-center gap-2 text-sm"><Switch checked={f.isAdmin} onCheckedChange={(c) => setF({ ...f, isAdmin: c })} /> Ook beheerder</label>
         <Button type="submit" disabled={busy}>Toevoegen</Button>
-        <p className="text-xs text-muted-foreground">Geef de medewerker het e-mailadres en wachtwoord door.</p>
+        <p className="text-xs text-muted-foreground">De medewerker ontvangt automatisch een e-mail om zelf een wachtwoord in te stellen.</p>
       </form>
       <div className="rounded-xl border border-border bg-card p-4">
         <h3 className="font-display uppercase tracking-wider text-primary mb-3">Personeel ({profiles.length})</h3>
         {profiles.map((p) => (
           <div key={p.id} className="flex items-center justify-between py-1.5 text-sm border-b border-border last:border-0">
-            <span>{p.display_name} <span className="text-muted-foreground">{p.email}</span></span>
+            <span>{p.display_name} <span className="text-muted-foreground">{p.email}</span>{seen(p.id)}</span>
             <span className="flex">
-              <Button size="icon" variant="ghost" onClick={() => reset(p)} aria-label="Wachtwoord wijzigen"><KeyRound className="w-4 h-4" /></Button>
+              <Button size="icon" variant="ghost" onClick={() => sendReset(p)} aria-label="Wachtwoord-link sturen" title="Stuur wachtwoord-link"><KeyRound className="w-4 h-4" /></Button>
               {p.id !== me && <Button size="icon" variant="ghost" onClick={() => remove(p)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>}
             </span>
           </div>
@@ -829,12 +865,29 @@ const Personeel = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [roleReady, setRoleReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [recovery, setRecovery] = useState(false);
+  const [newPw, setNewPw] = useState("");
+  const [pwBusy, setPwBusy] = useState(false);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((e, s) => {
+      setUser(s?.user ?? null);
+      if (e === "PASSWORD_RECOVERY") setRecovery(true);
+    });
     supabase.auth.getUser().then(({ data }) => { setUser(data.user); setReady(true); });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  const saveNewPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: newPw });
+    setPwBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Wachtwoord ingesteld — je bent nu ingelogd");
+    setRecovery(false);
+    setNewPw("");
+  };
 
   const loadProfiles = useCallback(async () => {
     const { data } = await supabase.from("profiles").select("id, display_name, email").order("display_name");
@@ -860,6 +913,21 @@ const Personeel = () => {
   useEffect(() => { document.title = "Personeel – Paviljoen Zuidlanden"; }, []);
 
   if (!ready) return null;
+  if (recovery) return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <form onSubmit={saveNewPassword} className="w-full max-w-sm bg-card border border-border rounded-2xl p-8 shadow-sm space-y-5">
+        <div>
+          <h1 className="font-display text-3xl uppercase tracking-wider text-primary">Nieuw wachtwoord</h1>
+          <p className="text-sm text-muted-foreground mt-1">Kies een nieuw wachtwoord voor je account</p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="newpw">Nieuw wachtwoord</Label>
+          <Input id="newpw" type="password" minLength={8} value={newPw} onChange={(e) => setNewPw(e.target.value)} required />
+        </div>
+        <Button type="submit" className="w-full" disabled={pwBusy}>Wachtwoord instellen</Button>
+      </form>
+    </div>
+  );
   if (!user) return <Login />;
   if (!roleReady) return <div className="min-h-screen bg-background" />;
 
