@@ -83,6 +83,69 @@ export type Database = {
         }
         Relationships: []
       }
+      internal_agenda: {
+        Row: {
+          agreements: string | null
+          created_at: string
+          email: string | null
+          end_time: string | null
+          event_date: string | null
+          guests: number | null
+          id: string
+          kind: string
+          message: string | null
+          name: string | null
+          occasion: string | null
+          phone: string | null
+          quote_amount: number | null
+          source: string
+          start_time: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agreements?: string | null
+          created_at?: string
+          email?: string | null
+          end_time?: string | null
+          event_date?: string | null
+          guests?: number | null
+          id?: string
+          kind?: string
+          message?: string | null
+          name?: string | null
+          occasion?: string | null
+          phone?: string | null
+          quote_amount?: number | null
+          source?: string
+          start_time?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agreements?: string | null
+          created_at?: string
+          email?: string | null
+          end_time?: string | null
+          event_date?: string | null
+          guests?: number | null
+          id?: string
+          kind?: string
+          message?: string | null
+          name?: string | null
+          occasion?: string | null
+          phone?: string | null
+          quote_amount?: number | null
+          source?: string
+          start_time?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string
