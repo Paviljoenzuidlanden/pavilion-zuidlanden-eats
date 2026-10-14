@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download, Pencil, Check, X } from "lucide-react";
+import InternalAgenda from "@/components/InternalAgenda";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
@@ -1015,6 +1016,7 @@ const Personeel = () => {
             <TabsTrigger value="uren">{isAdmin ? "Urenregistratie" : "Mijn uren"}</TabsTrigger>
             {isAdmin && <TabsTrigger value="personeel">Personeel</TabsTrigger>}
             {isAdmin && <TabsTrigger value="aanmeldingen">Aanmeldingen</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="agenda">Interne agenda</TabsTrigger>}
           </TabsList>
           {!isAdmin && <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>}
           {!isAdmin && <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>}
@@ -1022,6 +1024,7 @@ const Personeel = () => {
           {isAdmin && <TabsContent value="planner"><MissingAvail profiles={profiles} me={user.id} /><Planner profiles={profiles} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
           {isAdmin && <TabsContent value="aanmeldingen"><MailTest /><Signups /></TabsContent>}
+          {isAdmin && <TabsContent value="agenda"><InternalAgenda /></TabsContent>}
         </Tabs>
       </main>
     </div>

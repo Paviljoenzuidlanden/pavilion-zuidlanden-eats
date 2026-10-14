@@ -49,6 +49,19 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const { createClient } = await import("npm:@supabase/supabase-js@2");
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const isoDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null;
+    const { error } = await admin.from("internal_agenda").insert({
+      kind: "feest", title: `${occasion} – ${name}`, event_date: isoDate, status: "concept",
+      name, email, phone: phone || null, occasion, guests, message: message || null, source: "formulier",
+    });
+    if (error) console.error("agenda insert failed:", error);
+  } catch (e) {
+    console.error("agenda insert failed:", e);
+  }
+
+  try {
     await sendTemplateEmail("booking-notification", email, {
       templateData: {
         name,
