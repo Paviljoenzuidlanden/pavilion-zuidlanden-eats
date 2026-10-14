@@ -17,3 +17,4 @@
 - [x] Mail bij nieuwe agenda-aanmelding — notificatie naar info@paviljoenzuidlanden.nl + bevestiging naar aanmelder.
 - [x] Mail voor contactformulier (feestreserveringen) naar info@paviljoenzuidlanden.nl.
 
+- [x] Interne agenda voor eigenaren: activiteiten + feestaanvragen (concept/offerte verstuurd/definitief, offerte en afspraken).

@@ -29,6 +29,13 @@
       "when": 1791529716975,
       "tag": "0003_quiz_team_registration",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791972214390,
+      "tag": "0004_internal_agenda",
+      "breakpoints": true
     }
   ]
 }
