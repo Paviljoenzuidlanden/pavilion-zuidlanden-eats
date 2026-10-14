@@ -381,6 +381,57 @@ function MySchedule({ user, profiles }: { user: User; profiles: Profile[] }) {
   );
 }
 
+/* ---------------- Herinnering beschikbaarheid ---------------- */
+const next14Open = () => Array.from({ length: 14 }, (_, i) => addDays(new Date(), i)).filter((d) => [0, 4, 5, 6].includes(d.getDay())).map((d) => format(d, "yyyy-MM-dd"));
+
+function AvailReminder({ user, onGo }: { user: User; onGo: () => void }) {
+  const [missing, setMissing] = useState(false);
+  useEffect(() => {
+    const open = next14Open();
+    supabase.from("availability").select("date").eq("user_id", user.id).in("date", open)
+      .then(({ data }) => setMissing((data ?? []).length === 0));
+  }, [user.id]);
+  if (!missing) return null;
+  return (
+    <div className="mb-6 rounded-xl border border-primary/40 bg-primary/10 p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+      <div>
+        <p className="font-medium text-foreground">Geef je beschikbaarheid door</p>
+        <p className="text-sm text-muted-foreground">Je hebt voor de komende 2 weken nog geen beschikbaarheid doorgegeven.</p>
+      </div>
+      <Button size="sm" onClick={onGo}>Naar mijn beschikbaarheid</Button>
+    </div>
+  );
+}
+
+function MissingAvail({ profiles, me }: { profiles: Profile[]; me: string }) {
+  const [filled, setFilled] = useState<Set<string> | null>(null);
+  const [admins, setAdmins] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    Promise.all([
+      supabase.from("availability").select("user_id").in("date", next14Open()),
+      supabase.from("user_roles").select("user_id, role").eq("role", "admin"),
+    ]).then(([a, r]) => {
+      setFilled(new Set((a.data ?? []).map((x) => x.user_id)));
+      setAdmins(new Set((r.data ?? []).map((x) => x.user_id)));
+    });
+  }, []);
+  if (!filled) return null;
+  const list = profiles.filter((p) => p.id !== me && !admins.has(p.id) && !filled.has(p.id));
+  return (
+    <div className="mb-6 rounded-xl border border-border bg-card p-4">
+      <p className="font-medium text-foreground mb-1">Beschikbaarheid komende 2 weken</p>
+      {list.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Iedereen heeft beschikbaarheid doorgegeven.</p>
+      ) : (
+        <>
+          <p className="text-sm text-muted-foreground mb-2">Nog niets doorgegeven:</p>
+          <div className="flex flex-wrap gap-2">{list.map((p) => <Badge key={p.id} variant="outline">{p.display_name}</Badge>)}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ---------------- Rooster maken (beheer, agenda) ---------------- */
 function Planner({ profiles }: { profiles: Profile[] }) {
   const [date, setDate] = useState(days()[0]);
@@ -862,6 +913,7 @@ const Personeel = () => {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [tab, setTab] = useState("");
   const [roleReady, setRoleReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [recovery, setRecovery] = useState(false);
@@ -954,7 +1006,8 @@ const Personeel = () => {
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <Tabs defaultValue={isAdmin ? "planner" : "beschikbaarheid"}>
+        {!isAdmin && <AvailReminder user={user} onGo={() => setTab("beschikbaarheid")} />}
+        <Tabs value={tab || (isAdmin ? "planner" : "beschikbaarheid")} onValueChange={setTab}>
           <TabsList className="mb-6 flex-wrap h-auto">
             {!isAdmin && <TabsTrigger value="beschikbaarheid">Mijn beschikbaarheid</TabsTrigger>}
             {!isAdmin && <TabsTrigger value="rooster">Rooster</TabsTrigger>}
@@ -966,7 +1019,7 @@ const Personeel = () => {
           {!isAdmin && <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>}
           {!isAdmin && <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>}
           <TabsContent value="uren"><MyHours user={user} profiles={profiles} isAdmin={isAdmin} /></TabsContent>
-          {isAdmin && <TabsContent value="planner"><Planner profiles={profiles} /></TabsContent>}
+          {isAdmin && <TabsContent value="planner"><MissingAvail profiles={profiles} me={user.id} /><Planner profiles={profiles} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
           {isAdmin && <TabsContent value="aanmeldingen"><MailTest /><Signups /></TabsContent>}
         </Tabs>
