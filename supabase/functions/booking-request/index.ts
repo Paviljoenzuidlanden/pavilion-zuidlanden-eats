@@ -62,6 +62,15 @@ Deno.serve(async (req) => {
   }
 
   try {
+    await sendTemplateEmail("booking-confirmation", email, {
+      templateData: { name, occasion, guests, date: date || undefined },
+      idempotencyKey: `booking-confirm-${email}-${Date.now()}`,
+    });
+  } catch (e) {
+    console.error("booking-confirmation failed:", e);
+  }
+
+  try {
     await sendTemplateEmail("booking-notification", email, {
       templateData: {
         name,
