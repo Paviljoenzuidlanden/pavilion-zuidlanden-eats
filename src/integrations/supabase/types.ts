@@ -56,6 +56,7 @@ export type Database = {
           id: string
           name: string
           phone: string | null
+          reserve: boolean
           team_name: string | null
           team_size: number | null
         }
@@ -67,6 +68,7 @@ export type Database = {
           id?: string
           name: string
           phone?: string | null
+          reserve?: boolean
           team_name?: string | null
           team_size?: number | null
         }
@@ -78,6 +80,7 @@ export type Database = {
           id?: string
           name?: string
           phone?: string | null
+          reserve?: boolean
           team_name?: string | null
           team_size?: number | null
         }

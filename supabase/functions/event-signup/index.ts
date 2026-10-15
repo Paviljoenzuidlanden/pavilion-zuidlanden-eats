@@ -56,6 +56,7 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
 
+  let reserve = false;
   // Aanmelding opslaan (team via de bestaande functie met teamlimiet)
   if (teamName) {
     if (!(teamSize >= 1 && teamSize <= 4)) return json({ status: "ongeldige_grootte" }, 200);
@@ -69,7 +70,8 @@ Deno.serve(async (req) => {
       _team_size: teamSize,
     });
     if (error) return json({ error: "Aanmelden mislukt" }, 500);
-    if (data !== "ok") return json({ status: data }, 200);
+    if (data === "reserve") reserve = true;
+    else if (data !== "ok") return json({ status: data }, 200);
   } else {
     const { error } = await supabase.from("event_signups").insert({
       event_title: eventTitle,
@@ -82,10 +84,11 @@ Deno.serve(async (req) => {
   }
 
   // E-mails: beste poging — een mislukte e-mail laat de aanmelding gewoon staan.
+  const mailTitle = reserve ? `${eventTitle} (RESERVELIJST)` : eventTitle;
   let emailed = false;
   try {
     await sendTemplateEmail("signup-confirmation", email, {
-      templateData: { name, eventTitle, eventDate, teamName: teamName || undefined, teamSize: teamName ? teamSize : undefined },
+      templateData: { name, eventTitle: mailTitle, eventDate, teamName: teamName || undefined, teamSize: teamName ? teamSize : undefined },
       idempotencyKey: `signup-confirm-${eventTitle}-${eventDate}-${email}-${Date.now()}`,
     });
     emailed = true;
@@ -94,12 +97,12 @@ Deno.serve(async (req) => {
   }
   try {
     await sendTemplateEmail("signup-notification", email, {
-      templateData: { name, email, phone: phone || undefined, eventTitle, eventDate, teamName: teamName || undefined, teamSize: teamName ? teamSize : undefined },
+      templateData: { name, email, phone: phone || undefined, eventTitle: mailTitle, eventDate, teamName: teamName || undefined, teamSize: teamName ? teamSize : undefined },
       idempotencyKey: `signup-notify-${eventTitle}-${eventDate}-${email}-${Date.now()}`,
     });
   } catch (e) {
     console.error("signup-notification failed:", e);
   }
 
-  return json({ status: "ok", emailed });
+  return json({ status: reserve ? "reserve" : "ok", emailed });
 });
