@@ -93,6 +93,7 @@ const Agenda = () => {
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
   const [formData, setFormData] = useState({ naam: "", email: "", telefoon: "", team: "", size: "4" });
   const [submitted, setSubmitted] = useState(false);
+  const [isReserve, setIsReserve] = useState(false);
   const [vol, setVol] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -134,9 +135,10 @@ const Agenda = () => {
         toast({ title: "Aanmelden mislukt, probeer het opnieuw", variant: "destructive" });
         return;
       }
-      if (data?.status === "vol") {
+      if (data?.status === "reserve") {
         setVol((p) => ({ ...p, [selectedEvent.title]: true }));
-        toast({ title: "Alle 12 teams zijn vol", variant: "destructive" });
+        setIsReserve(true);
+        setSubmitted(true);
         return;
       }
       if (data?.status === "team_bestaat") {
@@ -154,6 +156,7 @@ const Agenda = () => {
     setSelectedEvent(null);
     setFormData({ naam: "", email: "", telefoon: "", team: "", size: "4" });
     setSubmitted(false);
+    setIsReserve(false);
   };
 
   return (
@@ -271,7 +274,12 @@ const Agenda = () => {
                   )}
                   {event.spots !== "Vrije inloop" ? (
                     vol[event.title] ? (
-                      <span className="text-xs font-body font-semibold uppercase tracking-widest text-primary">Vol</span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-xs font-body font-semibold uppercase tracking-widest text-primary">Vol</span>
+                        <Button size="sm" variant="outline" className="rounded-full font-body font-semibold tracking-widest text-xs uppercase" onClick={() => setSelectedEvent(event)}>
+                          Op reservelijst
+                        </Button>
+                      </div>
                     ) : (
                       <Button
                         size="sm"
@@ -385,8 +393,13 @@ const Agenda = () => {
                         className="rounded-xl"
                       />
                     </div>
+                    {vol[selectedEvent.title] && (
+                      <p className="text-sm font-body text-muted-foreground rounded-xl bg-muted p-3">
+                        Alle teams zijn vol. Je komt op de <strong>reservelijst</strong>; valt er een team af, dan nemen we contact met je op.
+                      </p>
+                    )}
                     <Button type="submit" className="w-full rounded-full font-body font-semibold tracking-widest text-sm uppercase mt-2">
-                      Aanmelden
+                      {vol[selectedEvent.title] ? "Op reservelijst" : "Aanmelden"}
                     </Button>
                   </form>
                 </>
@@ -399,7 +412,7 @@ const Agenda = () => {
                   </p>
                   {selectedEvent.teams && (
                     <p className="text-muted-foreground font-body text-sm mb-3">
-                      We hebben <strong>{formData.team.trim()}</strong> ({formData.size} {formData.size === "1" ? "persoon" : "personen"}) voor je genoteerd.
+                      We hebben <strong>{formData.team.trim()}</strong> ({formData.size} {formData.size === "1" ? "persoon" : "personen"}) {isReserve ? <>op de <strong>reservelijst</strong> gezet. Valt er een team af, dan nemen we contact met je op.</> : "voor je genoteerd."}
                     </p>
                   )}
                   <p className="text-muted-foreground font-body text-sm mb-6">
