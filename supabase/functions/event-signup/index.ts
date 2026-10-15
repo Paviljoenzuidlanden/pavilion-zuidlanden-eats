@@ -69,7 +69,8 @@ Deno.serve(async (req) => {
       _team_size: teamSize,
     });
     if (error) return json({ error: "Aanmelden mislukt" }, 500);
-    if (data !== "ok") return json({ status: data }, 200);
+    if (data === "reserve") reserve = true;
+    else if (data !== "ok") return json({ status: data }, 200);
   } else {
     const { error } = await supabase.from("event_signups").insert({
       event_title: eventTitle,
