@@ -436,7 +436,7 @@ function MissingAvail({ profiles, me }: { profiles: Profile[]; me: string }) {
 }
 
 /* ---------------- Rooster maken (beheer, agenda) ---------------- */
-function Planner({ profiles }: { profiles: Profile[] }) {
+function Planner({ profiles, onOpenAgenda }: { profiles: Profile[]; onOpenAgenda?: (id: string) => void }) {
   const [date, setDate] = useState(days()[0]);
   const [week, setWeek] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [avail, setAvail] = useState<Avail[]>([]);
@@ -529,7 +529,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
                 {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
               </div>
               <div className="text-[11px] text-muted-foreground mb-2">{nAvail} beschikbaar</div>
-              <PlannerAgendaNotice items={agenda} date={d} />
+              <PlannerAgendaNotice items={agenda} date={d} onOpen={onOpenAgenda} />
               {list.map((s) => (
                 <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${past ? "bg-muted text-muted-foreground border border-border" : s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
                   <div className="font-semibold">{name(s.user_id)}</div>
@@ -939,6 +939,7 @@ const Personeel = () => {
   const [ready, setReady] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [tab, setTab] = useState("");
+  const [focusAgendaId, setFocusAgendaId] = useState<string | null>(null);
   const [roleReady, setRoleReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [recovery, setRecovery] = useState(false);
@@ -1045,10 +1046,10 @@ const Personeel = () => {
           {!isAdmin && <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>}
           {!isAdmin && <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>}
           <TabsContent value="uren"><MyHours user={user} profiles={profiles} isAdmin={isAdmin} /></TabsContent>
-          {isAdmin && <TabsContent value="planner"><MissingAvail profiles={profiles} me={user.id} /><Planner profiles={profiles} /></TabsContent>}
+          {isAdmin && <TabsContent value="planner"><MissingAvail profiles={profiles} me={user.id} /><Planner profiles={profiles} onOpenAgenda={(id) => { setFocusAgendaId(id); setTab("agenda"); }} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
           {isAdmin && <TabsContent value="aanmeldingen"><MailTest /><Signups /></TabsContent>}
-          {isAdmin && <TabsContent value="agenda"><InternalAgenda /></TabsContent>}
+          {isAdmin && <TabsContent value="agenda"><InternalAgenda focusId={focusAgendaId} /></TabsContent>}
         </Tabs>
       </main>
     </div>
