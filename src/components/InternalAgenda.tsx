@@ -23,10 +23,22 @@ const STATUS: Record<string, { label: string; cls: string }> = {
 
 const empty: Partial<Item> = { kind: "feest", title: "", status: "concept" };
 
-export default function InternalAgenda() {
+export default function InternalAgenda({ focusId }: { focusId?: string | null }) {
   const [rows, setRows] = useState<Item[]>([]);
   const [filter, setFilter] = useState<string>("alle");
   const [edit, setEdit] = useState<Partial<Item> | null>(null);
+  const [hl, setHl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!focusId) return;
+    setFilter("alle");
+    setHl(focusId);
+    const scroll = setTimeout(() => {
+      document.getElementById(`agenda-item-${focusId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 200);
+    const clear = setTimeout(() => setHl(null), 8000);
+    return () => { clearTimeout(scroll); clearTimeout(clear); };
+  }, [focusId]);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from("internal_agenda").select("*")
@@ -92,7 +104,7 @@ export default function InternalAgenda() {
             {list.map((r) => {
               const past = !!r.event_date && r.event_date < today;
               return (
-                <div key={r.id} className={`rounded-xl border border-border bg-card p-3 flex gap-3 ${past ? "opacity-60" : ""}`}>
+                <div key={r.id} id={`agenda-item-${r.id}`} className={`rounded-xl border border-border bg-card p-3 flex gap-3 scroll-mt-24 ${past ? "opacity-60" : ""} ${r.id === hl ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}>
                   <div className="w-14 shrink-0 text-center">
                     {r.event_date ? <>
                       <div className="font-display text-2xl leading-none">{format(new Date(r.event_date), "d")}</div>
