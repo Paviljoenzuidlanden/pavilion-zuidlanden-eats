@@ -13,6 +13,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "sonner";
 import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download, Pencil, Check, X } from "lucide-react";
 import InternalAgenda from "@/components/InternalAgenda";
+import PlannerAgendaNotice from "@/components/PlannerAgendaNotice";
+import type { PlannerAgendaItem } from "@/lib/planner-agenda";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
@@ -443,6 +445,24 @@ function Planner({ profiles }: { profiles: Profile[] }) {
   const [editId, setEditId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ start: "", end: "", note: "" });
 
+  const [agenda, setAgenda] = useState<PlannerAgendaItem[]>([]);
+  const [agendaError, setAgendaError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    const loadAgenda = async () => {
+      const { data, error } = await supabase.from("internal_agenda")
+        .select("id,title,event_date,start_time,end_time,guests,status")
+        .gte("event_date", format(week, "yyyy-MM-dd"))
+        .lte("event_date", format(addDays(week, 6), "yyyy-MM-dd"))
+        .order("start_time", { ascending: true, nullsFirst: false });
+      if (!active) return;
+      setAgenda(data ?? []);
+      setAgendaError(!!error);
+    };
+    loadAgenda();
+    return () => { active = false; };
+  }, [week]);
+
   const load = useCallback(async () => {
     const [a, s] = await Promise.all([
       supabase.from("availability").select("*").gte("date", days()[0]),
@@ -495,6 +515,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
         <Button onClick={publishAll} disabled={!drafts.length}><Send className="w-4 h-4" /> Publiceer concepten ({drafts.length})</Button>
       </WeekNav>
 
+      {agendaError && <p role="alert" className="text-sm text-destructive">Interne agenda kon niet worden geladen. Open Rooster maken opnieuw om het nogmaals te proberen.</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
         {weekDays.map((d) => {
           const list = shifts.filter((s) => s.date === d);
@@ -508,6 +529,7 @@ function Planner({ profiles }: { profiles: Profile[] }) {
                 {format(new Date(d + "T12:00"), "EEE d MMM", { locale: nl })}
               </div>
               <div className="text-[11px] text-muted-foreground mb-2">{nAvail} beschikbaar</div>
+              <PlannerAgendaNotice items={agenda} date={d} />
               {list.map((s) => (
                 <div key={s.id} className={`rounded-lg px-2 py-1.5 mb-1.5 text-xs ${past ? "bg-muted text-muted-foreground border border-border" : s.published ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-dashed border-muted-foreground/40"}`}>
                   <div className="font-semibold">{name(s.user_id)}</div>

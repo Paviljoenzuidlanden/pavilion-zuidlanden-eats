@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Rooster maken koppelen aan interne agenda met compacte dagmelding en pax (logica getest).
+- [ ] Koppeling visueel controleren met echte agenda-items — wacht op ingelogde beheerder in het voorbeeld; automatisch inloggen voor de aanvrager is niet beschikbaar.
+
 - [x] Urenregistratie: tabel work_hours + tab "Mijn uren" (invoer, totalen dag/week/maand, beheerder kan voor anderen invoeren)
 - [x] Rooster: eigen diensten en collega's per dag duidelijk onderscheiden.
 - [x] Beheerdersadres gecontroleerd: info@paviljoenzuidlanden.nl staat correct in account en applicatie.
