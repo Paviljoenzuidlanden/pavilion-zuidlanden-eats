@@ -436,7 +436,7 @@ function MissingAvail({ profiles, me }: { profiles: Profile[]; me: string }) {
 }
 
 /* ---------------- Rooster maken (beheer, agenda) ---------------- */
-function Planner({ profiles }: { profiles: Profile[] }) {
+function Planner({ profiles, onOpenAgenda }: { profiles: Profile[]; onOpenAgenda?: (id: string) => void }) {
   const [date, setDate] = useState(days()[0]);
   const [week, setWeek] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [avail, setAvail] = useState<Avail[]>([]);
