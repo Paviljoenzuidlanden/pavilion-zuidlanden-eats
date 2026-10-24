@@ -1,10 +1,10 @@
 # Roadmap
 
-- [ ] Pubquizteams toelaten of op de reservelijst zetten, ook boven de openbare limiet.
-- [ ] Aanmeldingen duidelijk filteren en onderscheiden per evenement en datum; beheerflow testen.
+- [x] Pubquizteams toelaten of op de reservelijst zetten, ook boven de openbare limiet; dertiende team live getest met tijdelijke aanmeldingen.
+- [x] Aanmeldingen duidelijk filteren en onderscheiden per evenement en datum; beheerflow en mobiele breedte getest.
 
 - [x] Rooster maken koppelen aan interne agenda met compacte dagmelding en pax (logica getest).
-- [ ] Koppeling visueel controleren met echte agenda-items — wacht op ingelogde beheerder in het voorbeeld; automatisch inloggen voor de aanvrager is niet beschikbaar.
+- [x] Koppeling visueel gecontroleerd met ingelogde beheerder (vorige wijziging: wijnproeverij geopend vanuit Rooster maken).
 
 - [x] Urenregistratie: tabel work_hours + tab "Mijn uren" (invoer, totalen dag/week/maand, beheerder kan voor anderen invoeren)
 - [x] Rooster: eigen diensten en collega's per dag duidelijk onderscheiden.
