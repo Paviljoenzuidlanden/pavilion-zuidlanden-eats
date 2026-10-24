@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Pubquizteams toelaten of op de reservelijst zetten, ook boven de openbare limiet.
+- [ ] Aanmeldingen duidelijk filteren en onderscheiden per evenement en datum; beheerflow testen.
+
 - [x] Rooster maken koppelen aan interne agenda met compacte dagmelding en pax (logica getest).
 - [ ] Koppeling visueel controleren met echte agenda-items — wacht op ingelogde beheerder in het voorbeeld; automatisch inloggen voor de aanvrager is niet beschikbaar.
 
