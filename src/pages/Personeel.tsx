@@ -15,6 +15,8 @@ import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Downlo
 import InternalAgenda from "@/components/InternalAgenda";
 import PlannerAgendaNotice from "@/components/PlannerAgendaNotice";
 import type { PlannerAgendaItem } from "@/lib/planner-agenda";
+import { groupEventSignups, signupTotals, type EventSignup } from "@/lib/event-signups";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
@@ -612,7 +614,7 @@ function Planner({ profiles, onOpenAgenda }: { profiles: Profile[]; onOpenAgenda
 }
 
 /* ---------------- Personeelsbeheer ---------------- */
-type Signup = { id: string; event_title: string; event_date: string; name: string; email: string; phone: string | null; team_name: string | null; team_size: number | null; reserve: boolean; created_at: string };
+type Signup = EventSignup;
 const EVENT_LABELS: Record<string, string> = {
   sent: "Verstuurd", rejected: "Geweigerd", bounced: "Onbestelbaar", complained: "Als spam gemeld",
   unsubscribed: "Afgemeld", suppressed: "Geblokkeerd", rate_limited: "Te veel tegelijk",
@@ -665,53 +667,93 @@ function MailTest() {
 
 function Signups() {
   const [rows, setRows] = useState<Signup[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState("all");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const load = useCallback(async () => {
-    const { data, error } = await supabase.from("event_signups").select("*").order("created_at", { ascending: false });
-    if (error) toast.error(error.message); else setRows(data as Signup[]);
+    const collected: Signup[] = [];
+    for (let offset = 0; ; offset += 500) {
+      const { data, error } = await supabase.from("event_signups").select("*").order("created_at", { ascending: true }).order("id").range(offset, offset + 499);
+      if (error) { setLoadError(true); setLoading(false); toast.error("Aanmeldingen laden mislukt"); return; }
+      collected.push(...(data ?? []));
+      if (!data || data.length < 500) break;
+    }
+    setRows(collected);
+    setLoadError(false);
+    setLoading(false);
   }, []);
   useEffect(() => { load(); }, [load]);
+  const setAdmission = async (s: Signup) => {
+    setBusyId(s.id);
+    const { error } = await supabase.rpc("set_quiz_team_admission", { _signup_id: s.id, _admitted: s.reserve });
+    if (error) toast.error("Status wijzigen mislukt");
+    else {
+      setRows((current) => current.map((row) => row.id === s.id ? { ...row, reserve: !s.reserve } : row));
+      toast.success(s.reserve ? `${s.team_name} is toegelaten` : `${s.team_name} staat op de reservelijst`);
+    }
+    setBusyId(null);
+  };
   const remove = async (s: Signup) => {
     if (!window.confirm(`Aanmelding van ${s.name} verwijderen?`)) return;
     const { error } = await supabase.from("event_signups").delete().eq("id", s.id);
     if (error) toast.error(error.message); else load();
   };
-  const groups = rows.reduce<Record<string, Signup[]>>((acc, r) => {
-    const k = `${r.event_title} — ${r.event_date}`; (acc[k] ||= []).push(r); return acc;
-  }, {});
+  const groups = groupEventSignups(rows);
+  const visibleGroups = groups.filter((group) => selectedEvent === "all" || group.key === selectedEvent);
+  if (loading) return <p className="text-muted-foreground py-6">Aanmeldingen laden…</p>;
+  if (loadError) return <Button variant="outline" onClick={load}>Opnieuw laden</Button>;
   if (!rows.length) return <p className="text-muted-foreground py-6">Nog geen aanmeldingen voor activiteiten.</p>;
   return (
     <div className="space-y-6">
-      {Object.entries(groups).map(([k, list]) => (
-        <div key={k} className="rounded-xl border border-border bg-card p-4">
-          <div className="flex items-center justify-between mb-3 gap-2">
-            <h3 className="font-display text-lg uppercase tracking-tight">{k}</h3>
-            <Badge>
-              {list.some((s) => s.team_name)
-                ? (() => { const m = list.filter((s) => !s.reserve), r = list.length - m.length;
-                    return `${m.length} team${m.length === 1 ? "" : "s"} · ${m.reduce((n, s) => n + (s.team_size ?? 0), 0)} personen${r ? ` · ${r} reserve` : ""}`; })()
-                : `${list.length} aanmelding${list.length === 1 ? "" : "en"}`}
-            </Badge>
-          </div>
-          <div className="divide-y divide-border">
-            {[...list.filter((s) => !s.reserve), ...list.filter((s) => s.reserve)].map((s) => (
-              <div key={s.id} className={`flex items-center justify-between gap-2 py-2 text-sm ${s.reserve ? "opacity-70" : ""}`}>
-                <div className="min-w-0">
-                  <div className="font-semibold">
-                    {s.team_name
-                      ? `${s.team_name} · ${s.team_size ?? "?"} ${s.team_size === 1 ? "persoon" : "personen"}`
-                      : s.name}
-                    {s.reserve && <Badge variant="outline" className="ml-2 border-dashed">Reservelijst</Badge>}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {s.team_name ? `Contact: ${s.name} · ` : ""}<a href={`mailto:${s.email}`} className="underline">{s.email}</a>{s.phone ? ` · ${s.phone}` : ""} · {format(new Date(s.created_at), "d MMM HH:mm", { locale: nl })}
-                  </div>
-                </div>
-                <Button size="icon" variant="ghost" onClick={() => remove(s)} aria-label="Verwijderen"><Trash2 className="w-4 h-4" /></Button>
+      <div className="max-w-lg space-y-2">
+        <Label htmlFor="signup-event">Evenement</Label>
+        <Select value={selectedEvent} onValueChange={setSelectedEvent}>
+          <SelectTrigger id="signup-event"><SelectValue placeholder="Alle evenementen" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Alle evenementen</SelectItem>
+            {groups.map((group) => <SelectItem key={group.key} value={group.key}>{group.title} — {group.date}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+      {visibleGroups.map((group) => {
+        const totals = signupTotals(group.rows);
+        const teams = group.rows.some((s) => s.team_name);
+        return (
+          <section key={group.key} className="border-t border-border pt-4 space-y-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div><h3 className="font-display text-xl uppercase">{group.title}</h3><p className="text-sm text-muted-foreground">{group.date}</p></div>
+              <div className="flex flex-wrap gap-2">
+                <Badge>{teams ? `${totals.admitted} teams toegelaten · ${totals.people} personen` : `${group.rows.length} aanmeldingen`}</Badge>
+                {teams && <Badge variant="outline">{totals.reserve} op reservelijst</Badge>}
               </div>
-            ))}
-          </div>
-        </div>
-      ))}
+            </div>
+            {(teams ? [false, true] : [false]).map((reserve) => {
+              const list = group.rows.filter((s) => s.reserve === reserve);
+              return <div key={String(reserve)} className="space-y-2">
+                {teams && <h4 className="font-semibold text-sm">{reserve ? "Reservelijst" : "Toegelaten teams"}</h4>}
+                {list.length === 0 && <p className="text-sm text-muted-foreground">{reserve ? "Geen teams op de reservelijst." : "Nog geen teams toegelaten."}</p>}
+                <div className="divide-y divide-border">
+                  {list.map((s) => <div key={s.id} className="flex flex-wrap sm:flex-nowrap items-start justify-between gap-3 py-3 text-sm" data-signup-id={s.id}>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <p className="font-semibold break-words">{s.team_name ? `${s.team_name} · ${s.team_size ?? "?"} ${s.team_size === 1 ? "persoon" : "personen"}` : s.name}</p>
+                      <Badge variant={s.reserve ? "outline" : "secondary"}>{s.reserve ? "Reservelijst" : s.team_name ? "Toegelaten" : "Ingeschreven"}</Badge>
+                      <div className="text-xs text-muted-foreground break-words">{s.team_name ? `Contact: ${s.name} · ` : ""}<a href={`mailto:${s.email}`} className="underline break-all">{s.email}</a>{s.phone ? ` · ${s.phone}` : ""}</div>
+                      <p className="text-xs text-muted-foreground">{format(new Date(s.created_at), "d MMM HH:mm", { locale: nl })}</p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      {s.team_name && <Button size="sm" variant={s.reserve ? "default" : "outline"} disabled={busyId !== null} onClick={() => setAdmission(s)}>
+                        {s.reserve && <Check className="w-4 h-4 mr-1" />}{busyId === s.id ? "Opslaan…" : s.reserve ? "Toelaten" : "Naar reservelijst"}
+                      </Button>}
+                      <Button size="icon" variant="ghost" disabled={busyId !== null} onClick={() => remove(s)} aria-label={`Aanmelding ${s.team_name ?? s.name} verwijderen`}><Trash2 className="w-4 h-4" /></Button>
+                    </div>
+                  </div>)}
+                </div>
+              </div>;
+            })}
+          </section>
+        );
+      })}
     </div>
   );
 }

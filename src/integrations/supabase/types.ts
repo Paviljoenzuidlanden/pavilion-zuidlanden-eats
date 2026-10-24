@@ -342,6 +342,10 @@ export type Database = {
         }
         Returns: string
       }
+      set_quiz_team_admission: {
+        Args: { _admitted: boolean; _signup_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "staff"
