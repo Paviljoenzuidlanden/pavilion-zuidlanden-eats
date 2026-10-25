@@ -572,8 +572,8 @@ function Planner({ profiles, onOpenAgenda }: { profiles: Profile[]; onOpenAgenda
               {profiles.map((p) => <option key={p.id} value={p.id}>{p.display_name}</option>)}
             </select>
             <div className="flex gap-2">
-              <Input type="time" value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} />
-              <Input type="time" value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} />
+              <Input type="time" step={900} value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} />
+              <Input type="time" step={900} value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} />
             </div>
             <Input placeholder="Taak / opmerking (bijv. bar, keuken)" maxLength={200} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
             <Button size="sm" onClick={() => add()}>Toevoegen</Button>
@@ -595,8 +595,8 @@ function Planner({ profiles, onOpenAgenda }: { profiles: Profile[]; onOpenAgenda
               {editId === s.id && (
                 <div className="mt-2 space-y-2 rounded-lg border border-border bg-background p-3">
                   <div className="flex gap-2">
-                    <Input type="time" value={editForm.start} onChange={(e) => setEditForm({ ...editForm, start: e.target.value })} />
-                    <Input type="time" value={editForm.end} onChange={(e) => setEditForm({ ...editForm, end: e.target.value })} />
+                    <Input type="time" step={900} value={editForm.start} onChange={(e) => setEditForm({ ...editForm, start: e.target.value })} />
+                    <Input type="time" step={900} value={editForm.end} onChange={(e) => setEditForm({ ...editForm, end: e.target.value })} />
                   </div>
                   <Input placeholder="Taak / opmerking (bijv. bar, keuken)" maxLength={200} value={editForm.note} onChange={(e) => setEditForm({ ...editForm, note: e.target.value })} />
                   <div className="flex gap-2">
