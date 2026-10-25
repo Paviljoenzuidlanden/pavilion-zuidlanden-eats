@@ -1,16 +1,16 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import heroFries from "@/assets/hero-fries.jpg";
 import bitterballen from "@/assets/bitterballen.jpg";
-import frisdranken from "@/assets/dranken-nieuw.jpg";
-import borrelImage from "@/assets/borrel-nieuw.jpg";
+import broodjesImage from "@/assets/broodjes.jpg";
+import frisdranken from "@/assets/frisdranken.jpg";
 
 const categories = [
-  { img: heroFries, label: "VERSE FRIET.", href: "#friet" },
-  { img: bitterballen, label: "SNACKS.", href: "#snacks" },
-  { img: frisdranken, label: "DRANKEN.", href: "#dranken" },
-  { img: borrelImage, label: "BORREL.", href: "#borrel" },
+  { img: heroFries, label: "VERSE FRIET.", id: "friet" },
+  { img: bitterballen, label: "SNACKS.", id: "snacks" },
+  { img: broodjesImage, label: "BROODJES.", id: "broodjes" },
+  { img: frisdranken, label: "DRANKEN.", id: "dranken" },
 ];
 
 const menuItems = [
@@ -18,11 +18,9 @@ const menuItems = [
     category: "Friet",
     id: "friet",
     items: [
-      { name: "Verse friet (klein)", price: "2,75" },
-      { name: "Verse friet (groot)", price: "3,00" },
-      { name: "Friet speciaal", price: "3,55" },
-      { name: "Patatje oorlog", price: "5,50" },
-      { name: "Kapsalon", price: "9,50" },
+      { name: "Verse friet", price: "2,75" },
+      { name: "Grote verse friet", price: "3,75" },
+      { name: "Rustieke friet met schil", price: "3,25" },
     ],
   },
   {
@@ -30,24 +28,24 @@ const menuItems = [
     id: "snacks",
     items: [
       { name: "Frikandel", price: "2,50" },
-      { name: "Kroket", price: "2,50" },
-      { name: "Kaassoufflé", price: "2,75" },
-      { name: "Bitterballen (6 st)", price: "5,50" },
-      { name: "Kipcorn", price: "2,75" },
+      { name: "Bitterballen (4 st)", price: "3,50" },
+      { name: "Borrelbox (12 hapjes)", price: "8,50" },
     ],
   },
   {
     category: "Dranken",
     id: "dranken",
     items: [
-       { name: "Frisdrank vanaf", price: "2,50" },
-       { name: "Bier vanaf", price: "3,25" },
-       { name: "Koffie/Thee vanaf", price: "2,50" },
+      { name: "Frisdrank vanaf", price: "2,75" },
+      { name: "Koffie/Thee vanaf", price: "2,50" },
+      { name: "Wijn per glas vanaf", price: "5,25" },
     ],
   },
 ];
 
 const MenuSection = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="menu" className="bg-background">
       {/* Category cards like DoubleFF */}
@@ -71,13 +69,15 @@ const MenuSection = () => {
             {categories.map((cat, i) => (
               <motion.a
                 key={cat.label}
-                href={cat.href}
+                href={`#${cat.id}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  const id = cat.href.replace("#", "");
+                  const id = cat.id;
                   const el = document.getElementById(id);
                   if (el) {
                     el.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    navigate("/menukaart", { state: { scrollToId: id } });
                   }
                 }}
                 className="group relative rounded-2xl overflow-hidden aspect-square bg-muted cursor-pointer"

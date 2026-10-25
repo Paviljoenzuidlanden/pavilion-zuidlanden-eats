@@ -40,7 +40,7 @@ const App = () => (
           <Route path="/rustiek" element={<Navigate to="/menukaart" state={{ scrollToId: "rustiek" }} replace />} />
           <Route path="/snacks" element={<Navigate to="/menukaart" state={{ scrollToId: "snacks" }} replace />} />
           <Route path="/broodjes" element={<Navigate to="/menukaart" state={{ scrollToId: "broodjes" }} replace />} />
-          <Route path="/extra" element={<Navigate to="/menukaart" state={{ scrollToId: "extra" }} replace />} />
+          <Route path="/extra" element={<Navigate to="/menukaart" state={{ scrollToId: "sauzen" }} replace />} />
           <Route path="/menu" element={<Navigate to="/" state={{ scrollToId: "menu" }} replace />} />
           <Route path="/over-ons" element={<Navigate to="/" state={{ scrollToId: "over-ons" }} replace />} />
           <Route path="/contact" element={<Navigate to="/" state={{ scrollToId: "contact" }} replace />} />
