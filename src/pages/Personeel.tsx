@@ -936,9 +936,9 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
           </select>
           <div className="flex flex-wrap gap-2">
             <Input type="date" className="w-40" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required />
-            <Input type="time" className="w-28" value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} required />
+            <Input type="time" step={900} className="w-28" value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} required />
             <span className="self-center text-muted-foreground">–</span>
-            <Input type="time" className="w-28" value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} required />
+            <Input type="time" step={900} className="w-28" value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} required />
           </div>
           <Input placeholder="Opmerking (optioneel)" maxLength={200} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
           <Button type="submit" disabled={!form.user_id}><Plus className="w-4 h-4" /> Opslaan</Button>
