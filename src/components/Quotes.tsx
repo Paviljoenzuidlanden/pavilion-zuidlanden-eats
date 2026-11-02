@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { CalendarDays, Copy, Download, Eye, Mail, Pencil, Plus, Send, Trash2, X } from "lucide-react";
 import QuoteDocument, { type Quote } from "@/components/QuoteDocument";
 import QuoteArrangements, { type Arrangement } from "@/components/QuoteArrangements";
-import { DEFAULT_DRINKS, DEFAULT_NOTES, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, type QuoteItem } from "@/lib/quotes";
+import { DEFAULT_DRINKS, DEFAULT_NOTES, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, type QuoteItem } from "@/lib/quotes";
 
 type Agenda = Tables<"internal_agenda">;
 
@@ -303,7 +303,13 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
                       </div>
                     </div>
                   ))}
-                  <Button size="sm" variant="outline" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: [...d.itemsArr, { title: "", description: "", price: 0, perPerson: true }] }))}><Plus className="w-4 h-4 mr-1" />Regel toevoegen</Button>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <Button size="sm" variant="outline" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: [...d.itemsArr, { title: "", description: "", price: 0, perPerson: true }] }))}><Plus className="w-4 h-4 mr-1" />Regel toevoegen</Button>
+                    <span className="text-xs text-muted-foreground">Standaard opties:</span>
+                    {QUOTE_PRESETS.map((p) => (
+                      <Button key={p.title} size="sm" variant="outline" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: [...d.itemsArr, { ...p, description: p.description ?? "" }] }))}><Plus className="w-3 h-3 mr-1" />{p.title}</Button>
+                    ))}
+                  </div>
                 </div>
                 {draftTotals && <p className="text-sm mt-2">Per persoon <strong>{euro(draftTotals.perPerson)}</strong> · Totaal bij {draftTotals.guests} gasten <strong>{euro(draftTotals.total)}</strong></p>}
               </div>
