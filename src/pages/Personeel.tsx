@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "sonner";
 import { LogOut, Trash2, Send, Plus, KeyRound, ChevronLeft, ChevronRight, Download, Pencil, Check, X } from "lucide-react";
 import InternalAgenda from "@/components/InternalAgenda";
+import Quotes from "@/components/Quotes";
 import PlannerAgendaNotice from "@/components/PlannerAgendaNotice";
 import type { PlannerAgendaItem } from "@/lib/planner-agenda";
 import { groupEventSignups, signupTotals, type EventSignup } from "@/lib/event-signups";
@@ -982,6 +983,7 @@ const Personeel = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [tab, setTab] = useState("");
   const [focusAgendaId, setFocusAgendaId] = useState<string | null>(null);
+  const [quoteAgendaId, setQuoteAgendaId] = useState<string | null>(null);
   const [roleReady, setRoleReady] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [recovery, setRecovery] = useState(false);
@@ -1084,6 +1086,7 @@ const Personeel = () => {
             {isAdmin && <TabsTrigger value="personeel">Personeel</TabsTrigger>}
             {isAdmin && <TabsTrigger value="aanmeldingen">Aanmeldingen</TabsTrigger>}
             {isAdmin && <TabsTrigger value="agenda">Interne agenda</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="offertes">Offertes</TabsTrigger>}
           </TabsList>
           {!isAdmin && <TabsContent value="beschikbaarheid"><Availability user={user} /></TabsContent>}
           {!isAdmin && <TabsContent value="rooster"><MySchedule user={user} profiles={profiles} /></TabsContent>}
@@ -1091,7 +1094,8 @@ const Personeel = () => {
           {isAdmin && <TabsContent value="planner"><MissingAvail profiles={profiles} me={user.id} /><Planner profiles={profiles} onOpenAgenda={(id) => { setFocusAgendaId(id); setTab("agenda"); }} /></TabsContent>}
           {isAdmin && <TabsContent value="personeel"><StaffAdmin profiles={profiles} reload={loadProfiles} me={user.id} /></TabsContent>}
           {isAdmin && <TabsContent value="aanmeldingen"><MailTest /><Signups /></TabsContent>}
-          {isAdmin && <TabsContent value="agenda"><InternalAgenda focusId={focusAgendaId} /></TabsContent>}
+          {isAdmin && <TabsContent value="agenda"><InternalAgenda focusId={focusAgendaId} onQuote={(id) => { setQuoteAgendaId(id); setTab("offertes"); }} /></TabsContent>}
+          {isAdmin && <TabsContent value="offertes"><Quotes agendaRequest={quoteAgendaId} onHandled={() => setQuoteAgendaId(null)} onOpenAgenda={(id) => { setFocusAgendaId(id); setTab("agenda"); }} /></TabsContent>}
         </Tabs>
       </main>
     </div>

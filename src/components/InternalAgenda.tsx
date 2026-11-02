@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { FileText, Pencil, Plus, Trash2 } from "lucide-react";
 
 type Item = Tables<"internal_agenda">;
 
@@ -23,7 +23,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
 
 const empty: Partial<Item> = { kind: "feest", title: "", status: "concept" };
 
-export default function InternalAgenda({ focusId }: { focusId?: string | null }) {
+export default function InternalAgenda({ focusId, onQuote }: { focusId?: string | null; onQuote?: (agendaId: string) => void }) {
   const [rows, setRows] = useState<Item[]>([]);
   const [filter, setFilter] = useState<string>("alle");
   const [edit, setEdit] = useState<Partial<Item> | null>(null);
@@ -132,6 +132,9 @@ export default function InternalAgenda({ focusId }: { focusId?: string | null })
                     <div className="flex flex-wrap gap-1 mt-2">
                       {r.status !== "offerte_verstuurd" && r.status !== "definitief" && (
                         <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setStatus(r, "offerte_verstuurd")}>Offerte verstuurd</Button>
+                      )}
+                      {r.kind === "feest" && onQuote && (
+                        <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => onQuote(r.id)}><FileText className="w-3 h-3 mr-1" />Offerte</Button>
                       )}
                       {r.status !== "definitief" && (
                         <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setStatus(r, "definitief")}>Definitief</Button>

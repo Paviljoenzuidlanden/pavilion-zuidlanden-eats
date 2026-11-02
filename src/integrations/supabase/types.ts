@@ -209,6 +209,86 @@ export type Database = {
         }
         Relationships: []
       }
+      quotes: {
+        Row: {
+          agenda_id: string | null
+          client_email: string | null
+          client_name: string
+          created_at: string
+          drinks_text: string | null
+          end_time: string | null
+          event_date: string | null
+          guests_count: number
+          guests_text: string | null
+          id: string
+          intro: string | null
+          items: Json
+          location: string
+          notes: string | null
+          occasion: string | null
+          quote_number: string
+          sent_at: string | null
+          signed_by: string
+          start_time: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agenda_id?: string | null
+          client_email?: string | null
+          client_name?: string
+          created_at?: string
+          drinks_text?: string | null
+          end_time?: string | null
+          event_date?: string | null
+          guests_count?: number
+          guests_text?: string | null
+          id?: string
+          intro?: string | null
+          items?: Json
+          location?: string
+          notes?: string | null
+          occasion?: string | null
+          quote_number: string
+          sent_at?: string | null
+          signed_by?: string
+          start_time?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agenda_id?: string | null
+          client_email?: string | null
+          client_name?: string
+          created_at?: string
+          drinks_text?: string | null
+          end_time?: string | null
+          event_date?: string | null
+          guests_count?: number
+          guests_text?: string | null
+          id?: string
+          intro?: string | null
+          items?: Json
+          location?: string
+          notes?: string | null
+          occasion?: string | null
+          quote_number?: string
+          sent_at?: string | null
+          signed_by?: string
+          start_time?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_agenda_id_fkey"
+            columns: ["agenda_id"]
+            isOneToOne: false
+            referencedRelation: "internal_agenda"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shifts: {
         Row: {
           created_at: string
