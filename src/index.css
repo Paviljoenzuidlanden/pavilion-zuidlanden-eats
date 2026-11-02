@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@600;700;800&family=Caveat:wght@600&family=Kaushan+Script&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
 
 @tailwind base;
@@ -92,7 +93,6 @@
 }
 
 /* Offerte (A4-document, eigen drukkleuren uit offerte-ontwerp) */
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@600;700;800&family=Caveat:wght@600&family=Kaushan+Script&display=swap');
 .quote-doc { --q-ink: #004150; --q-acc: #D05B49; --q-bg: #EFECD9;
   position: relative; width: 794px; min-height: 1123px; box-sizing: border-box; overflow: hidden;
   background: var(--q-bg); color: var(--q-ink); font-family: Lato, sans-serif; padding-bottom: 120px; }
