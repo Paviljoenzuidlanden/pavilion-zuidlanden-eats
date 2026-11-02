@@ -307,7 +307,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
                     <Button size="sm" variant="outline" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: [...d.itemsArr, { title: "", description: "", price: 0, perPerson: true }] }))}><Plus className="w-4 h-4 mr-1" />Regel toevoegen</Button>
                     <span className="text-xs text-muted-foreground">Standaard opties:</span>
                     {QUOTE_PRESETS.map((p) => (
-                      <Button key={p.title} size="sm" variant="outline" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: [...d.itemsArr, { ...p, description: p.description ?? "" }] }))}><Plus className="w-3 h-3 mr-1" />{p.title}</Button>
+                      <Button key={p.title} size="sm" variant="outline" title={p.description} onClick={() => setEdit((d) => d && ({ ...d, itemsArr: [...d.itemsArr, { ...p, description: p.description ?? "" }] }))}><Plus className="w-3 h-3 mr-1" />{p.title}</Button>
                     ))}
                   </div>
                 </div>

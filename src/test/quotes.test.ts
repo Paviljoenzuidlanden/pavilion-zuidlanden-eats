@@ -54,10 +54,13 @@ describe("offerte berekening", () => {
     expect(DEFAULT_NOTES).toContain("geen alcoholische dranken aan personen onder de 18 jaar");
     expect(DEFAULT_NOTES).toContain("leeftijdsbandjes");
   });
-  it("biedt standaardopties koffie/thee met oranjekoek en extra koffie aan", () => {
+  it("biedt standaardopties met ondertekst aan", () => {
     expect(QUOTE_PRESETS.map((p) => p.title)).toEqual(["Koffie/Thee met oranjekoek", "Extra koffie, thee of cappuccino", "Welkomstdrankje Prosecco of alcoholvrij alternatief"]);
     expect(QUOTE_PRESETS.map((p) => p.price)).toEqual([5.25, 2.5, 5.95]);
     expect(QUOTE_PRESETS.every((p) => p.perPerson)).toBe(true);
+    expect(QUOTE_PRESETS[0].description).toContain("crème");
+    expect(QUOTE_PRESETS[1].description).toContain("cappuccino");
+    expect(QUOTE_PRESETS[2].description).toContain("alcoholvrij");
   });
 });
 
