@@ -137,5 +137,9 @@
   @page { size: A4; margin: 0; }
   body.printing-quote > *:not(#quote-print) { display: none !important; }
   body.printing-quote #quote-print { display: block; }
-  .quote-doc { -webkit-print-color-adjust: exact; print-color-adjust: exact; width: 210mm; min-height: 297mm; }
+  .quote-doc { -webkit-print-color-adjust: exact; print-color-adjust: exact; width: 210mm; min-height: 297mm; overflow: visible; padding-bottom: 0; }
+  .quote-logo { mix-blend-mode: normal; }
+  .quote-h { break-after: avoid; }
+  .quote-facts, .quote-totals, .quote-budget, .quote-table tr { break-inside: avoid; }
+  .quote-foot { position: relative; margin-top: 28px; break-inside: avoid; }
 }
