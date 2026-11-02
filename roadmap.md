@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Vaste offertearrangementen bewaren en toepassen zonder verzonnen prijzen; ingelogd opslaan en toepassen getest.
+- [x] Offerte kopiëren als nieuw concept zonder klant- of agendakoppeling; ingelogde kopie gecontroleerd.
+- [x] Verstuurde offertes opvolgen op basis van de bestaande geldigheid van 14 dagen; berekening getest en deadline zichtbaar na verzending.
+- [x] Offerte direct naar de opgeslagen klant mailen met beveiligde link naar een vaste documentversie; echte testmail naar info, verzendlog, klantlink zonder login en A4-PDF getest. Tijdelijke gegevens verwijderd. Publicatie van de nieuwe klantpagina wacht op de eigenaar.
+
 - [x] Pubquizteams toelaten of op de reservelijst zetten, ook boven de openbare limiet; dertiende team live getest met tijdelijke aanmeldingen.
 - [x] Aanmeldingen duidelijk filteren en onderscheiden per evenement en datum; beheerflow en mobiele breedte getest.
 

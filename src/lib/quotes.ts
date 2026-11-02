@@ -6,6 +6,20 @@ export const agendaQuoteOptions = <T extends { status: string }>(agenda: T[]): T
 export const agendaQuoteOccasion = (agenda: { occasion: string | null; title: string }) =>
   agenda.occasion || agenda.title;
 
+export function quoteFollowUp(quote: { status: string; sent_at: string | null }, now = new Date()) {
+  if (quote.status !== "verstuurd" || !quote.sent_at) return null;
+  const deadline = new Date(quote.sent_at);
+  deadline.setDate(deadline.getDate() + 14);
+  const daysLeft = Math.ceil((deadline.getTime() - now.getTime()) / 86400000);
+  return { deadline, daysLeft, due: daysLeft <= 3 };
+}
+
+export function copyQuote<T extends { client_name: string; client_email: string | null; agenda_id: string | null; event_date: string | null; start_time: string | null; end_time: string | null; status: string; sent_at: string | null; quote_number: string; id: string; created_at: string; updated_at: string }>(quote: T, number: string) {
+  const { id, created_at, updated_at, ...content } = quote;
+  return { ...content, quote_number: number, client_name: "", client_email: null, agenda_id: null,
+    event_date: null, start_time: null, end_time: null, status: "concept", sent_at: null };
+}
+
 export const lineTotal = (i: QuoteItem, guests: number) => (i.perPerson ? i.price * guests : i.price);
 
 export function quoteTotals(items: QuoteItem[], guests: number) {

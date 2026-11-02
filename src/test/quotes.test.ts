@@ -1,5 +1,23 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, agendaQuoteOptions, agendaQuoteOccasion } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp } from "@/lib/quotes";
+
+describe("offerte kopiëren en opvolgen", () => {
+  it("kopieert inhoud maar wist klant, koppeling en verzendstatus", () => {
+    const result = copyQuote({ id: 'old', created_at: 'old', updated_at: 'old', client_name: 'Klant', client_email: 'klant@example.com', agenda_id: 'agenda', event_date: '2026-11-12', start_time: '19:00', end_time: '22:00', status: 'verstuurd', sent_at: '2026-11-02', quote_number: '2026-001', items: [{ title: 'Koffie', price: 6.5, perPerson: true }] }, '2026-002');
+    expect(result).toMatchObject({ quote_number: '2026-002', client_name: '', client_email: null, agenda_id: null, event_date: null, start_time: null, end_time: null, status: 'concept', sent_at: null, items: [{ title: 'Koffie', price: 6.5, perPerson: true }] });
+    expect(result).not.toHaveProperty('id');
+  });
+  it("berekent geldigheid van 14 dagen na versturen", () => {
+    expect(quoteFollowUp({ status: 'verstuurd', sent_at: '2026-11-02T12:00:00Z' }, new Date('2026-11-02T12:00:00Z'))?.daysLeft).toBe(14);
+  });
+  it("markeert onbeantwoorde offertes vanaf drie dagen voor verlopen", () => {
+    expect(quoteFollowUp({ status: 'verstuurd', sent_at: '2026-11-02T12:00:00Z' }, new Date('2026-11-13T12:00:00Z'))?.due).toBe(true);
+    expect(quoteFollowUp({ status: 'verstuurd', sent_at: '2026-11-02T12:00:00Z' }, new Date('2026-11-12T12:00:00Z'))?.due).toBe(false);
+  });
+  it("volgt geaccepteerde offertes niet op", () => {
+    expect(quoteFollowUp({ status: 'geaccepteerd', sent_at: '2026-11-02T12:00:00Z' }, new Date('2026-12-01T12:00:00Z'))).toBeNull();
+  });
+});
 
 describe("offertes voor interne activiteiten", () => {
   const activity = { id: "d66", kind: "activiteit", status: "definitief", title: "D66 ledenbijeenkomst", occasion: null, event_date: "2026-11-12" };

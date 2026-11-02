@@ -209,6 +209,74 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_arrangements: {
+        Row: {
+          created_at: string
+          drinks_text: string | null
+          id: string
+          intro: string | null
+          items: Json
+          name: string
+          notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          drinks_text?: string | null
+          id?: string
+          intro?: string | null
+          items?: Json
+          name: string
+          notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          drinks_text?: string | null
+          id?: string
+          intro?: string | null
+          items?: Json
+          name?: string
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      quote_publications: {
+        Row: {
+          access_token: string
+          created_at: string
+          expires_at: string
+          id: string
+          quote_id: string
+          sent_at: string | null
+          snapshot: Json
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          expires_at?: string
+          id: string
+          quote_id: string
+          sent_at?: string | null
+          snapshot: Json
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          quote_id?: string
+          sent_at?: string | null
+          snapshot?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_publications_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quotes: {
         Row: {
           agenda_id: string | null
