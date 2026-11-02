@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 import logo from "@/assets/logo-offerte.png.asset.json";
-import { DRINK_BUDGET_GUESTS, drinkBudget, euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
+import { DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, drinkBudget, euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type Quote = Tables<"quotes">;
