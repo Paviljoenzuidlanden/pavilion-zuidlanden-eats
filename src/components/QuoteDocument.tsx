@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 import logo from "@/assets/logo-offerte.png.asset.json";
-import { euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
+import { DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, drinkBudget, euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type Quote = Tables<"quotes">;
@@ -28,6 +28,8 @@ export default function QuoteDocument({ q }: { q: Quote }) {
   const date = q.event_date ? format(new Date(q.event_date), "EEE d MMMM yyyy", { locale: nl }) : "n.t.b.";
   const time = q.start_time ? `${q.start_time.slice(0, 5)}${q.end_time ? ` tot ${q.end_time.slice(0, 5)}` : ""}` : "n.t.b.";
   const notes = (q.notes ?? "").split("\n").map((s) => s.trim()).filter(Boolean);
+  const drinksParagraphs = (q.drinks_text ?? "").split("\n\n").map((s) => s.trim()).filter(Boolean);
+  const hasDrinkTokens = drinksParagraphs.some((p) => /consumptiemunten/i.test(p));
   const facts: [string, string][] = [
     ["Klant", q.client_name || "—"], ["Datum", date], ["Tijd", time],
     ["Aantal personen", q.guests_text || String(q.guests_count)], ["Gelegenheid", q.occasion || "—"], ["Locatie", q.location],
@@ -65,7 +67,15 @@ export default function QuoteDocument({ q }: { q: Quote }) {
           {q.drinks_text && <div><span>Dranken aan de bar</span><strong>nacalculatie</strong></div>}
         </div>
 
-        {q.drinks_text && <><H>DRANKEN</H><p className="quote-p">{q.drinks_text}</p></>}
+        {q.drinks_text && <><H>DRANKEN</H>{drinksParagraphs.map((p, i) => <p className="quote-p" key={i}>{p}</p>)}
+          {hasDrinkTokens && <div className="quote-budget">
+            <div className="quote-budget-t">Indicatieve drankbegroting</div>
+            <table className="quote-table">
+              <thead><tr><th>Aantal gasten</th><th>Munten p.p.</th><th>Totaal munten</th><th>Begroting</th></tr></thead>
+              <tbody>{DRINK_BUDGET_GUESTS.map((g) => { const b = drinkBudget(g); return (
+                <tr key={g}><td>{g}</td><td>{DRINK_TOKENS_PER_GUEST}</td><td>{b.tokens}</td><td>{euro(b.budget)}</td></tr>); })}</tbody>
+            </table>
+          </div>}</>}
         {notes.length > 0 && <><H>GOED OM TE WETEN</H><ul className="quote-ul">{notes.map((n, i) => <li key={i}>{n}</li>)}</ul></>}
         <p className="quote-p" style={{ marginTop: 10 }}>Met vriendelijke groet, <strong>{q.signed_by}</strong> · paviljoenzuidlanden.nl</p>
         <div className="quote-welcome">Wij heten u graag welkom!</div>
