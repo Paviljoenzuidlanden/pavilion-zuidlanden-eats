@@ -28,6 +28,8 @@ export default function QuoteDocument({ q }: { q: Quote }) {
   const date = q.event_date ? format(new Date(q.event_date), "EEE d MMMM yyyy", { locale: nl }) : "n.t.b.";
   const time = q.start_time ? `${q.start_time.slice(0, 5)}${q.end_time ? ` tot ${q.end_time.slice(0, 5)}` : ""}` : "n.t.b.";
   const notes = (q.notes ?? "").split("\n").map((s) => s.trim()).filter(Boolean);
+  const drinksParagraphs = (q.drinks_text ?? "").split("\n\n").map((s) => s.trim()).filter(Boolean);
+  const hasDrinkTokens = drinksParagraphs.some((p) => /consumptiemunten/i.test(p));
   const facts: [string, string][] = [
     ["Klant", q.client_name || "—"], ["Datum", date], ["Tijd", time],
     ["Aantal personen", q.guests_text || String(q.guests_count)], ["Gelegenheid", q.occasion || "—"], ["Locatie", q.location],

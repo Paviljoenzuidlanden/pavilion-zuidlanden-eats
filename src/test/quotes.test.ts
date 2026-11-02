@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, drinkBudget, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp } from "@/lib/quotes";
 
 describe("offerte kopiëren en opvolgen", () => {
   it("kopieert inhoud maar wist klant, koppeling en verzendstatus", () => {
@@ -53,5 +53,21 @@ describe("offerte berekening", () => {
   it("standaardnotities bevatten de alcohol-/leeftijdsbandjes-passage", () => {
     expect(DEFAULT_NOTES).toContain("geen alcoholische dranken aan personen onder de 18 jaar");
     expect(DEFAULT_NOTES).toContain("leeftijdsbandjes");
+  });
+});
+
+describe("dranken op basis van consumptiemunten", () => {
+  it("standaarddrankentekst noemt consumptiemunten en de richtprijs van 3 euro", () => {
+    expect(DEFAULT_DRINKS).toContain("Dranken op basis van consumptiemunten");
+    expect(DEFAULT_DRINKS).toContain("€ 3,00 per consumptie");
+    expect(DEFAULT_DRINKS).toContain("niet gebruikte munten retour genomen");
+  });
+  it("indicatieve begroting is 5 munten p.p. tegen 3 euro per munt", () => {
+    expect(DRINK_TOKENS_PER_GUEST).toBe(5);
+    expect(DRINK_BUDGET_GUESTS).toEqual([25, 50, 75, 100]);
+    expect(drinkBudget(25)).toEqual({ guests: 25, tokens: 125, budget: 375 });
+    expect(drinkBudget(50)).toEqual({ guests: 50, tokens: 250, budget: 750 });
+    expect(drinkBudget(75)).toEqual({ guests: 75, tokens: 375, budget: 1125 });
+    expect(drinkBudget(100)).toEqual({ guests: 100, tokens: 500, budget: 1500 });
   });
 });
