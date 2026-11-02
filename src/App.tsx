@@ -12,6 +12,7 @@ import Menukaart from "./pages/Menukaart";
 import Bestellen from "./pages/Bestellen";
 import Personeel from "./pages/Personeel";
 import NotFound from "./pages/NotFound";
+import QuoteLink from "./pages/QuoteLink";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/menukaart" element={<Menukaart />} />
           <Route path="/bestellen" element={<Bestellen />} />
           <Route path="/personeel" element={<Personeel />} />
+          <Route path="/offerte" element={<QuoteLink />} />
           {/* Section anchor aliases so direct links like /#friet never 404 */}
           <Route path="/friet" element={<Navigate to="/menukaart" state={{ scrollToId: "friet" }} replace />} />
           <Route path="/rustiek" element={<Navigate to="/menukaart" state={{ scrollToId: "rustiek" }} replace />} />
