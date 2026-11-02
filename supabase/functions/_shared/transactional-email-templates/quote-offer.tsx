@@ -2,17 +2,21 @@ import * as React from 'npm:react@18.3.1'
 import { Body, Button, Container, Head, Heading, Html, Preview, Text } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
-interface Props { name?: string; number?: string; occasion?: string; actionUrl?: string; validUntil?: string }
-const Email = ({ name, number, occasion, actionUrl, validUntil }: Props) => (
+interface Props { name?: string; number?: string; occasion?: string; actionUrl?: string; validUntil?: string; message?: string }
+const Email = ({ name, number, occasion, actionUrl, validUntil, message }: Props) => (
   <Html lang="nl" dir="ltr"><Head /><Preview>Uw offerte {number} van Paviljoen Zuidlanden</Preview>
     <Body style={main}><Container style={container}>
       <Heading style={heading}>Uw offerte</Heading>
-      <Text style={text}>Beste {name || 'gast'},</Text>
-      <Text style={text}>Hartelijk dank voor uw aanvraag{occasion ? ` voor ${occasion}` : ''}. Hierbij ontvangt u onze offerte {number}.</Text>
+      {message ? <Text style={{ ...text, whiteSpace: 'pre-wrap' }}>{message}</Text> : <>
+        <Text style={text}>Beste {name || 'gast'},</Text>
+        <Text style={text}>Hartelijk dank voor uw aanvraag{occasion ? ` voor ${occasion}` : ''}. Hierbij ontvangt u onze offerte {number}.</Text>
+      </>}
       {actionUrl && <Button href={actionUrl} style={button}>Offerte bekijken en downloaden</Button>}
       {validUntil && <Text style={text}>Deze offerte is geldig tot en met {validUntil}.</Text>}
-      <Text style={text}>Wilt u akkoord geven of heeft u vragen? U kunt rechtstreeks op deze e-mail antwoorden.</Text>
-      <Text style={text}>Met vriendelijke groet,<br />Paviljoen Zuidlanden</Text>
+      {!message && <>
+        <Text style={text}>Wilt u akkoord geven of heeft u vragen? U kunt rechtstreeks op deze e-mail antwoorden.</Text>
+        <Text style={text}>Met vriendelijke groet,<br />Paviljoen Zuidlanden</Text>
+      </>}
     </Container></Body>
   </Html>
 )
