@@ -31,6 +31,7 @@ export const DEFAULT_NOTES = [
   "Deze offerte is 14 dagen geldig vanaf de verzenddatum.",
   "Het definitieve aantal gasten ontvangen wij graag uiterlijk 3 dagen voor uw feest. De bedragen worden daarop aangepast.",
   "Heeft u gasten met een allergie of dieetwens? Laat het ons tijdig weten, dan houden wij hier rekening mee.",
+  "Wij schenken geen alcoholische dranken aan personen onder de 18 jaar. Bij de bar houden wij dit bij met leeftijdsbandjes.",
   "Alle genoemde prijzen zijn in euro’s en inclusief btw. Betaling vindt plaats na afloop van uw feest.",
   "Heeft u vragen of wilt u iets aanpassen? Neem gerust contact met ons op via 0616488069 of info@paviljoenzuidlanden.nl",
 ].join("\n");
