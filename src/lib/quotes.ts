@@ -23,6 +23,7 @@ export function copyQuote<T extends { client_name: string; client_email: string 
 export const QUOTE_PRESETS: QuoteItem[] = [
   { title: "Koffie/Thee met oranjekoek", description: "", price: 5.25, perPerson: true },
   { title: "Extra koffie, thee of cappuccino", description: "", price: 2.5, perPerson: true },
+  { title: "Welkomstdrankje Prosecco of alcoholvrij alternatief", description: "", price: 5.95, perPerson: true },
 ];
 
 export const lineTotal = (i: QuoteItem, guests: number) => (i.perPerson ? i.price * guests : i.price);
