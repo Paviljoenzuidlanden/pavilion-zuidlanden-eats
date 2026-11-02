@@ -55,8 +55,8 @@ describe("offerte berekening", () => {
     expect(DEFAULT_NOTES).toContain("leeftijdsbandjes");
   });
   it("biedt standaardopties koffie/thee met oranjekoek en extra koffie aan", () => {
-    expect(QUOTE_PRESETS.map((p) => p.title)).toEqual(["Koffie/Thee met oranjekoek", "Extra koffie, thee of cappuccino"]);
-    expect(QUOTE_PRESETS.map((p) => p.price)).toEqual([5.25, 2.5]);
+    expect(QUOTE_PRESETS.map((p) => p.title)).toEqual(["Koffie/Thee met oranjekoek", "Extra koffie, thee of cappuccino", "Welkomstdrankje Prosecco of alcoholvrij alternatief"]);
+    expect(QUOTE_PRESETS.map((p) => p.price)).toEqual([5.25, 2.5, 5.95]);
     expect(QUOTE_PRESETS.every((p) => p.perPerson)).toBe(true);
   });
 });
