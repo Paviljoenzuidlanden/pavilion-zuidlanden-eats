@@ -39,7 +39,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
   const [printQ, setPrintQ] = useState<Quote | null>(null);
   const [arrangements, setArrangements] = useState<Arrangement[]>([]);
   const [filter, setFilter] = useState("alle");
-  const [mail, setMail] = useState<{ quote: Quote; requestId: string } | null>(null);
+  const [mail, setMail] = useState<{ quote: Quote; requestId: string; message: string } | null>(null);
   const [mailBusy, setMailBusy] = useState(false);
   const [mailError, setMailError] = useState("");
 
@@ -122,12 +122,16 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
     setEdit({ ...copyQuote(q, nextQuoteNumber(rows.map(r => r.quote_number), new Date().getFullYear())),
       itemsArr: structuredClone((q.items as unknown as QuoteItem[]) ?? []) });
   };
-  const openMail = (q: Quote) => { setMailError(""); setMail({ quote: q, requestId: crypto.randomUUID() }); };
+  const openMail = (q: Quote) => {
+    setMailError("");
+    setMail({ quote: q, requestId: crypto.randomUUID(), message: `Beste ${q.client_name || "gast"},\n\nHartelijk dank voor uw aanvraag${q.occasion ? ` voor ${q.occasion}` : ""}. Hierbij ontvangt u onze offerte ${q.quote_number}.\n\nWilt u akkoord geven of heeft u vragen? U kunt rechtstreeks op deze e-mail antwoorden.\n\nMet vriendelijke groet,\n${q.signed_by ? `${q.signed_by}\n` : ""}Paviljoen Zuidlanden` });
+  };
   const sendMail = async () => {
     if (!mail || mailBusy) return;
+    if (!mail.message.trim()) { setMailError("Vul een begeleidende tekst in."); return; }
     setMailBusy(true); setMailError("");
     try {
-      const { data, error } = await supabase.functions.invoke("send-quote", { body: { quoteId: mail.quote.id, requestId: mail.requestId } });
+      const { data, error } = await supabase.functions.invoke("send-quote", { body: { quoteId: mail.quote.id, requestId: mail.requestId, message: mail.message.trim() } });
       if (error || !data?.ok) {
         let message = data?.error || "Offerte mailen mislukt. Probeer later opnieuw.";
         if (error && "context" in error && error.context instanceof Response) {
@@ -324,10 +328,15 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
           <DialogHeader><DialogTitle>Offerte mailen</DialogTitle></DialogHeader>
           <p className="text-sm">Offerte {mail?.quote.quote_number} voor {mail?.quote.client_name}</p>
           <p className="text-sm">Aan: <strong>{mail?.quote.client_email || 'Geen e-mailadres ingevuld'}</strong></p>
+          <div className="space-y-2">
+            <Label htmlFor="quote-mail-message">Begeleidende tekst</Label>
+            <Textarea id="quote-mail-message" rows={10} maxLength={4000} disabled={mailBusy} value={mail?.message ?? ""}
+              onChange={e => { const message = e.target.value; setMail(m => m && ({ ...m, message, requestId: crypto.randomUUID() })); setMailError(""); }} />
+          </div>
           <p className="text-sm text-muted-foreground">De klant ontvangt een beveiligde link om deze offerte te bekijken en als PDF op te slaan, geen bijlage. De link blijft 90 dagen beschikbaar; de offerte is 14 dagen geldig. Antwoorden komen bij info@paviljoenzuidlanden.nl.</p>
           {!mail?.quote.client_email && <p className="text-sm text-destructive">Vul het e-mailadres eerst in bij Bewerken en sla de offerte op.</p>}
           {mailError && <p role="alert" className="text-sm text-destructive">{mailError}</p>}
-          <DialogFooter><Button variant="outline" disabled={mailBusy} onClick={() => setMail(null)}>Annuleren</Button><Button disabled={mailBusy || !mail?.quote.client_email} onClick={sendMail}><Mail className="w-4 h-4 mr-1" />{mailBusy ? 'Versturen…' : 'Versturen'}</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" disabled={mailBusy} onClick={() => setMail(null)}>Annuleren</Button><Button disabled={mailBusy || !mail?.quote.client_email || !mail?.message.trim()} onClick={sendMail}><Mail className="w-4 h-4 mr-1" />{mailBusy ? 'Versturen…' : 'Versturen'}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 

@@ -6,7 +6,7 @@ import { sendTemplateEmail } from "../_shared/transactional-email-templates/send
 import { publicQuoteSnapshot } from "../_shared/quote-publication.ts";
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-const schema = z.object({ quoteId: z.string().uuid(), requestId: z.string().uuid() }).strict();
+const schema = z.object({ quoteId: z.string().uuid(), requestId: z.string().uuid(), message: z.string().trim().min(1).max(4000).optional() }).strict();
 const SITE = "https://pavilion-zuidlanden-eats.lovable.app";
 
 Deno.serve(async req => {
@@ -23,7 +23,7 @@ Deno.serve(async req => {
   try {
     const parsed = schema.safeParse(await req.json());
     if (!parsed.success) return json({ error: "Ongeldige offerteaanvraag" }, 400);
-    const { quoteId, requestId } = parsed.data;
+    const { quoteId, requestId, message } = parsed.data;
     const { data: quote, error } = await db.from("quotes").select("*").eq("id", quoteId).single();
     if (error || !quote) return json({ error: "Offerte niet gevonden" }, 404);
     if (!["concept", "verstuurd"].includes(quote.status)) return json({ error: "Alleen concepten en verstuurde offertes kunnen worden gemaild" }, 400);
@@ -31,7 +31,7 @@ Deno.serve(async req => {
     if (!Array.isArray(quote.items) || !quote.items.length) return json({ error: "Voeg eerst een arrangementregel toe" }, 400);
     const sentAt = new Date().toISOString();
     const accessToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, "0")).join("");
-    const snapshot = { ...publicQuoteSnapshot({ ...quote, status: "verstuurd", sent_at: sentAt }), recipient: quote.client_email, source_updated_at: quote.updated_at };
+    const snapshot = { ...publicQuoteSnapshot({ ...quote, status: "verstuurd", sent_at: sentAt }), recipient: quote.client_email, source_updated_at: quote.updated_at, ...(message ? { email_message: message } : {}) };
     // The request ID identifies this document publication. Retrying reuses its immutable document and send key.
     const { error: insertError } = await db.from("quote_publications").insert({ id: requestId, quote_id: quoteId, access_token: accessToken, snapshot });
     if (insertError && insertError.code !== "23505") return json({ error: "Offertedocument opslaan mislukt" }, 500);
@@ -44,7 +44,7 @@ Deno.serve(async req => {
       const result = await sendTemplateEmail("quote-offer", String(document.recipient), {
         idempotencyKey: `quote-offer-${publication.id}`,
         replyTo: "info@paviljoenzuidlanden.nl",
-        templateData: { name: document.client_name, number: document.quote_number, occasion: document.occasion,
+        templateData: { name: document.client_name, number: document.quote_number, occasion: document.occasion, message: document.email_message,
           actionUrl: `${SITE}/#/offerte?token=${publication.access_token}`,
           validUntil: validUntil.toLocaleDateString("nl-NL", { timeZone: "Europe/Amsterdam", day: "numeric", month: "long", year: "numeric" }) },
       });
