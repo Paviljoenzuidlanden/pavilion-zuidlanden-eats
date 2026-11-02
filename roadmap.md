@@ -1,5 +1,10 @@
 # Roadmap
 
+- [ ] Vaste offertearrangementen bewaren en toepassen zonder verzonnen prijzen.
+- [ ] Offerte kopiëren als nieuw concept zonder klant- of agendakoppeling.
+- [ ] Verstuurde offertes opvolgen op basis van de bestaande geldigheid van 14 dagen.
+- [ ] Offerte direct naar de opgeslagen klant mailen met beveiligde link naar een vaste documentversie; beheer- en klantflow testen.
+
 - [x] Pubquizteams toelaten of op de reservelijst zetten, ook boven de openbare limiet; dertiende team live getest met tijdelijke aanmeldingen.
 - [x] Aanmeldingen duidelijk filteren en onderscheiden per evenement en datum; beheerflow en mobiele breedte getest.
 
