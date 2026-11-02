@@ -38,7 +38,7 @@ export default function QuoteDocument({ q }: { q: Quote }) {
       <Sprig className="quote-sprig" />
       <Sprig flip className="quote-sprig quote-sprig-r" />
       <div className="quote-head">
-        <img src={logo} alt="Paviljoen Zuidlanden" className="quote-logo" />
+        <img src={logo.url} alt="Paviljoen Zuidlanden" className="quote-logo" />
         <div className="quote-rule"><span /><i /><span /></div>
         <div className="quote-tagline">De plek om samen te komen.</div>
         <div className="quote-title">Offerte</div>
