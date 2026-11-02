@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES } from "@/lib/quotes";
 
 describe("offerte berekening", () => {
   const items = [
