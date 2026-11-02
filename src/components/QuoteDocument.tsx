@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
-import logo from "@/assets/logo-offerte.png";
+import logo from "@/assets/logo-offerte.png.asset.json";
 import { euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
 import type { Tables } from "@/integrations/supabase/types";
 
