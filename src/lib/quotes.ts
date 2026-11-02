@@ -21,9 +21,9 @@ export function copyQuote<T extends { client_name: string; client_email: string 
 }
 
 export const QUOTE_PRESETS: QuoteItem[] = [
-  { title: "Koffie/Thee met oranjekoek", description: "", price: 5.25, perPerson: true },
-  { title: "Extra koffie, thee of cappuccino", description: "", price: 2.5, perPerson: true },
-  { title: "Welkomstdrankje Prosecco of alcoholvrij alternatief", description: "", price: 5.95, perPerson: true },
+  { title: "Koffie/Thee met oranjekoek", description: "Oranjekoek van de bakker, keuze tussen crème of slagroom.", price: 5.25, perPerson: true },
+  { title: "Extra koffie, thee of cappuccino", description: "Verse koffie, thee of cappuccino, los per persoon bij te bestellen.", price: 2.5, perPerson: true },
+  { title: "Welkomstdrankje Prosecco of alcoholvrij alternatief", description: "Glas prosecco of een alcoholvrij alternatief bij aankomst van de gasten.", price: 5.95, perPerson: true },
 ];
 
 export const lineTotal = (i: QuoteItem, guests: number) => (i.perPerson ? i.price * guests : i.price);
