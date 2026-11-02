@@ -18,4 +18,8 @@ describe("offerte berekening", () => {
     expect(nextQuoteNumber(["2026-001", "2026-007", "2025-020"], 2026)).toBe("2026-008");
     expect(nextQuoteNumber([], 2027)).toBe("2027-001");
   });
+  it("standaardnotities bevatten de alcohol-/leeftijdsbandjes-passage", () => {
+    expect(DEFAULT_NOTES).toContain("geen alcoholische dranken aan personen onder de 18 jaar");
+    expect(DEFAULT_NOTES).toContain("leeftijdsbandjes");
+  });
 });
