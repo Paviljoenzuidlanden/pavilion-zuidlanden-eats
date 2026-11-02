@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, drinkBudget, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, drinkBudget, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp } from "@/lib/quotes";
 
 describe("offerte kopiëren en opvolgen", () => {
   it("kopieert inhoud maar wist klant, koppeling en verzendstatus", () => {
@@ -53,6 +53,11 @@ describe("offerte berekening", () => {
   it("standaardnotities bevatten de alcohol-/leeftijdsbandjes-passage", () => {
     expect(DEFAULT_NOTES).toContain("geen alcoholische dranken aan personen onder de 18 jaar");
     expect(DEFAULT_NOTES).toContain("leeftijdsbandjes");
+  });
+  it("biedt standaardopties koffie/thee met oranjekoek en extra koffie aan", () => {
+    expect(QUOTE_PRESETS.map((p) => p.title)).toEqual(["Koffie/Thee met oranjekoek", "Extra koffie, thee of cappuccino"]);
+    expect(QUOTE_PRESETS.map((p) => p.price)).toEqual([5.25, 2.5]);
+    expect(QUOTE_PRESETS.every((p) => p.perPerson)).toBe(true);
   });
 });
 
