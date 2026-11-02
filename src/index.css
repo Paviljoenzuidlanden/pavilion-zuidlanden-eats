@@ -99,7 +99,7 @@
 .quote-sprig { position: absolute; top: 0; left: 0; width: 70px; height: 140px; color: var(--q-acc); }
 .quote-sprig-r { left: auto; right: 0; }
 .quote-head { display: flex; flex-direction: column; align-items: center; padding-top: 10px; }
-.quote-logo { width: 120px; mix-blend-mode: multiply; margin-bottom: -20px; clip-path: inset(22% 0 18% 0); margin-top: -26px; }
+.quote-logo { width: 110px; mix-blend-mode: multiply; }
 .quote-rule { display: flex; align-items: center; gap: 8px; width: 250px; margin-top: 6px; }
 .quote-rule span { flex: 1; height: 1px; background: var(--q-acc); }
 .quote-rule i { width: 6px; height: 6px; border-radius: 50%; background: var(--q-acc); }
