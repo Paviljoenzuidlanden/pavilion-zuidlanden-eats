@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
-import logo from "@/assets/logo-offerte.png";
+import logo from "@/assets/logo-offerte.png.asset.json";
 import { euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -38,7 +38,7 @@ export default function QuoteDocument({ q }: { q: Quote }) {
       <Sprig className="quote-sprig" />
       <Sprig flip className="quote-sprig quote-sprig-r" />
       <div className="quote-head">
-        <img src={logo} alt="Paviljoen Zuidlanden" className="quote-logo" />
+        <img src={logo.url} alt="Paviljoen Zuidlanden" className="quote-logo" />
         <div className="quote-rule"><span /><i /><span /></div>
         <div className="quote-tagline">De plek om samen te komen.</div>
         <div className="quote-title">Offerte</div>
