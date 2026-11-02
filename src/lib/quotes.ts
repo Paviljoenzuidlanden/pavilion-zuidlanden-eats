@@ -1,5 +1,11 @@
 export type QuoteItem = { title: string; description?: string; price: number; perPerson: boolean };
 
+export const agendaQuoteOptions = <T extends { status: string }>(agenda: T[]): T[] =>
+  agenda.filter((item) => item.status !== "geannuleerd");
+
+export const agendaQuoteOccasion = (agenda: { occasion: string | null; title: string }) =>
+  agenda.occasion || agenda.title;
+
 export const lineTotal = (i: QuoteItem, guests: number) => (i.perPerson ? i.price * guests : i.price);
 
 export function quoteTotals(items: QuoteItem[], guests: number) {

@@ -133,7 +133,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
                       {r.status !== "offerte_verstuurd" && r.status !== "definitief" && (
                         <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setStatus(r, "offerte_verstuurd")}>Offerte verstuurd</Button>
                       )}
-                      {r.kind === "feest" && onQuote && (
+                      {onQuote && (
                         <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => onQuote(r.id)}><FileText className="w-3 h-3 mr-1" />Offerte</Button>
                       )}
                       {r.status !== "definitief" && (

@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { toast } from "sonner";
 import { CalendarDays, Download, Eye, Pencil, Plus, Send, Trash2, X } from "lucide-react";
 import QuoteDocument, { type Quote } from "@/components/QuoteDocument";
-import { DEFAULT_DRINKS, DEFAULT_NOTES, euro, nextQuoteNumber, quoteTotals, type QuoteItem } from "@/lib/quotes";
+import { DEFAULT_DRINKS, DEFAULT_NOTES, agendaQuoteOptions, agendaQuoteOccasion, euro, nextQuoteNumber, quoteTotals, type QuoteItem } from "@/lib/quotes";
 
 type Agenda = Tables<"internal_agenda">;
 
@@ -52,7 +52,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
     ...base, agenda_id: a.id, client_name: a.name ?? base.client_name, client_email: a.email ?? base.client_email,
     event_date: a.event_date, start_time: a.start_time, end_time: a.end_time,
     guests_count: a.guests ?? base.guests_count, guests_text: a.guests ? String(a.guests) : base.guests_text,
-    occasion: a.occasion ?? (a.kind === "feest" ? a.title : base.occasion),
+    occasion: agendaQuoteOccasion(a),
   } : base;
 
   const newDraft = (quotes: Quote[], agendaId?: string, ag: Agenda[] = agenda): Draft => {
@@ -138,7 +138,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
   const agendaTitle = (id: string | null) => agenda.find((a) => a.id === id);
   const f = (k: keyof Draft, v: unknown) => setEdit((e) => e && ({ ...e, [k]: v }));
   const setItem = (i: number, patch: Partial<QuoteItem>) => setEdit((e) => e && ({ ...e, itemsArr: e.itemsArr.map((it, j) => j === i ? { ...it, ...patch } : it) }));
-  const feesten = agenda.filter((a) => a.kind === "feest" && a.status !== "geannuleerd");
+  const agendaOptions = agendaQuoteOptions(agenda);
   const draftTotals = edit ? quoteTotals(edit.itemsArr.map((i) => ({ ...i, price: Number(i.price) || 0 })), Number(edit.guests_count) || 1) : null;
 
   return (
@@ -147,7 +147,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
         <Input className="max-w-xs" placeholder="Zoek op klant of nummer…" value={search} onChange={(e) => setSearch(e.target.value)} />
         <Button size="sm" onClick={() => setEdit(newDraft(rows))}><Plus className="w-4 h-4 mr-1" />Nieuwe offerte</Button>
       </div>
-      <p className="text-xs text-muted-foreground">Download maakt een A4-PDF: kies in het printvenster "Opslaan als PDF". Vanuit de interne agenda kun je bij een feest direct een offerte maken.</p>
+      <p className="text-xs text-muted-foreground">Download maakt een A4-PDF: kies in het printvenster "Opslaan als PDF". Vanuit de interne agenda kun je bij een feest of activiteit direct een offerte maken.</p>
 
       {!shown.length && <p className="text-muted-foreground py-6">Nog geen offertes.</p>}
       <div className="space-y-2">
@@ -208,7 +208,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
                 <select className="w-full h-10 rounded-md border border-input bg-background px-2 text-sm" value={edit.agenda_id ?? ""}
                   onChange={(e) => setEdit((d) => d && (e.target.value ? fromAgenda(agenda.find((a) => a.id === e.target.value), d) : { ...d, agenda_id: null }))}>
                   <option value="">— Niet gekoppeld —</option>
-                  {feesten.map((a) => <option key={a.id} value={a.id}>{a.event_date ? format(new Date(a.event_date), "d MMM yyyy", { locale: nl }) : "?"} · {a.title}{a.name ? ` (${a.name})` : ""}</option>)}
+                  {agendaOptions.map((a) => <option key={a.id} value={a.id}>{a.event_date ? format(new Date(a.event_date), "d MMM yyyy", { locale: nl }) : "?"} · {a.title}{a.name ? ` (${a.name})` : ""}</option>)}
                 </select></div>
               <div className="grid grid-cols-2 gap-2">
                 <div><Label>Klant</Label><Input value={edit.client_name ?? ""} onChange={(e) => f("client_name", e.target.value)} /></div>
