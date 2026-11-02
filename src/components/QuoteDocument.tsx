@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 import logo from "@/assets/logo-offerte.png.asset.json";
-import { euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
+import { DRINK_BUDGET_GUESTS, drinkBudget, euro, lineTotal, quoteTotals, type QuoteItem } from "@/lib/quotes";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type Quote = Tables<"quotes">;
@@ -65,7 +65,15 @@ export default function QuoteDocument({ q }: { q: Quote }) {
           {q.drinks_text && <div><span>Dranken aan de bar</span><strong>nacalculatie</strong></div>}
         </div>
 
-        {q.drinks_text && <><H>DRANKEN</H><p className="quote-p">{q.drinks_text}</p></>}
+        {q.drinks_text && <><H>DRANKEN</H>{drinksParagraphs.map((p, i) => <p className="quote-p" key={i}>{p}</p>)}
+          {hasDrinkTokens && <div className="quote-budget">
+            <div className="quote-budget-t">Indicatieve drankbegroting</div>
+            <table className="quote-table">
+              <thead><tr><th>Aantal gasten</th><th>Munten p.p.</th><th>Totaal munten</th><th>Begroting</th></tr></thead>
+              <tbody>{DRINK_BUDGET_GUESTS.map((g) => { const b = drinkBudget(g); return (
+                <tr key={g}><td>{g}</td><td>{DRINK_TOKENS_PER_GUEST}</td><td>{b.tokens}</td><td>{euro(b.budget)}</td></tr>); })}</tbody>
+            </table>
+          </div>}</>}
         {notes.length > 0 && <><H>GOED OM TE WETEN</H><ul className="quote-ul">{notes.map((n, i) => <li key={i}>{n}</li>)}</ul></>}
         <p className="quote-p" style={{ marginTop: 10 }}>Met vriendelijke groet, <strong>{q.signed_by}</strong> · paviljoenzuidlanden.nl</p>
         <div className="quote-welcome">Wij heten u graag welkom!</div>

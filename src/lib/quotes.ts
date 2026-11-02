@@ -44,8 +44,22 @@ export function nextQuoteNumber(existing: string[], year: number) {
   return `${prefix}${String(max + 1).padStart(3, "0")}`;
 }
 
-export const DEFAULT_DRINKS =
-  "Uw gasten kunnen zelf dranken bestellen aan de bar, tegen de prijzen van onze drankenkaart. Een vaste afkoop bieden wij niet aan. De daadwerkelijke consumptie registreren wij in de kassa en wordt afgerekend op basis van het werkelijke verbruik. U betaalt dus nooit meer dan er is geconsumeerd.";
+export const DEFAULT_DRINKS = [
+  "Dranken op basis van consumptiemunten",
+  "Voor de consumpties werken wij met consumptiemunten. Iedere munt vertegenwoordigt de reguliere kassaprijs van een consumptie.",
+  "Voor de begroting hanteren we een gemiddelde richtprijs van € 3,00 per consumptie. De gasten kunnen hun munten gebruiken voor het bestellen van dranken aan de bar.",
+  "Na afloop worden niet gebruikte munten retour genomen. Hierdoor betalen jullie uitsluitend voor de daadwerkelijk afgenomen consumpties.",
+].join("\n\n");
+
+export const DRINK_TOKENS_PER_GUEST = 5;
+export const DRINK_TOKEN_PRICE = 3;
+export const DRINK_BUDGET_GUESTS = [25, 50, 75, 100];
+
+export const drinkBudget = (guests: number) => ({
+  guests,
+  tokens: guests * DRINK_TOKENS_PER_GUEST,
+  budget: guests * DRINK_TOKENS_PER_GUEST * DRINK_TOKEN_PRICE,
+});
 
 export const DEFAULT_NOTES = [
   "Deze offerte is 14 dagen geldig vanaf de verzenddatum.",
