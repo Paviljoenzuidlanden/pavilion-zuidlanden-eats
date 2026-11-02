@@ -1,5 +1,19 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, agendaQuoteOptions, agendaQuoteOccasion } from "@/lib/quotes";
+
+describe("offertes voor interne activiteiten", () => {
+  const activity = { id: "d66", kind: "activiteit", status: "definitief", title: "D66 ledenbijeenkomst", occasion: null, event_date: "2026-11-12" };
+  it("maakt de D66 ledenbijeenkomst van 12 november beschikbaar voor een offerte", () => {
+    expect(agendaQuoteOptions([activity])).toEqual([activity]);
+  });
+  it("neemt de activiteitstitel over als gelegenheid", () => {
+    expect(agendaQuoteOccasion(activity)).toBe("D66 ledenbijeenkomst");
+  });
+  it("behoudt feesten en sluit geannuleerde items uit de keuzelijst", () => {
+    const feest = { ...activity, id: "feest", kind: "feest", status: "concept" };
+    expect(agendaQuoteOptions([feest, { ...activity, status: "geannuleerd" }])).toEqual([feest]);
+  });
+});
 
 describe("offerte berekening", () => {
   const items = [
