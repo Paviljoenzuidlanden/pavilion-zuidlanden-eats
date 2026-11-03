@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Optionele offerteonderdelen apart tonen, uitsluiten van totalen en ingelogd opslaan/teruglezen controleren.
+
 - [x] Vaste offertearrangementen bewaren en toepassen zonder verzonnen prijzen; ingelogd opslaan en toepassen getest.
 - [x] Offerte kopiëren als nieuw concept zonder klant- of agendakoppeling; ingelogde kopie gecontroleerd.
 - [x] Verstuurde offertes opvolgen op basis van de bestaande geldigheid van 14 dagen; berekening getest en deadline zichtbaar na verzending.

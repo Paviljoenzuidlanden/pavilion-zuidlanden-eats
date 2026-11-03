@@ -54,7 +54,7 @@ export default function QuoteDocument({ q }: { q: Quote }) {
         </div>
 
         <H>ARRANGEMENT</H>
-        {items.map((i, idx) => (
+        {items.filter((i) => !i.optional).map((i, idx) => (
           <div className="quote-item" key={idx}>
             <div><div className="quote-item-t">{i.title}</div>{i.description && <div className="quote-item-d">{i.description}</div>}</div>
             <div className="quote-amt">
@@ -67,6 +67,19 @@ export default function QuoteDocument({ q }: { q: Quote }) {
           <div><span>Totaal bij {t.guests} gasten</span><strong>{euro(t.total)}</strong></div>
           {q.drinks_text && <div><span>Dranken aan de bar</span><strong>nacalculatie</strong></div>}
         </div>
+
+        {items.some((i) => i.optional) && <>
+          <H>OPTIONELE ONDERDELEN</H>
+          <p className="quote-p">Onderstaande onderdelen zijn niet inbegrepen in de totaalprijs.</p>
+          {items.filter((i) => i.optional).map((i, idx) => (
+            <div className="quote-item" key={idx}>
+              <div><div className="quote-item-t">{i.title}</div>{i.description && <div className="quote-item-d">{i.description}</div>}</div>
+              <div className="quote-amt">
+                {i.perPerson ? <>{euro(i.price)} p.p. × {t.guests}<br /><strong>{euro(lineTotal(i, t.guests))}</strong></> : euro(i.price)}
+              </div>
+            </div>
+          ))}
+        </>}
 
         {q.drinks_text && <><H>DRANKEN</H>{drinksParagraphs.map((p, i) => <p className="quote-p" key={i}>{p}</p>)}
           {hasDrinkTokens && <div className="quote-budget">

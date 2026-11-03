@@ -7,6 +7,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -310,11 +311,15 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
                         <Button size="icon" variant="ghost" aria-label="Regel verwijderen" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: d.itemsArr.filter((_, j) => j !== i) }))}><X className="w-4 h-4" /></Button>
                       </div>
                       <Input placeholder="Toelichting (optioneel)" value={it.description ?? ""} onChange={(e) => setItem(i, { description: e.target.value })} />
-                      <div className="flex gap-2 items-center">
+                      <div className="flex flex-wrap gap-2 items-center">
                         <Input type="number" step="0.05" className="w-28" value={it.price} onChange={(e) => setItem(i, { price: e.target.value as unknown as number })} />
                         <select className="h-10 rounded-md border border-input bg-background px-2 text-sm" value={it.perPerson ? "pp" : "vast"} onChange={(e) => setItem(i, { perPerson: e.target.value === "pp" })}>
                           <option value="pp">per persoon</option><option value="vast">vast bedrag</option>
                         </select>
+                        <div className="flex items-center gap-2">
+                          <Checkbox id={`quote-item-optional-${i}`} checked={it.optional === true} onCheckedChange={(checked) => setItem(i, { optional: checked === true })} />
+                          <Label htmlFor={`quote-item-optional-${i}`}>Optioneel</Label>
+                        </div>
                       </div>
                     </div>
                   ))}
