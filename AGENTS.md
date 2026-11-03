@@ -8,3 +8,4 @@
 - Quote items store an optional flag in the existing JSON, with shared quoteTotals excluding those lines and QuoteDocument separating their priced presentation; this keeps arrangements, agenda totals and customer documents consistent without schema changes.
 - Quote emails use a fixed feature template and the saved recipient only; immutable quote_publications preserve document versions and their accompanying email message for consistent retries (not an email queue), exposed through high-entropy expiring capability links by view-quote without anonymous table access. The canonical published app hosts customer links.
 - Quote follow-up is a local view of unanswered sent quotes and their 14-day validity, never an automated mailing job.
+- Customer quote pages use screen-only responsive document styles; keep the separate A4 print document unchanged so mobile reading does not affect PDF pagination.
