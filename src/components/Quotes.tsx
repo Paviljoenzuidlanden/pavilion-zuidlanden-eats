@@ -35,6 +35,11 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
   const [agenda, setAgenda] = useState<Agenda[]>([]);
   const [search, setSearch] = useState("");
   const [edit, setEdit] = useState<Draft | null>(null);
+  const editRef = useRef<Draft | null>(null);
+  useEffect(() => { editRef.current = edit; }, [edit]);
+  // Automatisch opslaan wanneer je naar een ander tabblad/scherm gaat
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => () => { if (editRef.current) void save(true, editRef.current); }, []);
   const [view, setView] = useState<Quote | null>(null);
   const [printQ, setPrintQ] = useState<Quote | null>(null);
   const [arrangements, setArrangements] = useState<Arrangement[]>([]);
