@@ -283,6 +283,7 @@ export type Database = {
           client_email: string | null
           client_name: string
           created_at: string
+          drink_tokens_per_guest: number
           drinks_text: string | null
           end_time: string | null
           event_date: string | null
@@ -306,6 +307,7 @@ export type Database = {
           client_email?: string | null
           client_name?: string
           created_at?: string
+          drink_tokens_per_guest?: number
           drinks_text?: string | null
           end_time?: string | null
           event_date?: string | null
@@ -329,6 +331,7 @@ export type Database = {
           client_email?: string | null
           client_name?: string
           created_at?: string
+          drink_tokens_per_guest?: number
           drinks_text?: string | null
           end_time?: string | null
           event_date?: string | null

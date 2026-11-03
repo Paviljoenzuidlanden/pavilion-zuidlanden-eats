@@ -64,6 +64,13 @@
       "when": 1793618037365,
       "tag": "0008_quote_arrangements_and_publications",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793733288157,
+      "tag": "0009_migration",
+      "breakpoints": true
     }
   ]
 }
