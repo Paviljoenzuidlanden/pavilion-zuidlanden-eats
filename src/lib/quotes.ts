@@ -61,10 +61,10 @@ export const DRINK_TOKENS_PER_GUEST = 5;
 export const DRINK_TOKEN_PRICE = 3;
 export const DRINK_BUDGET_GUESTS = [25, 50, 75, 100];
 
-export const drinkBudget = (guests: number) => ({
+export const drinkBudget = (guests: number, tokensPerGuest: number = DRINK_TOKENS_PER_GUEST) => ({
   guests,
-  tokens: guests * DRINK_TOKENS_PER_GUEST,
-  budget: guests * DRINK_TOKENS_PER_GUEST * DRINK_TOKEN_PRICE,
+  tokens: guests * tokensPerGuest,
+  budget: guests * tokensPerGuest * DRINK_TOKEN_PRICE,
 });
 
 export const DEFAULT_NOTES = [

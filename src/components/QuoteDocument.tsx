@@ -72,8 +72,8 @@ export default function QuoteDocument({ q }: { q: Quote }) {
             <div className="quote-budget-t">Indicatieve drankbegroting</div>
             <table className="quote-table">
               <thead><tr><th>Aantal gasten</th><th>Munten p.p.</th><th>Totaal munten</th><th>Begroting</th></tr></thead>
-              <tbody>{DRINK_BUDGET_GUESTS.map((g) => { const b = drinkBudget(g); return (
-                <tr key={g}><td>{g}</td><td>{DRINK_TOKENS_PER_GUEST}</td><td>{b.tokens}</td><td>{euro(b.budget)}</td></tr>); })}</tbody>
+              <tbody>{DRINK_BUDGET_GUESTS.map((g) => { const b = drinkBudget(g, tokensPerGuest); return (
+                <tr key={g}><td>{g}</td><td>{tokensPerGuest}</td><td>{b.tokens}</td><td>{euro(b.budget)}</td></tr>); })}</tbody>
             </table>
           </div>}</>}
         {notes.length > 0 && <><H>GOED OM TE WETEN</H><ul className="quote-ul">{notes.map((n, i) => <li key={i}>{n}</li>)}</ul></>}
