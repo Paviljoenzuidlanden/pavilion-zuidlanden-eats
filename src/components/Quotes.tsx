@@ -315,7 +315,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <div><Label>Munten p.p. (drankbegroting)</Label><Input type="number" min={1} value={edit.drink_tokens_per_guest ?? 5} onChange={(e) => f("drink_tokens_per_guest", e.target.value)} /></div>
+                <div><Label htmlFor="quote-drink-tokens">Munten p.p. (drankbegroting)</Label><Input id="quote-drink-tokens" type="number" min={1} value={edit.drink_tokens_per_guest ?? 5} onChange={(e) => f("drink_tokens_per_guest", e.target.value)} /></div>
                 <div className="text-xs text-muted-foreground self-end pb-1">Aantal munten per persoon in de tabel "Indicatieve drankbegroting" (standaard 5).</div>
               </div>
               <div><Label>Dranken (leeg = blok weglaten)</Label><Textarea rows={3} value={edit.drinks_text ?? ""} onChange={(e) => f("drinks_text", e.target.value)} /></div>
