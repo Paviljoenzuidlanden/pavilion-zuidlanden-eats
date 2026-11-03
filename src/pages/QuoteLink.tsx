@@ -34,7 +34,7 @@ export default function QuoteLink() {
         <h1 className="text-2xl font-display">Paviljoen Zuidlanden</h1>
         {quote && <Button onClick={download}><Download className="w-4 h-4 mr-2" />Download PDF</Button>}
       </div>
-      {error ? <p role="alert">{error}</p> : !quote ? <p>Offerte laden…</p> : <div className="overflow-x-auto border border-border rounded-md"><QuoteDocument q={quote} /></div>}
+      {error ? <p role="alert">{error}</p> : !quote ? <p>Offerte laden…</p> : <div className="quote-screen border border-border rounded-md"><QuoteDocument q={quote} /></div>}
     </div>
     {quote && createPortal(<div id="quote-print"><QuoteDocument q={quote} /></div>, document.body)}
   </main>;

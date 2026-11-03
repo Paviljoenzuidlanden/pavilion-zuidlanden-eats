@@ -133,6 +133,32 @@
 .quote-foot svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .quote-foot-t { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font: 600 12px Montserrat, sans-serif; letter-spacing: .28em; color: var(--q-bg); }
 #quote-print { display: none; }
+@media screen {
+  .quote-screen { overflow: hidden; }
+  .quote-screen .quote-doc { width: 100%; }
+  .quote-screen .quote-v,
+  .quote-screen .quote-item > :first-child,
+  .quote-screen .quote-p { min-width: 0; overflow-wrap: anywhere; }
+}
+@media screen and (max-width: 640px) {
+  .quote-screen .quote-doc { min-height: 0; padding-bottom: 0; }
+  .quote-screen .quote-body { padding: 16px 16px 0; }
+  .quote-screen .quote-sprig { width: 42px; height: 84px; }
+  .quote-screen .quote-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px 12px; }
+  .quote-screen .quote-h { font-size: 15px; letter-spacing: 0; }
+  .quote-screen .quote-item { flex-direction: column; gap: 6px; padding: 10px 0; }
+  .quote-screen .quote-item-d { font-size: 13px; line-height: 18px; }
+  .quote-screen .quote-amt { align-self: flex-end; }
+  .quote-screen .quote-totals div { justify-content: space-between; gap: 12px; }
+  .quote-screen .quote-totals strong { min-width: 0; }
+  .quote-screen .quote-table { table-layout: fixed; }
+  .quote-screen .quote-table th { font-size: 10px; letter-spacing: 0; overflow-wrap: anywhere; }
+  .quote-screen .quote-table th,
+  .quote-screen .quote-table td { padding-right: 4px; }
+  .quote-screen .quote-table td:last-child { white-space: nowrap; }
+  .quote-screen .quote-foot { position: relative; margin-top: 24px; height: 90px; }
+  .quote-screen .quote-foot-t { font-size: 10px; letter-spacing: 0; }
+}
 @media print {
   @page { size: A4; margin: 0; }
   body.printing-quote > *:not(#quote-print) { display: none !important; }
