@@ -25,6 +25,7 @@ const H = ({ children }: { children: React.ReactNode }) => (
 export default function QuoteDocument({ q }: { q: Quote }) {
   const items = (q.items as unknown as QuoteItem[]) ?? [];
   const t = quoteTotals(items, q.guests_count);
+  const tokensPerGuest = q.drink_tokens_per_guest ?? DRINK_TOKENS_PER_GUEST;
   const date = q.event_date ? format(new Date(q.event_date), "EEE d MMMM yyyy", { locale: nl }) : "n.t.b.";
   const time = q.start_time ? `${q.start_time.slice(0, 5)}${q.end_time ? ` tot ${q.end_time.slice(0, 5)}` : ""}` : "n.t.b.";
   const notes = (q.notes ?? "").split("\n").map((s) => s.trim()).filter(Boolean);
@@ -72,8 +73,8 @@ export default function QuoteDocument({ q }: { q: Quote }) {
             <div className="quote-budget-t">Indicatieve drankbegroting</div>
             <table className="quote-table">
               <thead><tr><th>Aantal gasten</th><th>Munten p.p.</th><th>Totaal munten</th><th>Begroting</th></tr></thead>
-              <tbody>{DRINK_BUDGET_GUESTS.map((g) => { const b = drinkBudget(g); return (
-                <tr key={g}><td>{g}</td><td>{DRINK_TOKENS_PER_GUEST}</td><td>{b.tokens}</td><td>{euro(b.budget)}</td></tr>); })}</tbody>
+              <tbody>{DRINK_BUDGET_GUESTS.map((g) => { const b = drinkBudget(g, tokensPerGuest); return (
+                <tr key={g}><td>{g}</td><td>{tokensPerGuest}</td><td>{b.tokens}</td><td>{euro(b.budget)}</td></tr>); })}</tbody>
             </table>
           </div>}</>}
         {notes.length > 0 && <><H>GOED OM TE WETEN</H><ul className="quote-ul">{notes.map((n, i) => <li key={i}>{n}</li>)}</ul></>}

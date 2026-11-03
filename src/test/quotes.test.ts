@@ -70,12 +70,17 @@ describe("dranken op basis van consumptiemunten", () => {
     expect(DEFAULT_DRINKS).toContain("€ 3,00 per consumptie");
     expect(DEFAULT_DRINKS).toContain("niet gebruikte munten retour genomen");
   });
-  it("indicatieve begroting is 5 munten p.p. tegen 3 euro per munt", () => {
+  it("indicatieve begroting is standaard 5 munten p.p. tegen 3 euro per munt", () => {
     expect(DRINK_TOKENS_PER_GUEST).toBe(5);
     expect(DRINK_BUDGET_GUESTS).toEqual([25, 50, 75, 100]);
     expect(drinkBudget(25)).toEqual({ guests: 25, tokens: 125, budget: 375 });
     expect(drinkBudget(50)).toEqual({ guests: 50, tokens: 250, budget: 750 });
     expect(drinkBudget(75)).toEqual({ guests: 75, tokens: 375, budget: 1125 });
     expect(drinkBudget(100)).toEqual({ guests: 100, tokens: 500, budget: 1500 });
+  });
+  it("kan met een ander aantal munten per persoon rekenen, bijvoorbeeld 3", () => {
+    expect(drinkBudget(25, 3)).toEqual({ guests: 25, tokens: 75, budget: 225 });
+    expect(drinkBudget(50, 3)).toEqual({ guests: 50, tokens: 150, budget: 450 });
+    expect(drinkBudget(100, 3)).toEqual({ guests: 100, tokens: 300, budget: 900 });
   });
 });

@@ -1,5 +1,5 @@
 export function publicQuoteSnapshot(quote: Record<string, unknown>) {
-  const fields = ["id", "quote_number", "status", "client_name", "event_date", "start_time", "end_time", "guests_text", "guests_count", "occasion", "location", "intro", "items", "drinks_text", "notes", "signed_by", "sent_at"];
+  const fields = ["id", "quote_number", "status", "client_name", "event_date", "start_time", "end_time", "guests_text", "guests_count", "occasion", "location", "intro", "items", "drinks_text", "drink_tokens_per_guest", "notes", "signed_by", "sent_at"];
   return Object.fromEntries(fields.map(field => [field, quote[field] ?? null]));
 }
 
