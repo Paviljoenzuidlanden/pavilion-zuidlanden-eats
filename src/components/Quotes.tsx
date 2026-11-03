@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { CalendarDays, Copy, Download, Eye, Mail, Pencil, Plus, Send, Trash2, X } from "lucide-react";
+import { CalendarDays, Copy, Download, Eye, Mail, Pencil, Plus, Send, Trash2, X, ArrowUp, ArrowDown } from "lucide-react";
 import QuoteDocument, { type Quote } from "@/components/QuoteDocument";
 import QuoteArrangements, { type Arrangement } from "@/components/QuoteArrangements";
 import { DEFAULT_DRINKS, DEFAULT_NOTES, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, type QuoteItem } from "@/lib/quotes";
@@ -86,11 +86,13 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agendaRequest]);
 
-  const save = async () => {
+  const save = async (auto = false, src?: Draft | null) => {
+    const edit = src ?? editRef.current;
     if (!edit) return;
-    if (!edit.client_name?.trim()) return toast.error("Vul de naam van de klant in");
-    if (!edit.quote_number) return toast.error("Offertenummer ontbreekt");
-    if (edit.client_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(edit.client_email.trim())) return toast.error("Vul een geldig e-mailadres in");
+    const fail = (m: string) => { if (auto) { toast.error(`Niet automatisch opgeslagen: ${m.toLowerCase()}`); setEdit(null); } else toast.error(m); };
+    if (!edit.client_name?.trim()) return fail("Vul de naam van de klant in");
+    if (!edit.quote_number) return fail("Offertenummer ontbreekt");
+    if (edit.client_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(edit.client_email.trim())) return fail("Vul een geldig e-mailadres in");
     const items = edit.itemsArr.filter((i) => i.title.trim()).map((i) => ({ ...i, price: Number(i.price) || 0 }));
     const { itemsArr, id, created_at, updated_at, ...rest } = edit;
     const payload = {
@@ -102,11 +104,13 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
     const res = id
       ? await supabase.from("quotes").update(payload).eq("id", id).select().single()
       : await supabase.from("quotes").insert(payload).select().single();
-    if (res.error) return toast.error(res.error.message);
+    if (res.error) return fail(res.error.message);
     if (payload.agenda_id) {
       const t = quoteTotals(items, payload.guests_count);
       await supabase.from("internal_agenda").update({ quote_amount: t.total }).eq("id", payload.agenda_id);
     }
+    editRef.current = null;
+    if (auto) { toast.success("Offerte automatisch opgeslagen"); setEdit(null); load(); return; }
     toast.success("Offerte opgeslagen"); setEdit(null); load(); setView(res.data);
   };
 
@@ -178,6 +182,10 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
     (filter === "alle" || (filter === "opvolgen" ? quoteFollowUp(r)?.due : r.status === filter)));
   const agendaTitle = (id: string | null) => agenda.find((a) => a.id === id);
   const f = (k: keyof Draft, v: unknown) => setEdit((e) => e && ({ ...e, [k]: v }));
+  const moveItem = (i: number, dir: -1 | 1) => setEdit((e) => {
+    if (!e) return e; const j = i + dir; if (j < 0 || j >= e.itemsArr.length) return e;
+    const arr = [...e.itemsArr]; [arr[i], arr[j]] = [arr[j], arr[i]]; return { ...e, itemsArr: arr };
+  });
   const setItem = (i: number, patch: Partial<QuoteItem>) => setEdit((e) => e && ({ ...e, itemsArr: e.itemsArr.map((it, j) => j === i ? { ...it, ...patch } : it) }));
   const agendaOptions = agendaQuoteOptions(agenda);
   const draftTotals = edit ? quoteTotals(edit.itemsArr.map((i) => ({ ...i, price: Number(i.price) || 0 })), Number(edit.guests_count) || 1) : null;
@@ -251,7 +259,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
       </Dialog>
 
       {/* Bewerken */}
-      <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
+      <Dialog open={!!edit} onOpenChange={(o) => { if (!o) save(true); }}>
         <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{edit?.id ? `Offerte ${edit.quote_number} bewerken` : "Nieuwe offerte"}</DialogTitle></DialogHeader>
           {edit && (
@@ -292,6 +300,8 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
                     <div key={i} className="rounded-md border border-border p-2 grid gap-2">
                       <div className="flex gap-2">
                         <Input placeholder="Onderdeel, bv. Bittergarnituur" value={it.title} onChange={(e) => setItem(i, { title: e.target.value })} />
+                        <Button size="icon" variant="ghost" aria-label="Omhoog" disabled={i === 0} onClick={() => moveItem(i, -1)}><ArrowUp className="w-4 h-4" /></Button>
+                        <Button size="icon" variant="ghost" aria-label="Omlaag" disabled={i === edit.itemsArr.length - 1} onClick={() => moveItem(i, 1)}><ArrowDown className="w-4 h-4" /></Button>
                         <Button size="icon" variant="ghost" aria-label="Regel verwijderen" onClick={() => setEdit((d) => d && ({ ...d, itemsArr: d.itemsArr.filter((_, j) => j !== i) }))}><X className="w-4 h-4" /></Button>
                       </div>
                       <Input placeholder="Toelichting (optioneel)" value={it.description ?? ""} onChange={(e) => setItem(i, { description: e.target.value })} />
@@ -329,7 +339,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
               </div>
             </div>
           )}
-          <DialogFooter><Button variant="outline" onClick={() => setEdit(null)}>Annuleren</Button><Button onClick={save}>Opslaan</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => { editRef.current = null; setEdit(null); }}>Annuleren</Button><Button onClick={() => save()}>Opslaan</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
