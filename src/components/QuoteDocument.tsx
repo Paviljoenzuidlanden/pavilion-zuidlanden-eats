@@ -25,6 +25,7 @@ const H = ({ children }: { children: React.ReactNode }) => (
 export default function QuoteDocument({ q }: { q: Quote }) {
   const items = (q.items as unknown as QuoteItem[]) ?? [];
   const t = quoteTotals(items, q.guests_count);
+  const tokensPerGuest = q.drink_tokens_per_guest ?? DRINK_TOKENS_PER_GUEST;
   const date = q.event_date ? format(new Date(q.event_date), "EEE d MMMM yyyy", { locale: nl }) : "n.t.b.";
   const time = q.start_time ? `${q.start_time.slice(0, 5)}${q.end_time ? ` tot ${q.end_time.slice(0, 5)}` : ""}` : "n.t.b.";
   const notes = (q.notes ?? "").split("\n").map((s) => s.trim()).filter(Boolean);
