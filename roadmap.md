@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Optionele offerteonderdelen apart tonen en uitsluiten van totalen; ingelogd opslaan/teruglezen en schakelen tussen € 105 en € 155 getest, tijdelijke offerte verwijderd.
+
 - [x] Vaste offertearrangementen bewaren en toepassen zonder verzonnen prijzen; ingelogd opslaan en toepassen getest.
 - [x] Offerte kopiëren als nieuw concept zonder klant- of agendakoppeling; ingelogde kopie gecontroleerd.
 - [x] Verstuurde offertes opvolgen op basis van de bestaande geldigheid van 14 dagen; berekening getest en deadline zichtbaar na verzending.

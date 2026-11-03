@@ -46,6 +46,14 @@ describe("offerte berekening", () => {
   it("vaste bedragen tellen één keer", () => {
     expect(quoteTotals([{ title: "DJ", price: 150, perPerson: false }], 20).total).toBe(150);
   });
+  it("telt optionele onderdelen niet mee in de totaalprijs of prijs per persoon", () => {
+    const base = { title: "Koffie/Thee met oranjekoek", price: 5.25, perPerson: true };
+    const optionalCoffee = { title: "Extra koffie", price: 2.5, perPerson: true, optional: true };
+    const optionalFixed = { title: "Extra onderdeel", price: 150, perPerson: false, optional: true };
+    expect(quoteTotals([base, optionalCoffee, optionalFixed], 20)).toEqual({ perPerson: 5.25, total: 105, guests: 20 });
+    expect(quoteTotals([optionalCoffee, optionalFixed], 20).total).toBe(0);
+    expect(quoteTotals([base, { ...optionalCoffee, optional: false }, optionalFixed], 20)).toEqual({ perPerson: 7.75, total: 155, guests: 20 });
+  });
   it("offertenummer loopt per jaar door", () => {
     expect(nextQuoteNumber(["2026-001", "2026-007", "2025-020"], 2026)).toBe("2026-008");
     expect(nextQuoteNumber([], 2027)).toBe("2027-001");

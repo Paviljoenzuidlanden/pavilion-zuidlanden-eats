@@ -1,4 +1,4 @@
-export type QuoteItem = { title: string; description?: string; price: number; perPerson: boolean };
+export type QuoteItem = { title: string; description?: string; price: number; perPerson: boolean; optional?: boolean };
 
 export const agendaQuoteOptions = <T extends { status: string }>(agenda: T[]): T[] =>
   agenda.filter((item) => item.status !== "geannuleerd");
@@ -30,8 +30,9 @@ export const lineTotal = (i: QuoteItem, guests: number) => (i.perPerson ? i.pric
 
 export function quoteTotals(items: QuoteItem[], guests: number) {
   const g = Math.max(1, Math.floor(guests || 1));
-  const perPerson = items.filter((i) => i.perPerson).reduce((s, i) => s + i.price, 0);
-  const total = items.reduce((s, i) => s + lineTotal(i, g), 0);
+  const included = items.filter((i) => !i.optional);
+  const perPerson = included.filter((i) => i.perPerson).reduce((s, i) => s + i.price, 0);
+  const total = included.reduce((s, i) => s + lineTotal(i, g), 0);
   return { perPerson: round(perPerson), total: round(total), guests: g };
 }
 
