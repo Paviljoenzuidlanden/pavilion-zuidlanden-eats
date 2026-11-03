@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Optionele offerteonderdelen apart tonen, uitsluiten van totalen en ingelogd opslaan/teruglezen controleren.
+- [x] Optionele offerteonderdelen apart tonen en uitsluiten van totalen; ingelogd opslaan/teruglezen en schakelen tussen € 105 en € 155 getest, tijdelijke offerte verwijderd.
 
 - [x] Vaste offertearrangementen bewaren en toepassen zonder verzonnen prijzen; ingelogd opslaan en toepassen getest.
 - [x] Offerte kopiëren als nieuw concept zonder klant- of agendakoppeling; ingelogde kopie gecontroleerd.
