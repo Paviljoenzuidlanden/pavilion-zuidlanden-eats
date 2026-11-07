@@ -727,6 +727,21 @@ function Signups() {
               <div className="flex flex-wrap gap-2">
                 <Badge>{teams ? `${totals.admitted} teams toegelaten · ${totals.people} personen` : `${group.rows.length} aanmeldingen`}</Badge>
                 {teams && <Badge variant="outline">{totals.reserve} op reservelijst</Badge>}
+                <Button size="sm" variant="outline" onClick={() => {
+                  const cell = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+                  const header = teams ? ["Team", "Personen", "Status", "Contactpersoon", "E-mail", "Telefoon", "Aangemeld op"] : ["Naam", "E-mail", "Telefoon", "Aangemeld op"];
+                  const lines = group.rows.map((s) => {
+                    const when = format(new Date(s.created_at), "dd-MM-yyyy HH:mm");
+                    return (teams ? [s.team_name, s.team_size, s.reserve ? "Reservelijst" : "Toegelaten", s.name, s.email, s.phone, when] : [s.name, s.email, s.phone, when]).map(cell).join(";");
+                  });
+                  const blob = new Blob(["\uFEFF", header.map(cell).join(";"), "\r\n", lines.join("\r\n"), "\r\n"], { type: "text/csv;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `deelnemers-${`${group.title}-${group.date}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.csv`;
+                  document.body.appendChild(a); a.click(); a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 30000);
+                }}>CSV downloaden</Button>
               </div>
             </div>
             {(teams ? [false, true] : [false]).map((reserve) => {
