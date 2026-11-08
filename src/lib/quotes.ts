@@ -24,6 +24,8 @@ export const QUOTE_PRESETS: QuoteItem[] = [
   { title: "Koffie/Thee met oranjekoek", description: "Oranjekoek van de bakker, keuze tussen crème of slagroom.", price: 5.25, perPerson: true },
   { title: "Extra koffie, thee of cappuccino", description: "Verse koffie, thee of cappuccino, los per persoon bij te bestellen.", price: 2.5, perPerson: true },
   { title: "Welkomstdrankje Prosecco of alcoholvrij alternatief", description: "Glas prosecco of een alcoholvrij alternatief bij aankomst van de gasten.", price: 5.95, perPerson: true },
+  { title: "Zaalhuur", description: "Gebruik van het paviljoen op de afgesproken datum en tijden.", price: 0, perPerson: false },
+  { title: "Bittergarnituur +/- 5 hapjes p.p.", description: "Rondgang van diverse warme hapjes op schaal.", price: 4.5, perPerson: true },
 ];
 
 export const lineTotal = (i: QuoteItem, guests: number) => (i.perPerson ? i.price * guests : i.price);
