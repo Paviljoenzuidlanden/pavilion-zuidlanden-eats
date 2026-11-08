@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { CalendarDays, Copy, Download, Eye, Mail, Pencil, Plus, Send, Trash2, X, ArrowUp, ArrowDown } from "lucide-react";
 import QuoteDocument, { type Quote } from "@/components/QuoteDocument";
 import QuoteArrangements, { type Arrangement } from "@/components/QuoteArrangements";
-import { DEFAULT_DRINKS, DEFAULT_NOTES, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, type QuoteItem } from "@/lib/quotes";
+import { DEFAULT_NOTES, QUOTE_PRESETS, DRINK_TOKEN_PRICE, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, withDrinkTokens, type QuoteItem } from "@/lib/quotes";
 
 type Agenda = Tables<"internal_agenda">;
 
@@ -74,7 +74,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
       quote_number: nextQuoteNumber(quotes.map((r) => r.quote_number), new Date().getFullYear()),
       status: "concept", client_name: "", guests_count: 20, location: "It Boumantsje 4, Leeuwarden",
       intro: "Hartelijk dank voor uw aanvraag. Graag bieden wij u onderstaand arrangement aan voor uw feest.",
-      drinks_text: DEFAULT_DRINKS, notes: DEFAULT_NOTES, signed_by: "Arnold Nicolai",
+      drinks_text: "", notes: DEFAULT_NOTES, signed_by: "Arnold Nicolai",
       itemsArr: [{ title: "", description: "", price: 0, perPerson: true }],
     };
     return fromAgenda(ag.find((x) => x.id === agendaId), base);
@@ -338,7 +338,12 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
                 <div><Label htmlFor="quote-drink-tokens">Munten p.p. (drankbegroting)</Label><Input id="quote-drink-tokens" type="number" min={1} value={edit.drink_tokens_per_guest ?? 5} onChange={(e) => f("drink_tokens_per_guest", e.target.value)} /></div>
                 <div className="text-xs text-muted-foreground self-end pb-1">Aantal munten per persoon in de tabel "Indicatieve drankbegroting" (standaard 5).</div>
               </div>
-              <div><Label>Dranken (leeg = blok weglaten)</Label><Textarea rows={3} value={edit.drinks_text ?? ""} onChange={(e) => f("drinks_text", e.target.value)} /></div>
+              <div><Label>Dranken (leeg = blok weglaten)</Label>
+                <div className="flex flex-wrap gap-2 items-center mt-1">
+                  <Button size="sm" variant="outline" onClick={() => setEdit((d) => d && ({ ...d, drinks_text: withDrinkTokens(d.drinks_text ?? "") }))}><Plus className="w-3 h-3 mr-1" />Dranken met consumptiemunten</Button>
+                  <span className="text-xs text-muted-foreground">Richtprijs {euro(DRINK_TOKEN_PRICE)} per consumptie, ongebruikte munten retour.</span>
+                </div>
+                <Textarea className="mt-1" rows={3} value={edit.drinks_text ?? ""} onChange={(e) => f("drinks_text", e.target.value)} /></div>
               <div><Label>Goed om te weten (één punt per regel)</Label><Textarea rows={5} value={edit.notes ?? ""} onChange={(e) => f("notes", e.target.value)} /></div>
               <div className="grid grid-cols-2 gap-2">
                 <div><Label>Ondertekend door</Label><Input value={edit.signed_by ?? ""} onChange={(e) => f("signed_by", e.target.value)} /></div>

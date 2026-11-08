@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, drinkBudget, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, DRINK_TOKEN_PRICE, drinkBudget, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, withDrinkTokens } from "@/lib/quotes";
 
 describe("offerte kopiëren en opvolgen", () => {
   it("kopieert inhoud maar wist klant, koppeling en verzendstatus", () => {
@@ -75,22 +75,29 @@ describe("offerte berekening", () => {
 });
 
 describe("dranken op basis van consumptiemunten", () => {
-  it("standaarddrankentekst noemt consumptiemunten en de richtprijs van 3 euro", () => {
+  it("standaarddrankentekst noemt consumptiemunten en de richtprijs van 3,25 euro", () => {
     expect(DEFAULT_DRINKS).toContain("Dranken op basis van consumptiemunten");
-    expect(DEFAULT_DRINKS).toContain("€ 3,00 per consumptie");
+    expect(DEFAULT_DRINKS).toContain("€ 3,25 per consumptie");
     expect(DEFAULT_DRINKS).toContain("niet gebruikte munten retour genomen");
   });
-  it("indicatieve begroting is standaard 5 munten p.p. tegen 3 euro per munt", () => {
+  it("drankentekst staat niet standaard in een nieuwe offerte en komt op verzoek", () => {
+    expect(withDrinkTokens("")).toBe(DEFAULT_DRINKS);
+    expect(withDrinkTokens("   ")).toBe(DEFAULT_DRINKS);
+    expect(withDrinkTokens("Dranken voor 2 euro per persoon.")).toBe(`Dranken voor 2 euro per persoon.\n\n${DEFAULT_DRINKS}`);
+    expect(withDrinkTokens(DEFAULT_DRINKS)).toBe(DEFAULT_DRINKS);
+  });
+  it("indicatieve begroting is standaard 5 munten p.p. tegen 3,25 euro per munt", () => {
     expect(DRINK_TOKENS_PER_GUEST).toBe(5);
+    expect(DRINK_TOKEN_PRICE).toBe(3.25);
     expect(DRINK_BUDGET_GUESTS).toEqual([25, 50, 75, 100]);
-    expect(drinkBudget(25)).toEqual({ guests: 25, tokens: 125, budget: 375 });
-    expect(drinkBudget(50)).toEqual({ guests: 50, tokens: 250, budget: 750 });
-    expect(drinkBudget(75)).toEqual({ guests: 75, tokens: 375, budget: 1125 });
-    expect(drinkBudget(100)).toEqual({ guests: 100, tokens: 500, budget: 1500 });
+    expect(drinkBudget(25)).toEqual({ guests: 25, tokens: 125, budget: 406.25 });
+    expect(drinkBudget(50)).toEqual({ guests: 50, tokens: 250, budget: 812.5 });
+    expect(drinkBudget(75)).toEqual({ guests: 75, tokens: 375, budget: 1218.75 });
+    expect(drinkBudget(100)).toEqual({ guests: 100, tokens: 500, budget: 1625 });
   });
   it("kan met een ander aantal munten per persoon rekenen, bijvoorbeeld 3", () => {
-    expect(drinkBudget(25, 3)).toEqual({ guests: 25, tokens: 75, budget: 225 });
-    expect(drinkBudget(50, 3)).toEqual({ guests: 50, tokens: 150, budget: 450 });
-    expect(drinkBudget(100, 3)).toEqual({ guests: 100, tokens: 300, budget: 900 });
+    expect(drinkBudget(25, 3)).toEqual({ guests: 25, tokens: 75, budget: 243.75 });
+    expect(drinkBudget(50, 3)).toEqual({ guests: 50, tokens: 150, budget: 487.5 });
+    expect(drinkBudget(100, 3)).toEqual({ guests: 100, tokens: 300, budget: 975 });
   });
 });

@@ -56,13 +56,20 @@ export function nextQuoteNumber(existing: string[], year: number) {
 export const DEFAULT_DRINKS = [
   "Dranken op basis van consumptiemunten",
   "Voor de consumpties werken wij met consumptiemunten. Iedere munt vertegenwoordigt de reguliere kassaprijs van een consumptie.",
-  "Voor de begroting hanteren we een gemiddelde richtprijs van € 3,00 per consumptie. De gasten kunnen hun munten gebruiken voor het bestellen van dranken aan de bar.",
+  "Voor de begroting hanteren we een gemiddelde richtprijs van € 3,25 per consumptie. De gasten kunnen hun munten gebruiken voor het bestellen van dranken aan de bar.",
   "Na afloop worden niet gebruikte munten retour genomen. Hierdoor betalen jullie uitsluitend voor de daadwerkelijk afgenomen consumpties.",
 ].join("\n\n");
 
 export const DRINK_TOKENS_PER_GUEST = 5;
-export const DRINK_TOKEN_PRICE = 3;
+export const DRINK_TOKEN_PRICE = 3.25;
 export const DRINK_BUDGET_GUESTS = [25, 50, 75, 100];
+
+export const withDrinkTokens = (text: string) => {
+  const t = (text ?? "").trim();
+  if (!t) return DEFAULT_DRINKS;
+  if (/consumptiemunten/i.test(t)) return t;
+  return `${t}\n\n${DEFAULT_DRINKS}`;
+};
 
 export const drinkBudget = (guests: number, tokensPerGuest: number = DRINK_TOKENS_PER_GUEST) => ({
   guests,
