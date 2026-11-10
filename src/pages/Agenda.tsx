@@ -20,9 +20,24 @@ type AgendaEvent = {
   organizer: string;
   coOrganizer?: string;
   teams?: boolean;
+  pricePerPerson?: number;
+  includedDrinks?: number;
 };
 
 const MAX_QUIZ_TEAMS = 12;
+
+export const kerstfreubelEvent: AgendaEvent = {
+  date: "26",
+  month: "Nov",
+  title: "Kerstfreubelavond",
+  time: "19:30 – 22:30",
+  description: "Donderdag 26 november: Kerstfreubelavond. € 22,50 per persoon, inclusief 2 consumpties en wat lekkers.",
+  category: "Creatief",
+  spots: "Aanmelden verplicht",
+  organizer: "paviljoen",
+  pricePerPerson: 22.5,
+  includedDrinks: 2,
+};
 
 const events: AgendaEvent[] = [
   {
@@ -36,6 +51,7 @@ const events: AgendaEvent[] = [
     organizer: "paviljoen",
     coOrganizer: "wyngaard",
   },
+  kerstfreubelEvent,
   {
     date: "27",
     month: "Nov",
