@@ -22,6 +22,7 @@ type AgendaEvent = {
   teams?: boolean;
   pricePerPerson?: number;
   includedDrinks?: number;
+  hideSignup?: boolean;
 };
 
 const MAX_QUIZ_TEAMS = 12;
@@ -37,6 +38,30 @@ export const kerstfreubelEvent: AgendaEvent = {
   organizer: "paviljoen",
   pricePerPerson: 22.5,
   includedDrinks: 2,
+};
+
+export const pubquizJanuariEvent: AgendaEvent = {
+  date: "14",
+  month: "Jan",
+  title: "Zuidlanden Pubquiz",
+  time: "",
+  description: "De echte Zuidlanden Pubquiz. Thema volgt nog.",
+  category: "Quiz",
+  spots: "",
+  organizer: "paviljoen",
+  hideSignup: true,
+};
+
+export const pubquizFebruariEvent: AgendaEvent = {
+  date: "11",
+  month: "Feb",
+  title: "Zuidlanden Pubquiz",
+  time: "",
+  description: "De echte Zuidlanden Pubquiz, deze keer in het teken van liefde en Valentijnsdag.",
+  category: "Quiz",
+  spots: "",
+  organizer: "paviljoen",
+  hideSignup: true,
 };
 
 const events: AgendaEvent[] = [
@@ -73,6 +98,7 @@ const events: AgendaEvent[] = [
     organizer: "paviljoen",
     teams: true,
   },
+  pubquizJanuariEvent,
   {
     date: "15",
     month: "Jan",
@@ -83,6 +109,7 @@ const events: AgendaEvent[] = [
     spots: "Vrije inloop",
     organizer: "wijkpanel",
   },
+  pubquizFebruariEvent,
   {
     date: "12",
     month: "Feb",
@@ -214,7 +241,7 @@ const Agenda = () => {
         <div className="max-w-4xl mx-auto space-y-4">
           {events.map((event, i) => (
             <motion.div
-              key={event.title}
+              key={`${event.title} ${event.date} ${event.month}`}
               className="group bg-card rounded-2xl border border-border p-6 md:p-8 hover:shadow-lg hover:border-primary/20 transition-all duration-300"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -231,7 +258,9 @@ const Agenda = () => {
                     <span className="text-[10px] font-body font-semibold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">
                       {event.category}
                     </span>
-                    <span className="text-[10px] text-muted-foreground font-body tracking-wider uppercase">{event.spots}</span>
+                    {event.spots && (
+                      <span className="text-[10px] text-muted-foreground font-body tracking-wider uppercase">{event.spots}</span>
+                    )}
                   </div>
                   <h3 className="text-xl md:text-2xl font-extrabold font-display text-foreground tracking-tight mb-1">
                     {event.title}
@@ -288,7 +317,7 @@ const Agenda = () => {
                       <img src={wyngaardLogo} alt="De Wyngaard" className="h-8 w-auto" />
                     </a>
                   )}
-                  {event.spots !== "Vrije inloop" ? (
+                  {event.hideSignup ? null : event.spots !== "Vrije inloop" ? (
                     vol[event.title] ? (
                       <div className="flex flex-col items-end gap-1">
                         <span className="text-xs font-body font-semibold uppercase tracking-widest text-primary">Vol</span>
