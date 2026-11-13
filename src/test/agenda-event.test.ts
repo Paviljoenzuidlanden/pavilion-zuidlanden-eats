@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kerstfreubelEvent, pubquizJanuariEvent, pubquizFebruariEvent } from "@/pages/Agenda";
+import { kerstfreubelEvent, pubquizJanuariEvent, pubquizFebruariEvent, pubquizMaartEvent } from "@/pages/Agenda";
 
 describe("Kerstfreubelavond", () => {
   it("vindt plaats op 26 november van 19:30 tot 22:30", () => {
@@ -41,5 +41,19 @@ describe("Pubquiz februari", () => {
   it("staat in het teken van liefde en Valentijnsdag", () => {
     expect(pubquizFebruariEvent.description).toContain("liefde");
     expect(pubquizFebruariEvent.description).toContain("Valentijnsdag");
+  });
+});
+
+describe("Pubquiz maart", () => {
+  it("vindt plaats op 11 maart", () => {
+    expect(pubquizMaartEvent.date).toBe("11");
+    expect(pubquizMaartEvent.month).toBe("Mrt");
+    expect(pubquizMaartEvent.title).toBe("Zuidlanden Pubquiz");
+  });
+  it("staat onder voorbehoud", () => {
+    expect(pubquizMaartEvent.description).toContain("onder voorbehoud");
+  });
+  it("heeft nog geen aanmeldingsknop", () => {
+    expect(pubquizMaartEvent.hideSignup).toBe(true);
   });
 });

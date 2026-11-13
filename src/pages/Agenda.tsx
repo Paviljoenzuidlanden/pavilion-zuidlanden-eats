@@ -64,6 +64,18 @@ export const pubquizFebruariEvent: AgendaEvent = {
   hideSignup: true,
 };
 
+export const pubquizMaartEvent: AgendaEvent = {
+  date: "11",
+  month: "Mrt",
+  title: "Zuidlanden Pubquiz",
+  time: "",
+  description: "De echte Zuidlanden Pubquiz, onder voorbehoud.",
+  category: "Quiz",
+  spots: "",
+  organizer: "paviljoen",
+  hideSignup: true,
+};
+
 const events: AgendaEvent[] = [
   {
     date: "01",
@@ -120,6 +132,7 @@ const events: AgendaEvent[] = [
     spots: "Vrije inloop",
     organizer: "wijkpanel",
   },
+  pubquizMaartEvent,
   {
     date: "12",
     month: "Mrt",
