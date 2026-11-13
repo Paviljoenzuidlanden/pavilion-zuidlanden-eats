@@ -122,6 +122,7 @@ const events: AgendaEvent[] = [
     organizer: "paviljoen",
     teams: true,
   },
+  eindejaarsborrelEvent,
   pubquizJanuariEvent,
   {
     date: "15",
@@ -155,7 +156,6 @@ const events: AgendaEvent[] = [
     spots: "Vrije inloop",
     organizer: "wijkpanel",
   },
-  eindejaarsborrelEvent,
 ];
 
 const Agenda = () => {
