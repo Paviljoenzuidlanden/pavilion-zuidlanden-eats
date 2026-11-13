@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kerstfreubelEvent, pubquizJanuariEvent, pubquizFebruariEvent, pubquizMaartEvent } from "@/pages/Agenda";
+import { kerstfreubelEvent, pubquizJanuariEvent, pubquizFebruariEvent, pubquizMaartEvent, eindejaarsborrelEvent } from "@/pages/Agenda";
 
 describe("Kerstfreubelavond", () => {
   it("vindt plaats op 26 november van 19:30 tot 22:30", () => {
@@ -55,5 +55,19 @@ describe("Pubquiz maart", () => {
   });
   it("heeft nog geen aanmeldingsknop", () => {
     expect(pubquizMaartEvent.hideSignup).toBe(true);
+  });
+});
+
+describe("Eindejaarsborrel", () => {
+  it("vindt plaats op 31 december", () => {
+    expect(eindejaarsborrelEvent.date).toBe("31");
+    expect(eindejaarsborrelEvent.month).toBe("Dec");
+    expect(eindejaarsborrelEvent.title).toBe("Eindejaarsborrel");
+  });
+  it("meldt dat meer informatie volgt", () => {
+    expect(eindejaarsborrelEvent.description).toContain("Meer informatie volgt nog");
+  });
+  it("heeft nog geen aanmeldingsknop", () => {
+    expect(eindejaarsborrelEvent.hideSignup).toBe(true);
   });
 });

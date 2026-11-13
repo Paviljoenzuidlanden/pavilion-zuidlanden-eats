@@ -76,6 +76,18 @@ export const pubquizMaartEvent: AgendaEvent = {
   hideSignup: true,
 };
 
+export const eindejaarsborrelEvent: AgendaEvent = {
+  date: "31",
+  month: "Dec",
+  title: "Eindejaarsborrel",
+  time: "",
+  description: "Eindejaarsborrel in het paviljoen. Meer informatie volgt nog.",
+  category: "Borrel",
+  spots: "",
+  organizer: "paviljoen",
+  hideSignup: true,
+};
+
 const events: AgendaEvent[] = [
   {
     date: "01",
@@ -143,6 +155,7 @@ const events: AgendaEvent[] = [
     spots: "Vrije inloop",
     organizer: "wijkpanel",
   },
+  eindejaarsborrelEvent,
 ];
 
 const Agenda = () => {
