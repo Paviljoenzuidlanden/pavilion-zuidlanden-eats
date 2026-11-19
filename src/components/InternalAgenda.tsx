@@ -28,6 +28,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
   const [filter, setFilter] = useState<string>("alle");
   const [edit, setEdit] = useState<Partial<Item> | null>(null);
   const [hl, setHl] = useState<string | null>(null);
+  const [showPast, setShowPast] = useState(false);
 
   useEffect(() => {
     if (!focusId) return;
@@ -75,7 +76,9 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
   };
 
   const today = format(new Date(), "yyyy-MM-dd");
-  const shown = rows.filter((r) => filter === "alle" || r.status === filter);
+  const isPast = (r: Item) => !!r.event_date && r.event_date < today;
+  const pastCount = rows.filter((r) => isPast(r) && (filter === "alle" || r.status === filter)).length;
+  const shown = rows.filter((r) => (filter === "alle" || r.status === filter) && (showPast || !isPast(r) || r.id === hl));
   const groups = shown.reduce<Record<string, Item[]>>((acc, r) => {
     const k = r.event_date ? format(new Date(r.event_date), "MMMM yyyy", { locale: nl }) : "Nog geen datum";
     (acc[k] ||= []).push(r); return acc;
@@ -96,6 +99,11 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
       </div>
       <p className="text-xs text-muted-foreground">Aanvragen via het feestformulier komen hier automatisch binnen als concept.</p>
 
+      {pastCount > 0 && (
+        <Button size="sm" variant="ghost" onClick={() => setShowPast((v) => !v)}>
+          {showPast ? "Verleden data verbergen" : `Toon ${pastCount} verleden ${pastCount === 1 ? "datum" : "data"}`}
+        </Button>
+      )}
       {!shown.length && <p className="text-muted-foreground py-6">Niets gevonden.</p>}
       {Object.entries(groups).map(([k, list]) => (
         <div key={k}>

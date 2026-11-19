@@ -857,6 +857,7 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
   const [form, setForm] = useState({ user_id: "", date: days()[0], start: "16:00", end: "22:00", note: "" });
   const [exportMonth, setExportMonth] = useState(() => format(new Date(), "yyyy-MM"));
   const [exporting, setExporting] = useState(false);
+  const [viewMonth, setViewMonth] = useState(() => format(new Date(), "yyyy-MM"));
 
   const load = useCallback(async () => {
     const q = supabase.from("work_hours").select("*").order("date", { ascending: false }).order("start_time");
@@ -931,6 +932,7 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
   const totDay = sum(mine.filter((r) => r.date === today));
   const totWeek = sum(mine.filter((r) => r.date >= weekStart));
   const totMonth = sum(mine.filter((r) => r.date >= monthStart));
+  const monthRows = rows.filter((r) => r.date.startsWith(viewMonth));
 
   return (
     <div className="space-y-6">
@@ -974,9 +976,13 @@ function MyHours({ user, profiles, isAdmin }: { user: User; profiles: Profile[];
       )}
 
       <div className="rounded-xl border border-border bg-card p-4">
-        <h3 className="font-display uppercase tracking-wider text-primary mb-3">Geregistreerde uren</h3>
-        {!rows.length && <p className="text-sm text-muted-foreground">Nog geen uren geregistreerd.</p>}
-        {rows.map((r) => (
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h3 className="font-display uppercase tracking-wider text-primary">Geregistreerde uren</h3>
+          <Input aria-label="Maand" type="month" className="w-44" value={viewMonth} onChange={(e) => setViewMonth(e.target.value || format(new Date(), "yyyy-MM"))} />
+        </div>
+        {monthRows.length > 0 && <p className="text-sm text-muted-foreground mb-2">Totaal deze maand: <span className="text-foreground font-medium">{fmtH(sum(monthRows))}</span></p>}
+        {!monthRows.length && <p className="text-sm text-muted-foreground">Geen uren geregistreerd in deze maand.</p>}
+        {monthRows.map((r) => (
           <div key={r.id} className="flex items-center justify-between gap-2 py-1.5 text-sm border-b border-border last:border-0">
             <span className="capitalize">{nice(r.date)}</span>
             <span className="text-muted-foreground">
