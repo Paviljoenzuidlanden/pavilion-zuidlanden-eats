@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Restafvallediging 2027 (26 data) als soort "Afval" in de interne agenda; buiten planner en offertes; tonen/verbergen-schakelaar.
+- [ ] Papier/karton-lediging 2027 (27 data) toevoegen aan de interne agenda — bezig.
+- [ ] Afvallediging in preview controleren als beheerder (inlog goedkeuring nodig).
+
 - [x] Offerte-archief: verstreken feestdata standaard verborgen achter "Toon archief"; tests groen, build OK (previewcontrole overgeslagen, inlog geweigerd).
 - [x] Beschikbaarheid verder vooruit: grens 4 → 8 weken (vraag loopt; bij ander antwoord aanpassen).
 - [ ] Extra rooster-handigheden (terugkerende beschikbaarheid, week kopiëren, dagnotitie, ziekmelden) — wacht op keuze van Arnold.
