@@ -29,6 +29,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
   const [edit, setEdit] = useState<Partial<Item> | null>(null);
   const [hl, setHl] = useState<string | null>(null);
   const [showPast, setShowPast] = useState(false);
+  const [showAfval, setShowAfval] = useState(true);
 
   useEffect(() => {
     if (!focusId) return;
@@ -77,8 +78,13 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
 
   const today = format(new Date(), "yyyy-MM-dd");
   const isPast = (r: Item) => !!r.event_date && r.event_date < today;
-  const pastCount = rows.filter((r) => isPast(r) && (filter === "alle" || r.status === filter)).length;
-  const shown = rows.filter((r) => (filter === "alle" || r.status === filter) && (showPast || !isPast(r) || r.id === hl));
+  const isAfval = (r: Item) => r.kind === "afval";
+  const partyRows = rows.filter((r) => !isAfval(r));
+  const afvalCount = rows.length - partyRows.length;
+  // Afvaldata staan los van de aanvraagstatussen: alleen zichtbaar bij "Alles" en met eigen schakelaar.
+  const inFilter = (r: Item) => isAfval(r) ? filter === "alle" && showAfval : filter === "alle" || r.status === filter;
+  const pastCount = rows.filter((r) => isPast(r) && inFilter(r)).length;
+  const shown = rows.filter((r) => inFilter(r) && (showPast || !isPast(r) || r.id === hl));
   const groups = shown.reduce<Record<string, Item[]>>((acc, r) => {
     const k = r.event_date ? format(new Date(r.event_date), "MMMM yyyy", { locale: nl }) : "Nog geen datum";
     (acc[k] ||= []).push(r); return acc;
@@ -91,7 +97,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
         <div className="flex flex-wrap gap-2">
           {["alle", "concept", "offerte_verstuurd", "definitief", "geannuleerd"].map((s) => (
             <Button key={s} size="sm" variant={filter === s ? "default" : "outline"} onClick={() => setFilter(s)}>
-              {s === "alle" ? "Alles" : STATUS[s].label} ({s === "alle" ? rows.length : rows.filter((r) => r.status === s).length})
+              {s === "alle" ? "Alles" : STATUS[s].label} ({s === "alle" ? partyRows.length : partyRows.filter((r) => r.status === s).length})
             </Button>
           ))}
         </div>
@@ -99,10 +105,19 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
       </div>
       <p className="text-xs text-muted-foreground">Aanvragen via het feestformulier komen hier automatisch binnen als concept.</p>
 
-      {pastCount > 0 && (
-        <Button size="sm" variant="ghost" onClick={() => setShowPast((v) => !v)}>
-          {showPast ? "Verleden data verbergen" : `Toon ${pastCount} verleden ${pastCount === 1 ? "datum" : "data"}`}
-        </Button>
+      {(pastCount > 0 || afvalCount > 0) && (
+        <div className="flex flex-wrap gap-2">
+          {pastCount > 0 && (
+            <Button size="sm" variant="ghost" onClick={() => setShowPast((v) => !v)}>
+              {showPast ? "Verleden data verbergen" : `Toon ${pastCount} verleden ${pastCount === 1 ? "datum" : "data"}`}
+            </Button>
+          )}
+          {afvalCount > 0 && (
+            <Button size="sm" variant="ghost" onClick={() => setShowAfval((v) => !v)}>
+              {showAfval ? `Verberg ${afvalCount} afvaldata` : `Toon ${afvalCount} afvaldata`}
+            </Button>
+          )}
+        </div>
       )}
       {!shown.length && <p className="text-muted-foreground py-6">Niets gevonden.</p>}
       {Object.entries(groups).map(([k, list]) => (
@@ -122,8 +137,8 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
                   <div className="min-w-0 flex-1 text-sm">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-semibold">{r.title}</span>
-                      <Badge variant="outline">{r.kind === "feest" ? "Feest" : "Activiteit"}</Badge>
-                      <span className={`text-xs rounded-full px-2 py-0.5 ${STATUS[r.status]?.cls}`}>{STATUS[r.status]?.label}</span>
+                      <Badge variant="outline">{r.kind === "feest" ? "Feest" : isAfval(r) ? "Afval" : "Activiteit"}</Badge>
+                      {!isAfval(r) && <span className={`text-xs rounded-full px-2 py-0.5 ${STATUS[r.status]?.cls}`}>{STATUS[r.status]?.label}</span>}
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5">
                       {r.start_time ? `${r.start_time.slice(0, 5)}${r.end_time ? `–${r.end_time.slice(0, 5)}` : ""} · ` : ""}
@@ -137,6 +152,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
                         {r.agreements && <div className="whitespace-pre-wrap"><strong>Afspraken:</strong> {r.agreements}</div>}
                       </div>
                     )}
+                    {!isAfval(r) && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {r.status !== "offerte_verstuurd" && r.status !== "definitief" && (
                         <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setStatus(r, "offerte_verstuurd")}>Offerte verstuurd</Button>
@@ -148,6 +164,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
                         <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setStatus(r, "definitief")}>Definitief</Button>
                       )}
                     </div>
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <Button size="icon" variant="ghost" onClick={() => setEdit(r)} aria-label="Bewerken"><Pencil className="w-4 h-4" /></Button>
@@ -168,7 +185,7 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
               <div className="grid grid-cols-2 gap-2">
                 <div><Label>Soort</Label>
                   <select className="w-full h-10 rounded-md border border-input bg-background px-2 text-sm" value={edit.kind ?? "feest"} onChange={(e) => f("kind", e.target.value)}>
-                    <option value="feest">Feest</option><option value="activiteit">Activiteit</option>
+                    <option value="feest">Feest</option><option value="activiteit">Activiteit</option><option value="afval">Afval</option>
                   </select></div>
                 <div><Label>Status</Label>
                   <select className="w-full h-10 rounded-md border border-input bg-background px-2 text-sm" value={edit.status ?? "concept"} onChange={(e) => f("status", e.target.value)}>
@@ -187,8 +204,10 @@ export default function InternalAgenda({ focusId, onQuote }: { focusId?: string 
                 <div><Label>E-mail</Label><Input value={edit.email ?? ""} onChange={(e) => f("email", e.target.value)} /></div>
                 <div><Label>Telefoon</Label><Input value={edit.phone ?? ""} onChange={(e) => f("phone", e.target.value)} /></div>
               </div>
-              <div><Label>Offertebedrag (€)</Label><Input type="number" step="0.01" value={edit.quote_amount ?? ""} onChange={(e) => f("quote_amount", e.target.value)} /></div>
-              <div><Label>Offerte / (prijs)afspraken</Label><Textarea rows={4} value={edit.agreements ?? ""} onChange={(e) => f("agreements", e.target.value)} placeholder="Bijv. 40 p. borrelplank, bar tot 23:00, aanbetaling 25%" /></div>
+              {edit.kind !== "afval" && <>
+                <div><Label>Offertebedrag (€)</Label><Input type="number" step="0.01" value={edit.quote_amount ?? ""} onChange={(e) => f("quote_amount", e.target.value)} /></div>
+                <div><Label>Offerte / (prijs)afspraken</Label><Textarea rows={4} value={edit.agreements ?? ""} onChange={(e) => f("agreements", e.target.value)} placeholder="Bijv. 40 p. borrelplank, bar tot 23:00, aanbetaling 25%" /></div>
+              </>}
               {edit.message && <p className="text-xs text-muted-foreground">Bericht klant: "{edit.message}"</p>}
             </div>
           )}

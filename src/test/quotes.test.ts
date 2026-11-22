@@ -42,6 +42,10 @@ describe("offertes voor interne activiteiten", () => {
     const feest = { ...activity, id: "feest", kind: "feest", status: "concept" };
     expect(agendaQuoteOptions([feest, { ...activity, status: "geannuleerd" }])).toEqual([feest]);
   });
+  it("maakt van afvaldata geen offerte", () => {
+    const afval = { ...activity, id: "afval", kind: "afval", title: "Restafval" };
+    expect(agendaQuoteOptions([activity, afval])).toEqual([activity]);
+  });
 });
 
 describe("offerte berekening", () => {

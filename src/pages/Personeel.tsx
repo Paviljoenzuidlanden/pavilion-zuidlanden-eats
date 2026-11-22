@@ -509,7 +509,7 @@ function Planner({ profiles, onOpenAgenda }: { profiles: Profile[]; onOpenAgenda
     let active = true;
     const loadAgenda = async () => {
       const { data, error } = await supabase.from("internal_agenda")
-        .select("id,title,event_date,start_time,end_time,guests,status")
+        .select("id,title,event_date,start_time,end_time,guests,status,kind")
         .gte("event_date", format(week, "yyyy-MM-dd"))
         .lte("event_date", format(addDays(week, 6), "yyyy-MM-dd"))
         .order("start_time", { ascending: true, nullsFirst: false });

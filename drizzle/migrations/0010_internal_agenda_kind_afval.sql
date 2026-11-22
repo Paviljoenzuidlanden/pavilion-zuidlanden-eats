@@ -1,0 +1,2 @@
+alter table public.internal_agenda drop constraint internal_agenda_kind_chk;
+alter table public.internal_agenda add constraint internal_agenda_kind_chk check (kind = any (array['feest'::text, 'activiteit'::text, 'afval'::text]));

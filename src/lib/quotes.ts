@@ -1,7 +1,8 @@
 export type QuoteItem = { title: string; description?: string; price: number; perPerson: boolean; optional?: boolean };
 
-export const agendaQuoteOptions = <T extends { status: string }>(agenda: T[]): T[] =>
-  agenda.filter((item) => item.status !== "geannuleerd");
+// Afvaldata (afvallediging) zijn geen aanvragen: daar maak je geen offerte voor.
+export const agendaQuoteOptions = <T extends { status: string; kind?: string }>(agenda: T[]): T[] =>
+  agenda.filter((item) => item.status !== "geannuleerd" && item.kind !== "afval");
 
 export const agendaQuoteOccasion = (agenda: { occasion: string | null; title: string }) =>
   agenda.occasion || agenda.title;

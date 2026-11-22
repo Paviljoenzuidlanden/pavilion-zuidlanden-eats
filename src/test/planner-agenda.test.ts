@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { agendaForDay, type PlannerAgendaItem } from "@/lib/planner-agenda";
 
-const party: PlannerAgendaItem = { id: "party", title: "Feest", event_date: "2026-10-18", start_time: "16:30:00", end_time: null, guests: 40, status: "definitief" };
+const party: PlannerAgendaItem = { id: "party", title: "Feest", event_date: "2026-10-18", start_time: "16:30:00", end_time: null, guests: 40, status: "definitief", kind: "feest" };
 
 describe("agenda in roosterplanner", () => {
   it("koppelt een feest met het opgegeven aantal pax alleen aan zijn eigen dag", () => {
@@ -11,5 +11,9 @@ describe("agenda in roosterplanner", () => {
   it("neemt concepten en offertes mee maar geen geannuleerde aanvragen", () => {
     const items = ["concept", "offerte_verstuurd", "geannuleerd"].map((status) => ({ ...party, id: status, status }));
     expect(agendaForDay(items, "2026-10-18").map((item) => item.status)).toEqual(["concept", "offerte_verstuurd"]);
+  });
+  it("toont afvallediging niet in de roosterplanner", () => {
+    const afval: PlannerAgendaItem = { ...party, id: "afval", kind: "afval", title: "Restafval", guests: null };
+    expect(agendaForDay([party, afval], "2026-10-18").map((item) => item.id)).toEqual(["party"]);
   });
 });

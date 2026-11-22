@@ -71,6 +71,13 @@
       "when": 1793733288157,
       "tag": "0009_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795361418277,
+      "tag": "0010_internal_agenda_kind_afval",
+      "breakpoints": true
     }
   ]
 }
