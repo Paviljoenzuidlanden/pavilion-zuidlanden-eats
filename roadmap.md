@@ -1,6 +1,8 @@
 # Roadmap
 
-- [ ] Beschikbaarheid verder vooruit invulbaar maken (nu 4 weken; voorstel 8 weken) + extra rooster-handigheden bespreken met Arnold.
+- [x] Offerte-archief: verstreken feestdata standaard verborgen achter "Toon archief"; tests groen, build OK (previewcontrole overgeslagen, inlog geweigerd).
+- [x] Beschikbaarheid verder vooruit: grens 4 → 8 weken (vraag loopt; bij ander antwoord aanpassen).
+- [ ] Extra rooster-handigheden (terugkerende beschikbaarheid, week kopiëren, dagnotitie, ziekmelden) — wacht op keuze van Arnold.
 
 - [x] Optionele offerteonderdelen apart tonen en uitsluiten van totalen; ingelogd opslaan/teruglezen en schakelen tussen € 105 en € 155 getest, tijdelijke offerte verwijderd.
 

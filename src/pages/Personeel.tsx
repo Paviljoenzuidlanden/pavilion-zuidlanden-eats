@@ -23,7 +23,7 @@ type Profile = { id: string; display_name: string; email: string };
 type Avail = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null };
 type Shift = { id: string; user_id: string; date: string; start_time: string; end_time: string; note: string | null; published: boolean };
 
-const days = () => Array.from({ length: 29 }, (_, i) => format(addDays(new Date(), i), "yyyy-MM-dd"));
+const days = () => Array.from({ length: 57 }, (_, i) => format(addDays(new Date(), i), "yyyy-MM-dd"));
 const nice = (d: string) => format(new Date(d + "T12:00"), "EEEE d MMMM", { locale: nl });
 const t5 = (t: string) => t.slice(0, 5);
 
@@ -225,7 +225,7 @@ function Availability({ user }: { user: User }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <p className="text-sm text-muted-foreground">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 4 weken vooruit). Klik in de maandweergave op een dag om je tijden door te geven; dit zie je ook direct terug in de weekweergave.</p>
+      <p className="text-sm text-muted-foreground">Geef aan wanneer je kunt werken op donderdag t/m zondag (tot 8 weken vooruit). Klik in de maandweergave op een dag om je tijden door te geven; dit zie je ook direct terug in de weekweergave.</p>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1" aria-label="Beschikbaarheidweergave">
           <Button size="sm" variant={view === "month" ? "default" : "outline"} onClick={() => setView("month")}>Maand</Button>
