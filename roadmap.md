@@ -1,7 +1,9 @@
 # Roadmap
 
 - [x] Restafvallediging 2027 (26 data) als soort "Afval" in de interne agenda; buiten planner en offertes; tonen/verbergen-schakelaar.
-- [ ] Papier/karton-lediging 2027 (27 data) toevoegen aan de interne agenda — bezig.
+- [x] Papier/karton-lediging 2027 (26 data) toevoegen aan de interne agenda.
+- [x] Afvaldata ook compact tonen in tabblad Rooster maken (titel + prullenbak-icoon, zonder pax/status); tests groen.
+- [ ] Afvallediging in preview controleren als beheerder (inlog goedkeuring nodig).
 - [ ] Afvallediging in preview controleren als beheerder (inlog goedkeuring nodig).
 
 - [x] Offerte-archief: verstreken feestdata standaard verborgen achter "Toon archief"; tests groen, build OK (previewcontrole overgeslagen, inlog geweigerd).

@@ -12,8 +12,8 @@ describe("agenda in roosterplanner", () => {
     const items = ["concept", "offerte_verstuurd", "geannuleerd"].map((status) => ({ ...party, id: status, status }));
     expect(agendaForDay(items, "2026-10-18").map((item) => item.status)).toEqual(["concept", "offerte_verstuurd"]);
   });
-  it("toont afvallediging niet in de roosterplanner", () => {
+  it("toont afvallediging ook in de roosterplanner", () => {
     const afval: PlannerAgendaItem = { ...party, id: "afval", kind: "afval", title: "Restafval", guests: null };
-    expect(agendaForDay([party, afval], "2026-10-18").map((item) => item.id)).toEqual(["party"]);
+    expect(agendaForDay([party, afval], "2026-10-18").map((item) => item.id)).toEqual(["party", "afval"]);
   });
 });

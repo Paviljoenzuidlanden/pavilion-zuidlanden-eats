@@ -1,4 +1,4 @@
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Trash2 } from "lucide-react";
 import { agendaForDay, type PlannerAgendaItem } from "@/lib/planner-agenda";
 
 const statusLabels: Record<string, string> = {
@@ -14,7 +14,13 @@ export default function PlannerAgendaNotice({ items, date, onOpen }: { items: Pl
   return (
     <div className="mb-2 space-y-1 border-l-2 border-primary bg-primary/10 px-2 py-1.5 text-xs text-foreground">
       {events.map((event) => {
-        const content = (
+        const content = event.kind === "afval" ? (
+          // Afvallediging: compact, zonder pax of status
+          <div className="flex items-start gap-1">
+            <Trash2 className="mt-0.5 h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
+            <span className="min-w-0 break-words font-semibold">{event.title}</span>
+          </div>
+        ) : (
           <>
             <div className="flex items-start gap-1">
               <CalendarDays className="mt-0.5 h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
