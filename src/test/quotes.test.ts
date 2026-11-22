@@ -1,5 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, DRINK_TOKEN_PRICE, drinkBudget, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, withDrinkTokens } from "@/lib/quotes";
+import { quoteTotals, nextQuoteNumber, DEFAULT_NOTES, DEFAULT_DRINKS, DRINK_BUDGET_GUESTS, DRINK_TOKENS_PER_GUEST, DRINK_TOKEN_PRICE, drinkBudget, QUOTE_PRESETS, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, withDrinkTokens, isPastQuote } from "@/lib/quotes";
+
+describe("offerte archief", () => {
+  it("archiveert offertes met een verstreken feestdatum", () => {
+    expect(isPastQuote({ event_date: "2026-11-12" }, "2026-11-22")).toBe(true);
+    expect(isPastQuote({ event_date: "2026-11-22" }, "2026-11-22")).toBe(false);
+    expect(isPastQuote({ event_date: "2026-12-05" }, "2026-11-22")).toBe(false);
+  });
+  it("archiveert offertes zonder datum nooit", () => {
+    expect(isPastQuote({ event_date: null }, "2026-11-22")).toBe(false);
+  });
+});
 
 describe("offerte kopiëren en opvolgen", () => {
   it("kopieert inhoud maar wist klant, koppeling en verzendstatus", () => {

@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { CalendarDays, Copy, Download, Eye, Mail, Pencil, Plus, Send, Trash2, X, ArrowUp, ArrowDown } from "lucide-react";
 import QuoteDocument, { type Quote } from "@/components/QuoteDocument";
 import QuoteArrangements, { type Arrangement } from "@/components/QuoteArrangements";
-import { DEFAULT_NOTES, QUOTE_PRESETS, DRINK_TOKEN_PRICE, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, withDrinkTokens, type QuoteItem } from "@/lib/quotes";
+import { DEFAULT_NOTES, QUOTE_PRESETS, DRINK_TOKEN_PRICE, agendaQuoteOptions, agendaQuoteOccasion, copyQuote, isPastQuote, quoteFollowUp, euro, nextQuoteNumber, quoteTotals, withDrinkTokens, type QuoteItem } from "@/lib/quotes";
 
 type Agenda = Tables<"internal_agenda">;
 
@@ -45,6 +45,7 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
   const [printQ, setPrintQ] = useState<Quote | null>(null);
   const [arrangements, setArrangements] = useState<Arrangement[]>([]);
   const [filter, setFilter] = useState("alle");
+  const [showArchive, setShowArchive] = useState(false);
   const [mail, setMail] = useState<{ quote: Quote; requestId: string; message: string } | null>(null);
   const [mailBusy, setMailBusy] = useState(false);
   const [mailError, setMailError] = useState("");
@@ -186,6 +187,9 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
   const dueCount = rows.filter(r => quoteFollowUp(r)?.due).length;
   const shown = rows.filter((r) => (!s || `${r.quote_number} ${r.client_name} ${r.occasion ?? ""}`.toLowerCase().includes(s)) &&
     (filter === "alle" || (filter === "opvolgen" ? quoteFollowUp(r)?.due : r.status === filter)));
+  const today = format(new Date(), "yyyy-MM-dd");
+  const archiveCount = shown.filter((r) => isPastQuote(r, today)).length;
+  const visible = showArchive ? shown : shown.filter((r) => !isPastQuote(r, today));
   const agendaTitle = (id: string | null) => agenda.find((a) => a.id === id);
   const f = (k: keyof Draft, v: unknown) => setEdit((e) => e && ({ ...e, [k]: v }));
   const moveItem = (i: number, dir: -1 | 1) => setEdit((e) => {
@@ -205,16 +209,22 @@ export default function Quotes({ agendaRequest, onOpenAgenda, onHandled }: {
       <div className="flex gap-2 flex-wrap">
         {[['alle', 'Alles'], ['concept', 'Concept'], ['verstuurd', 'Verstuurd'], ['opvolgen', `Opvolgen (${dueCount})`], ['geaccepteerd', 'Geaccepteerd'], ['afgewezen', 'Afgewezen']].map(([value, label]) =>
           <Button key={value} size="sm" variant={filter === value ? "default" : "outline"} onClick={() => setFilter(value)}>{label}</Button>)}
+        {archiveCount > 0 && (
+          <Button size="sm" variant="ghost" className="text-muted-foreground" onClick={() => setShowArchive((v) => !v)}>
+            {showArchive ? "Archief verbergen" : `Toon archief (${archiveCount})`}
+          </Button>
+        )}
       </div>
 
-      {!shown.length && <p className="text-muted-foreground py-6">Nog geen offertes.</p>}
+      {!visible.length && <p className="text-muted-foreground py-6">{archiveCount > 0 ? `Geen actuele offertes. ${archiveCount} offerte${archiveCount === 1 ? "" : "s"} in het archief.` : "Nog geen offertes."}</p>}
       <div className="space-y-2">
-        {shown.map((q) => {
+        {visible.map((q) => {
           const t = quoteTotals((q.items as unknown as QuoteItem[]) ?? [], q.guests_count);
           const a = agendaTitle(q.agenda_id);
           const followUp = quoteFollowUp(q);
+          const past = isPastQuote(q, today);
           return (
-            <div key={q.id} className="rounded-xl border border-border bg-card p-3 flex flex-wrap gap-3 items-center">
+            <div key={q.id} className={`rounded-xl border border-border bg-card p-3 flex flex-wrap gap-3 items-center ${past ? "opacity-60" : ""}`}>
               <div className="min-w-0 flex-1 text-sm">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-semibold">{q.client_name}</span>

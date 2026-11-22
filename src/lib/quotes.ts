@@ -14,6 +14,13 @@ export function quoteFollowUp(quote: { status: string; sent_at: string | null },
   return { deadline, daysLeft, due: daysLeft <= 3 };
 }
 
+const formatLocalDate = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+// Offerte met een verstreken feestdatum hoort in het archief; zonder datum blijft hij zichtbaar
+export const isPastQuote = (quote: { event_date: string | null }, today = formatLocalDate(new Date())) =>
+  !!quote.event_date && quote.event_date < today;
+
 export function copyQuote<T extends { client_name: string; client_email: string | null; agenda_id: string | null; event_date: string | null; start_time: string | null; end_time: string | null; status: string; sent_at: string | null; quote_number: string; id: string; created_at: string; updated_at: string }>(quote: T, number: string) {
   const { id, created_at, updated_at, ...content } = quote;
   return { ...content, quote_number: number, client_name: "", client_email: null, agenda_id: null,
