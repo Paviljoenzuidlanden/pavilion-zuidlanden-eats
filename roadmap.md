@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Beschikbaarheid verder vooruit invulbaar maken (nu 4 weken; voorstel 8 weken) + extra rooster-handigheden bespreken met Arnold.
+
 - [x] Optionele offerteonderdelen apart tonen en uitsluiten van totalen; ingelogd opslaan/teruglezen en schakelen tussen € 105 en € 155 getest, tijdelijke offerte verwijderd.
 
 - [x] Vaste offertearrangementen bewaren en toepassen zonder verzonnen prijzen; ingelogd opslaan en toepassen getest.
