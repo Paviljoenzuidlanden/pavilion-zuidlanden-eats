@@ -16,6 +16,7 @@ import InternalAgenda from "@/components/InternalAgenda";
 import Quotes from "@/components/Quotes";
 import PlannerAgendaNotice from "@/components/PlannerAgendaNotice";
 import type { PlannerAgendaItem } from "@/lib/planner-agenda";
+import { recurringDates, shiftWeeks } from "@/lib/availability";
 import { groupEventSignups, signupTotals, type EventSignup } from "@/lib/event-signups";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -165,6 +166,33 @@ function Availability({ user }: { user: User }) {
     setPopup(null);
   };
 
+  const [rec, setRec] = useState<{ day: number; start: string; end: string; note: string } | null>(null);
+  const saveRecurring = async () => {
+    if (!rec) return;
+    if (rec.end <= rec.start) return toast.error("Eindtijd moet na de begintijd liggen");
+    const dates = recurringDates(rec.day, days()[0], maxDate);
+    if (!dates.length) return toast.error("Geen dagen gevonden in de komende 8 weken");
+    const { error } = await supabase.from("availability").upsert(
+      dates.map((date) => ({ user_id: user.id, date, start_time: rec.start, end_time: rec.end, note: rec.note.slice(0, 200) || null })),
+      { onConflict: "user_id,date" },
+    );
+    if (error) return toast.error(error.message);
+    toast.success(`Beschikbaar doorgegeven voor ${dates.length} dagen`);
+    setRec(null); load();
+  };
+  const copyPrevWeek = async () => {
+    const target = format(week, "yyyy-MM-dd");
+    const from = shiftWeeks(target, -1);
+    const { data, error } = await supabase.from("availability").select("*").eq("user_id", user.id).gte("date", from).lt("date", target);
+    if (error) return toast.error(error.message);
+    const rowsToCopy = (data ?? []).map((a) => ({ user_id: user.id, date: shiftWeeks(a.date, 1), start_time: a.start_time, end_time: a.end_time, note: a.note }))
+      .filter((r) => withinWindow(r.date) && isOpen(r.date));
+    if (!rowsToCopy.length) return toast.error("Vorige week heb je niets doorgegeven (of deze week valt buiten de periode)");
+    const { error: e2 } = await supabase.from("availability").upsert(rowsToCopy, { onConflict: "user_id,date" });
+    if (e2) return toast.error(e2.message);
+    toast.success(`${rowsToCopy.length} dag(en) van vorige week overgenomen`); load();
+  };
+
   const monthStart = startOfWeek(month, { weekStartsOn: 1 });
   const monthEnd = addDays(startOfWeek(endOfMonth(month), { weekStartsOn: 1 }), 6);
   const monthDays = Array.from({ length: Math.round((monthEnd.getTime() - monthStart.getTime()) / 86400000) + 1 }, (_, i) => format(addDays(monthStart, i), "yyyy-MM-dd"));
@@ -216,7 +244,7 @@ function Availability({ user }: { user: User }) {
                 <div className="flex-1 space-y-1"><Label htmlFor="av-start">Van</Label><Input id="av-start" type="time" value={popup.start} onChange={(e) => setPopup({ ...popup, start: e.target.value })} /></div>
                 <div className="flex-1 space-y-1"><Label htmlFor="av-end">Tot</Label><Input id="av-end" type="time" value={popup.end} onChange={(e) => setPopup({ ...popup, end: e.target.value })} /></div>
               </div>
-              <div className="space-y-1"><Label htmlFor="av-note">Opmerking (optioneel)</Label><Input id="av-note" maxLength={200} value={popup.note} onChange={(e) => setPopup({ ...popup, note: e.target.value })} /></div>
+              <div className="space-y-1"><Label htmlFor="av-note">Notitie voor deze dag (optioneel)</Label><Input id="av-note" placeholder="Bijv. kan pas vanaf 18:00, graag bar" maxLength={200} value={popup.note} onChange={(e) => setPopup({ ...popup, note: e.target.value })} /></div>
             </div>
           )}
           <DialogFooter className="gap-2 sm:gap-0">
@@ -237,6 +265,33 @@ function Availability({ user }: { user: User }) {
           <Button size="icon" variant="outline" onClick={() => setMonth(addMonths(month, 1))} aria-label="Volgende maand"><ChevronRight className="w-4 h-4" /></Button>
           <span className="font-display uppercase text-primary capitalize w-full sm:w-auto">{format(month, "MMMM yyyy", { locale: nl })}</span>
         </div>}
+      </div>
+      <Dialog open={!!rec} onOpenChange={(o) => !o && setRec(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Vaste dag doorgeven</DialogTitle>
+            <DialogDescription>Bijvoorbeeld "elke vrijdag kan ik". Dit wordt ingevuld voor alle komende 8 weken.</DialogDescription>
+          </DialogHeader>
+          {rec && (
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-1" aria-label="Dag kiezen">
+                {[[4, "Donderdag"], [5, "Vrijdag"], [6, "Zaterdag"], [0, "Zondag"]].map(([n, l]) => (
+                  <Button key={n} size="sm" type="button" variant={rec.day === n ? "default" : "outline"} onClick={() => setRec({ ...rec, day: n as number })}>Elke {String(l).toLowerCase()}</Button>
+                ))}
+              </div>
+              <div className="flex items-end gap-2">
+                <div className="flex-1 space-y-1"><Label htmlFor="rec-start">Van</Label><Input id="rec-start" type="time" step={900} value={rec.start} onChange={(e) => setRec({ ...rec, start: e.target.value })} /></div>
+                <div className="flex-1 space-y-1"><Label htmlFor="rec-end">Tot</Label><Input id="rec-end" type="time" step={900} value={rec.end} onChange={(e) => setRec({ ...rec, end: e.target.value })} /></div>
+              </div>
+              <div className="space-y-1"><Label htmlFor="rec-note">Notitie (optioneel)</Label><Input id="rec-note" placeholder="Bijv. kan pas vanaf 18:00, graag bar" maxLength={200} value={rec.note} onChange={(e) => setRec({ ...rec, note: e.target.value })} /></div>
+            </div>
+          )}
+          <DialogFooter><Button onClick={saveRecurring}>Doorgeven voor 8 weken</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" variant="outline" onClick={() => setRec({ day: 5, start: "16:00", end: "22:00", note: "" })}>Vaste dag doorgeven</Button>
+        {view === "week" && <Button size="sm" variant="outline" onClick={copyPrevWeek}>Vorige week kopiëren</Button>}
       </div>
       {view === "week" && <WeekNav week={week} setWeek={setWeek} />}
       {view === "month" && (
@@ -260,7 +315,7 @@ function Availability({ user }: { user: User }) {
                     <Input type="time" className="w-28" value={v.start} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, start: e.target.value } }))} />
                     <span className="text-muted-foreground">–</span>
                     <Input type="time" className="w-28" value={v.end} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, end: e.target.value } }))} />
-                    <Input placeholder="Opmerking" className="flex-1 min-w-[140px]" maxLength={200} value={v.note} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, note: e.target.value } }))} />
+                    <Input placeholder="Notitie, bijv. graag bar" className="flex-1 min-w-[140px]" maxLength={200} value={v.note} onChange={(e) => setDraft((p) => ({ ...p, [d]: { ...v, note: e.target.value } }))} />
                     {draft[d] && <Button size="sm" onClick={() => save(d)}>Opslaan</Button>}
                   </>
                 )}
