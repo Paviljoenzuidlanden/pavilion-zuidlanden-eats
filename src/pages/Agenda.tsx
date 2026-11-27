@@ -23,6 +23,7 @@ type AgendaEvent = {
   pricePerPerson?: number;
   includedDrinks?: number;
   hideSignup?: boolean;
+  signupUrl?: string;
 };
 
 const MAX_QUIZ_TEAMS = 12;
@@ -74,6 +75,18 @@ export const pubquizMaartEvent: AgendaEvent = {
   spots: "",
   organizer: "paviljoen",
   hideSignup: true,
+};
+
+export const reanimatieEvent: AgendaEvent = {
+  date: "18",
+  month: "Jan",
+  title: "Reanimatiecursus",
+  time: "",
+  description: "Leer reanimeren. Red een leven in onze wijk. 18+ • max. 10 deelnemers • € 10 eigen bijdrage.",
+  category: "Cursus",
+  spots: "Max. 10 deelnemers",
+  organizer: "paviljoen",
+  signupUrl: "https://forms.cloud.microsoft/pages/responsepage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAZ__oB4AvlUOFIxM1NQRjNYMkZYNFBHMkEyN0FaRjBEOS4u&route=shorturl",
 };
 
 export const eindejaarsborrelEvent: AgendaEvent = {
@@ -134,6 +147,7 @@ const events: AgendaEvent[] = [
     spots: "Vrije inloop",
     organizer: "wijkpanel",
   },
+  reanimatieEvent,
   pubquizFebruariEvent,
   {
     date: "12",
@@ -343,7 +357,11 @@ const Agenda = () => {
                       <img src={wyngaardLogo} alt="De Wyngaard" className="h-8 w-auto" />
                     </a>
                   )}
-                  {event.hideSignup ? null : event.spots !== "Vrije inloop" ? (
+                  {event.signupUrl ? (
+                    <Button asChild size="sm" className="rounded-full font-body font-semibold tracking-widest text-xs uppercase">
+                      <a href={event.signupUrl} target="_blank" rel="noreferrer">Aanmelden</a>
+                    </Button>
+                  ) : event.hideSignup ? null : event.spots !== "Vrije inloop" ? (
                     vol[event.title] ? (
                       <div className="flex flex-col items-end gap-1">
                         <span className="text-xs font-body font-semibold uppercase tracking-widest text-primary">Vol</span>
