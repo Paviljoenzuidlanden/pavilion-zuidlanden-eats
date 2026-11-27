@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2, Store, Phone } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowRight, Users, Wine, X, CheckCircle2, Store } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -24,11 +24,7 @@ type AgendaEvent = {
   includedDrinks?: number;
   hideSignup?: boolean;
   signupUrl?: string;
-  phone?: string;
 };
-
-export const telHref = (phone: string) =>
-  `tel:${phone.startsWith("0") ? `+31${phone.slice(1)}` : phone}`;
 
 const MAX_QUIZ_TEAMS = 12;
 
@@ -91,7 +87,6 @@ export const reanimatieEvent: AgendaEvent = {
   spots: "Max. 10 deelnemers",
   organizer: "paviljoen",
   signupUrl: "https://forms.cloud.microsoft/pages/responsepage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAZ__oB4AvlUOFIxM1NQRjNYMkZYNFBHMkEyN0FaRjBEOS4u&route=shorturl",
-  phone: "0614146647",
 };
 
 export const eindejaarsborrelEvent: AgendaEvent = {
@@ -346,15 +341,6 @@ const Agenda = () => {
                       <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-muted text-foreground">
                         <Wine className="w-3 h-3" /> De Wyngaard
                       </span>
-                    )}
-                    {event.phone && (
-                      <a
-                        href={telHref(event.phone)}
-                        className="flex items-center gap-1.5 font-semibold text-primary hover:underline"
-                      >
-                        <Phone className="w-3 h-3" />
-                        {event.phone}
-                      </a>
                     )}
                   </div>
                 </div>

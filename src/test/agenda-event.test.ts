@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kerstfreubelEvent, pubquizJanuariEvent, pubquizFebruariEvent, pubquizMaartEvent, eindejaarsborrelEvent, reanimatieEvent, telHref } from "@/pages/Agenda";
+import { kerstfreubelEvent, pubquizJanuariEvent, pubquizFebruariEvent, pubquizMaartEvent, eindejaarsborrelEvent } from "@/pages/Agenda";
 
 describe("Kerstfreubelavond", () => {
   it("vindt plaats op 26 november van 19:30 tot 22:30", () => {
@@ -69,14 +69,5 @@ describe("Eindejaarsborrel", () => {
   });
   it("heeft nog geen aanmeldingsknop", () => {
     expect(eindejaarsborrelEvent.hideSignup).toBe(true);
-  });
-});
-
-describe("Reanimatiecursus", () => {
-  it("toont telefoonnummer 0614146647", () => {
-    expect(reanimatieEvent.phone).toBe("0614146647");
-  });
-  it("belt dat nummer als internationaal nummer", () => {
-    expect(telHref("0614146647")).toBe("tel:+31614146647");
   });
 });

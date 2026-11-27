@@ -47,7 +47,9 @@ const FooterSection = () => {
             <h3 className="text-xs font-body font-semibold tracking-[0.3em] uppercase text-primary mb-6">Contact</h3>
             <div className="flex items-center gap-3 text-secondary-foreground/70 font-body mb-4">
               <Phone className="w-4 h-4 shrink-0 text-primary" />
-              <span className="text-sm">Binnenkort beschikbaar</span>
+              <a href="tel:+31614146647" className="text-sm hover:text-primary transition-colors">
+                0614146647
+              </a>
             </div>
             <a
               href="https://www.instagram.com/paviljoen_zuidlanden/"
