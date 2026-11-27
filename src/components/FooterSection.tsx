@@ -48,7 +48,7 @@ const FooterSection = () => {
             <div className="flex items-center gap-3 text-secondary-foreground/70 font-body mb-4">
               <Phone className="w-4 h-4 shrink-0 text-primary" />
               <a href="tel:+31614146647" className="text-sm hover:text-primary transition-colors">
-                0614146647
+                06-14146647
               </a>
             </div>
             <a
